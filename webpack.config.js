@@ -5,21 +5,23 @@ const HtmlPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: './src/main.js', // Точка входа
   output: {
-    filename: 'bundle.[contenthash].js', // Имя бандла
+    filename: 'bundle.[contenthash].js', // Имя файла сборки с хэшированием
     path: path.resolve(__dirname, 'build'), // Директория для файлов сборки
-    clean: true, // Удаляем предыдущую сборку перед созданием новой
+    clean: true, // Очищать директорию сборки перед новой сборкой
   },
   devtool: 'source-map', // Генерируем карту исходного кода
   plugins: [ // Подключаем плагины
+    // для генерации HTML по шаблону
     new HtmlPlugin({
       template: 'public/index.html',
     }),
+    // для копирования статических файлов в директорию сборки
     new CopyPlugin({
       patterns: [
         {
-          from: 'public',
+          from: 'public', // откуда
           globOptions: {
-            ignore: ['**/index.html'],
+            ignore: ['**/index.html'], // это шаблон для плагина генерации HTML
           },
         },
       ],
