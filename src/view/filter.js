@@ -1,3 +1,5 @@
+import { createElement } from '../render';
+
 function filterItem(filterName) {
   const filterNameLowerCase = filterName.toLowerCase();
   return `
@@ -8,7 +10,7 @@ function filterItem(filterName) {
   `;
 }
 
-export function filter() {
+function filter() {
 
   const itemsMarkupArray = [];
   for (const filterName of ['Everything', 'Future', 'Present', 'Past']) {
@@ -27,4 +29,22 @@ export function filter() {
   </div>
   `;
 
+}
+
+export default class FilterView {
+  getTemplate() {
+    return filter();
+  }
+
+  getElement() {
+    if (!this.element) {
+      this.element = createElement(this.getTemplate());
+    }
+
+    return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
+  }
 }

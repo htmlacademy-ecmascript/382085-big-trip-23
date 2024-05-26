@@ -1,3 +1,4 @@
+import { createElement } from '../render';
 /**
 * @typedef {Object} Offer
 * @prop {string} title
@@ -29,7 +30,7 @@ function getOffer(offer) {
 /**
 * @param {WaypointData} waypointData
 */
-export function waypoint(waypointData) {
+function waypoint(waypointData) {
 
   const offersMarkup = [];
   for (const offer of waypointData.offers) {
@@ -74,4 +75,28 @@ export function waypoint(waypointData) {
     </button>
   </div>
 </li>`;
+}
+
+export default class WaypointView {
+
+  // пока так
+  constructor(data) {
+    this.data = data;
+  }
+
+  getTemplate() {
+    return waypoint(this.data);
+  }
+
+  getElement() {
+    if (!this.element) {
+      this.element = createElement(this.getTemplate());
+    }
+
+    return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
+  }
 }

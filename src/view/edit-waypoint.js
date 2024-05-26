@@ -1,3 +1,5 @@
+import { createElement } from '../render';
+
 const EVENTS_RADIO_OPTIONS = [
   { id: 'taxi', text: 'Taxi' },
   { id: 'bus', text: 'Bus' },
@@ -15,23 +17,25 @@ function createEventOption({id, text}) {
   return `
     <div class="event__type-item">
       <input id="event-type-${id}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${id}" />
-      <label class="event__type-label  event__type-label--taxi" for="event-type-${id}-1">${text}</label>
+      <label class="event__type-label  event__type-label--${id}" for="event-type-${id}-1">${text}</label>
     </div>
     `;
 }
 
 const OFFERS_OPTIONS = [
-  { id: 'luggage', text: '', price: 32 },
-  { id: 'comfort', text: '', price: 32 },
-  { id: 'meal', text: '', price: 32 },
-  { id: 'seats', text: '', price: 32 },
-  { id: 'train', text: '', price: 32 },
+  { id: 'luggage', text: 'Add luggage', price: 50 },
+  { id: 'comfort', text: 'Switch to comfort', price: 80 },
+  { id: 'meal', text: 'Add meal', price: 15 },
+  { id: 'seats', text: 'Choose seats', price: 5 },
+  { id: 'train', text: 'Travel by train', price: 40 },
 ];
+
+const SELECTED_OFFERS = new Set(['luggage','comfort']);
 
 function createOptionMarkup({id, text, price}) {
   return `
     <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}-1" type="checkbox" name="event-offer-${id}" />
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}-1" type="checkbox" name="event-offer-${id}" ${SELECTED_OFFERS.has(id) ? 'checked' : ''}/>
       <label class="event__offer-label" for="event-offer-${id}-1">
         <span class="event__offer-title">${text}</span>
         &plus;&euro;&nbsp;
@@ -42,7 +46,7 @@ function createOptionMarkup({id, text, price}) {
 }
 
 
-export function editWaypoint() {
+function editWaypoint() {
 
   const radioItems = Array.from(EVENTS_RADIO_OPTIONS, (option) => createEventOption(option));
   const eventsMarkup = radioItems.join(' ');
@@ -118,4 +122,23 @@ export function editWaypoint() {
     </section>
   </form>
   `;
+}
+
+
+export default class EditWaypointView {
+  getTemplate() {
+    return editWaypoint();
+  }
+
+  getElement() {
+    if (!this.element) {
+      this.element = createElement(this.getTemplate());
+    }
+
+    return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
+  }
 }

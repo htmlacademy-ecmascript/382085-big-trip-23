@@ -1,3 +1,5 @@
+import { createElement } from '../render';
+
 function sortItem(sortName) {
   const sortByLowerCase = sortName.toLowerCase();
   return `
@@ -8,7 +10,7 @@ function sortItem(sortName) {
   `;
 }
 
-export function sort() {
+function sort() {
 
   const itemsMarkupArray = [];
   for (const sortColumnName of ['Day', 'Event', 'Time', 'Price', 'Offer']) {
@@ -17,4 +19,22 @@ export function sort() {
 
   const innerMarkup = itemsMarkupArray.join(' ');
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get"> ${innerMarkup} </form>`;
+}
+
+export default class SortView {
+  getTemplate() {
+    return sort();
+  }
+
+  getElement() {
+    if (!this.element) {
+      this.element = createElement(this.getTemplate());
+    }
+
+    return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
+  }
 }
