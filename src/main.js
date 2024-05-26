@@ -1,8 +1,6 @@
-import { render, RenderPosition } from './render';
-import WaypointView from './view/waypoint';
-import FilterView from './view/filter';
-import SortView from './view/sort';
-import EditWaypointView from './view/edit-waypoint';
+import { RenderPosition, render } from './render.js';
+import TripEventsPresenter from './trip-events-presenter';
+import { TripInfoView } from './view/trip-info';
 
 /**
 * @typedef {Object} Offer
@@ -52,15 +50,12 @@ const WAYPOINT_DATA = [
   }
 ];
 
-const filterContainer = document.querySelector('.trip-controls__filters');
 const eventsContainer = document.querySelector('.trip-events');
+const tripMainContainer = document.querySelector('.trip-main');
 
-const waypoints = Array.from(WAYPOINT_DATA, (item) => new WaypointView(item));
+render(new TripInfoView(), tripMainContainer, RenderPosition.AFTERBEGIN);
 
-for (const waypoint of waypoints) {
-  render(waypoint, eventsContainer);
-}
-render(new SortView(), eventsContainer, RenderPosition.BEFOREBEGIN);
-render(new EditWaypointView, eventsContainer, RenderPosition.AFTERBEGIN);
+const eventsPresenter = new TripEventsPresenter({eventsContainer});
 
-render(new FilterView(), filterContainer);
+eventsPresenter.init();
+
