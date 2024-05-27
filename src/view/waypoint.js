@@ -1,21 +1,7 @@
 import { createElement } from '../render';
-/**
-* @typedef {Object} Offer
-* @prop {string} title
-* @prop {number} price
-*/
 
 /**
-* @typedef {Object} WaypointData
-* @prop {string} title
-* @prop {Date} from
-* @prop {Date} to
-* @prop {number} price
-* @prop {Offer[]} offers
-*/
-
-/**
-* @param {Offer} offer
+* @param {import('../mock/offers').Offer} offer
 */
 function getOffer(offer) {
   return `
@@ -28,7 +14,7 @@ function getOffer(offer) {
 
 
 /**
-* @param {WaypointData} waypointData
+* @param {import('../mock/trip').Waypoint} waypointData
 */
 function waypoint(waypointData) {
 
@@ -38,8 +24,8 @@ function waypoint(waypointData) {
   }
 
   const eventDuration = '40 M';
-  const eventDate = waypointData.from.toLocaleString('en-us', {month: 'short', date: '2-digit'});
-  const eventDateAttrib = waypointData.from.toISOString().slice(0, 10);
+  const eventDate = new Date(waypointData.date_from).toLocaleString('en-us', {month: 'short', date: '2-digit'});
+  const eventDateAttrib = new Date(waypointData.date_from).toISOString().slice(0, 10);
 
   return `
 <li class="trip-events__item">
@@ -58,7 +44,7 @@ function waypoint(waypointData) {
       <p class="event__duration">${eventDuration}</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">${waypointData.price}</span>
+      &euro;&nbsp;<span class="event__price-value">${waypointData.base_price}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
