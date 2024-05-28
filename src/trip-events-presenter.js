@@ -13,13 +13,15 @@ export default class TripEventsPresenter {
   }
 
   init() {
+    const waypoints = this.waypointsModel.getWaypoints();
 
     render(new SortView(), this.container, RenderPosition.AFTERBEGIN);
     render(new EditWaypointView, this.container);
 
-    const waypoints = Array.from(this.waypointsModel.getWaypoints(), (item) => new WaypointView(item));
-    for (const waypoint of waypoints) {
-      render(waypoint, this.container);
+    for (let i = 0; i < waypoints.length; i += 1) {
+      const destination = this.destinationsModel.getDestination(waypoints[i].destination);
+      const offers = this.offersModel.getOffersForEventType(waypoints[i].type);
+      render(new WaypointView({waypoint: waypoints[i], destination, offers}), this.container);
     }
 
     const filterContainer = document.querySelector('.trip-controls__filters');
