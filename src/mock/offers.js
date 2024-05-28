@@ -120,6 +120,21 @@ export const OFFERS = [
     type: 'flight',
     offers: [
       {
+        id: 'choose-seats',
+        title: 'Choose seats',
+        price: 5
+      },
+      {
+        id: 'add-meal',
+        title: 'Add meal',
+        price: 15
+      },
+      {
+        id: 'add-luggage',
+        title: 'Add luggage',
+        price: 20
+      },
+      {
         id: 'flight-business',
         title: 'Upgrade to a business class',
         price: 100

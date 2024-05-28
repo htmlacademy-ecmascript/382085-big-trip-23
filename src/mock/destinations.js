@@ -20,6 +20,17 @@ export const EVENT_TYPES = ['check-in', 'sightseeing', 'restaurant', 'taxi', 'bu
 /** @type Destination[] */
 export const DESTINATIONS = [
   {
+    id: 'airport-mrv',
+    description: 'Mineral\'niye Vody airport',
+    name: 'Mineral\'niye Vody airport',
+    pictures: [
+      {
+        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        description: 'Mineral\'niye Vody airport'
+      }
+    ]
+  },
+  {
     id: 'airport-led',
     description: 'Pulkovo airport',
     name: 'Pulkovo airport',

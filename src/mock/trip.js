@@ -19,10 +19,10 @@
 /** @type Waypoint[] */
 export const TRIP_WAYPOINTS = [
   {
-    id: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
+    id: 'taxi-airport-led',
     base_price: 10,
-    date_from: '2019-07-10T22:55:56.845Z',
-    date_to: '2019-07-11T11:22:13.375Z',
+    date_from: '2024-05-10T05:55:00.000Z',
+    date_to: '2024-05-10T06:30:00.000Z',
     destination: 'airport-led',
     is_favorite: false,
     offers: [
@@ -31,10 +31,10 @@ export const TRIP_WAYPOINTS = [
     type: 'taxi'
   },
   {
-    id: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
+    id: 'flight-airpirt-mrv',
     base_price: 100,
-    date_from: '2019-07-10T22:55:56.845Z',
-    date_to: '2019-07-11T11:22:13.375Z',
+    date_from: '2024-05-10T07:40:00.000Z',
+    date_to: '2024-05-10T11:20:00.000Z',
     destination: 'airport-mrv',
     is_favorite: false,
     offers: [
@@ -43,10 +43,10 @@ export const TRIP_WAYPOINTS = [
     type: 'flight'
   },
   {
-    id: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
+    id: 'taxi-hotel-pyatigorsk',
     base_price: 7,
-    date_from: '2019-07-10T22:55:56.845Z',
-    date_to: '2019-07-11T11:22:13.375Z',
+    date_from: '2024-05-10T12:00:00.000Z',
+    date_to: '2024-05-10T12:50:00.000Z',
     destination: 'hotel-pyatigorsk',
     is_favorite: false,
     offers: [
@@ -55,22 +55,22 @@ export const TRIP_WAYPOINTS = [
     type: 'taxi'
   },
   {
-    id: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
+    id: 'check-in-hotel-pyatigorsk',
     base_price: 200,
-    date_from: '2019-07-10T22:55:56.845Z',
-    date_to: '2019-07-11T11:22:13.375Z',
+    date_from: '2024-05-10T12:55:00.000Z',
+    date_to: '2024-05-13T14:00:00.000Z',
     destination: 'hotel-pyatigorsk',
     is_favorite: true,
     offers: [
       'apartment-lux'
     ],
-    type: 'checkin'
+    type: 'check-in'
   },
   {
-    id: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
+    id: 'train-train-station-kislovodsk',
     base_price: 4,
-    date_from: '2019-07-10T22:55:56.845Z',
-    date_to: '2019-07-11T11:22:13.375Z',
+    date_from: '2024-05-11T09:55:00.000Z',
+    date_to: '2024-05-11T11:04:00.000Z',
     destination: 'train-station-kislovodsk',
     is_favorite: false,
     offers: [
@@ -79,10 +79,10 @@ export const TRIP_WAYPOINTS = [
     type: 'train'
   },
   {
-    id: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
+    id: 'sightseeing-kislovodsk-park',
     base_price: 5,
-    date_from: '2019-07-10T22:55:56.845Z',
-    date_to: '2019-07-11T11:22:13.375Z',
+    date_from: '2024-05-11T11:15:00.000Z',
+    date_to: '2024-05-11T20:00:00.000Z',
     destination: 'kislovodsk-park',
     is_favorite: true,
     offers: [
@@ -91,10 +91,10 @@ export const TRIP_WAYPOINTS = [
     type: 'sightseeing'
   },
   {
-    id: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
+    id: 'train-train-station-pyatigorsk',
     base_price: 4,
-    date_from: '2019-07-10T22:55:56.845Z',
-    date_to: '2019-07-11T11:22:13.375Z',
+    date_from: '2024-05-11T20:05:00.000Z',
+    date_to: '2024-05-11T21:19:00.000Z',
     destination: 'train-station-pyatigorsk',
     is_favorite: false,
     offers: [
