@@ -6,4 +6,9 @@ export default class DestinationsModel {
   getDestinations() {
     return this.destinations;
   }
+
+  getDestination(id) {
+    const result = this.destinations.find((item) => item.id === id);
+    return result;
+  }
 }
