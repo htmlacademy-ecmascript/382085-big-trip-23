@@ -1,11 +1,21 @@
-import dayjs from 'dayjs';
 
 export function getRandomArrayElement(anArray) {
   return anArray[Math.floor(Math.random() * anArray.length)];
 }
 
-const DATE_FORMAT = 'D MMMM';
+const TIME_DURATION_INTERVALS = [
+  {dayjsName: 'day', abbreviation: 'D'},
+  {dayjsName: 'hour', abbreviation: 'H'},
+  {dayjsName: 'minute', abbreviation:'M'}
+];
 
-export function humanizeTaskDueDate(dueDate) {
-  return dueDate ? dayjs(dueDate).format(DATE_FORMAT) : '';
+export function getDurationString(dateFrom, dateTo) {
+  let dayjsTo2 = dateTo;
+  return Array.from(TIME_DURATION_INTERVALS, (item) => {
+    const quantity = dayjsTo2.diff(dateFrom, item.dayjsName);
+    dayjsTo2 = dayjsTo2.subtract(quantity, item.dayjsName);
+    const formattedQuantity = String(quantity).padStart(2, '0');
+    return quantity ? `${formattedQuantity}${item.abbreviation}` : '';
+  })
+    .join(' ');
 }
