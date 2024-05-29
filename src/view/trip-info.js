@@ -15,7 +15,7 @@ function tripInfo() {
     </section>`;
 }
 
-export class TripInfoView {
+export default class TripInfoView {
   getTemplate() {
     return tripInfo();
   }
