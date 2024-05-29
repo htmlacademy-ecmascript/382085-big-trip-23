@@ -140,9 +140,9 @@ export const OFFERS = [
         price: 100
       },
       {
-        id: 'b4c3e4e6-9053-42ce-b747-e281314baa31',
-        title: 'Upgrade to a business class',
-        price: 120
+        id: 'comfort-class',
+        title: 'Switch to comfort class',
+        price: 100
       }
     ]
   }
