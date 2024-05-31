@@ -1,4 +1,4 @@
-import { DEFAULT_SORT_ITEM_INDEX, SORT_ITEMS } from '../../constants';
+import { DEFAULT_SORT_ITEM_INDEX, SORT_ITEMS } from '../constants';
 import { createElement } from '../render';
 
 /**

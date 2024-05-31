@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { EVENT_TYPE_ICONS } from '../../constants';
+import { EVENT_TYPE_ICONS } from '../constants';
 import { createElement } from '../render';
 import { getDurationString } from '../utils';
 

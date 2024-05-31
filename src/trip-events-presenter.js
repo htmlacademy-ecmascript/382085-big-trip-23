@@ -7,7 +7,7 @@ import OffersSectionView from './view/offers-section';
 import DestinationView from './view/destination';
 import EventTypeSelectorView from './view/event-type-selector';
 import TripEventsListView from './view/trip-events-list';
-import { DUMMY_WAYPOINT } from '../constants';
+import { DUMMY_WAYPOINT } from './constants';
 
 export default class TripEventsPresenter {
   constructor({eventsContainer, waypointsModel, destinationsModel, offersModel }) {

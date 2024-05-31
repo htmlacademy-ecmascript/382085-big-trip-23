@@ -1,4 +1,4 @@
-import { DEFAULT_FILTER_ITEM_INDEX, FILTER_ITEMS } from '../../constants';
+import { DEFAULT_FILTER_ITEM_INDEX, FILTER_ITEMS } from '../constants';
 import { createElement } from '../render';
 
 function createFilterItemMarkup(filterName, active) {

@@ -1,6 +1,6 @@
 import { createElement } from '../render';
 import { EVENT_TYPES } from '../mock/destinations';
-import { EVENT_TYPE_ICONS } from '../../constants';
+import { EVENT_TYPE_ICONS } from '../constants';
 import { capitalize } from '../utils';
 
 /**
