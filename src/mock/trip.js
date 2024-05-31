@@ -7,11 +7,11 @@
 /**
 * @typedef {Object} Waypoint
 * @prop {string} id
-* @prop {number} base_price
-* @prop {string} date_from
-* @prop {string} date_to
+* @prop {number} basePrice
+* @prop {string} dateFrom
+* @prop {string} dateTo
 * @prop {string} destination
-* @prop {boolean} is_favorite
+* @prop {boolean} isFavorite
 * @prop {string[]} offers
 * @prop {WaypointType} type
 */
@@ -20,11 +20,11 @@
 export const TRIP_WAYPOINTS = [
   {
     id: 'taxi-airport-led',
-    base_price: 10,
-    date_from: '2024-05-10T05:55:00.000Z',
-    date_to: '2024-05-10T06:30:00.000Z',
+    basePrice: 10,
+    dateFrom: '2024-05-10T05:55:00.000Z',
+    dateTo: '2024-05-10T06:30:00.000Z',
     destination: 'airport-led',
-    is_favorite: false,
+    isFavorite: false,
     offers: [
       'taxi-comfort'
     ],
@@ -32,11 +32,11 @@ export const TRIP_WAYPOINTS = [
   },
   {
     id: 'flight-airpirt-mrv',
-    base_price: 100,
-    date_from: '2024-05-10T07:40:00.000Z',
-    date_to: '2024-05-10T11:20:00.000Z',
+    basePrice: 100,
+    dateFrom: '2024-05-10T07:40:00.000Z',
+    dateTo: '2024-05-10T11:20:00.000Z',
     destination: 'airport-mrv',
-    is_favorite: false,
+    isFavorite: false,
     offers: [
       'flight-business'
     ],
@@ -44,11 +44,11 @@ export const TRIP_WAYPOINTS = [
   },
   {
     id: 'taxi-hotel-pyatigorsk',
-    base_price: 7,
-    date_from: '2024-05-10T12:00:00.000Z',
-    date_to: '2024-05-10T12:50:00.000Z',
+    basePrice: 7,
+    dateFrom: '2024-05-10T12:00:00.000Z',
+    dateTo: '2024-05-10T12:50:00.000Z',
     destination: 'hotel-pyatigorsk',
-    is_favorite: false,
+    isFavorite: false,
     offers: [
       'taxi-comfort'
     ],
@@ -56,11 +56,11 @@ export const TRIP_WAYPOINTS = [
   },
   {
     id: 'check-in-hotel-pyatigorsk',
-    base_price: 200,
-    date_from: '2024-05-10T12:55:00.000Z',
-    date_to: '2024-05-13T14:00:00.000Z',
+    basePrice: 200,
+    dateFrom: '2024-05-10T12:55:00.000Z',
+    dateTo: '2024-05-13T14:00:00.000Z',
     destination: 'hotel-pyatigorsk',
-    is_favorite: true,
+    isFavorite: true,
     offers: [
       'apartment-lux'
     ],
@@ -68,11 +68,11 @@ export const TRIP_WAYPOINTS = [
   },
   {
     id: 'train-train-station-kislovodsk',
-    base_price: 4,
-    date_from: '2024-05-11T09:55:00.000Z',
-    date_to: '2024-05-11T11:04:00.000Z',
+    basePrice: 4,
+    dateFrom: '2024-05-11T09:55:00.000Z',
+    dateTo: '2024-05-11T11:04:00.000Z',
     destination: 'train-station-kislovodsk',
-    is_favorite: false,
+    isFavorite: false,
     offers: [
       'train-meal'
     ],
@@ -80,11 +80,11 @@ export const TRIP_WAYPOINTS = [
   },
   {
     id: 'sightseeing-kislovodsk-park',
-    base_price: 5,
-    date_from: '2024-05-11T11:15:00.000Z',
-    date_to: '2024-05-11T20:00:00.000Z',
+    basePrice: 5,
+    dateFrom: '2024-05-11T11:15:00.000Z',
+    dateTo: '2024-05-11T20:00:00.000Z',
     destination: 'kislovodsk-park',
-    is_favorite: true,
+    isFavorite: true,
     offers: [
       'excursion'
     ],
@@ -92,11 +92,11 @@ export const TRIP_WAYPOINTS = [
   },
   {
     id: 'train-train-station-pyatigorsk',
-    base_price: 4,
-    date_from: '2024-05-11T20:05:00.000Z',
-    date_to: '2024-05-11T21:19:00.000Z',
+    basePrice: 4,
+    dateFrom: '2024-05-11T20:05:00.000Z',
+    dateTo: '2024-05-11T21:19:00.000Z',
     destination: 'train-station-pyatigorsk',
-    is_favorite: false,
+    isFavorite: false,
     offers: [
       'train-meal'
     ],
