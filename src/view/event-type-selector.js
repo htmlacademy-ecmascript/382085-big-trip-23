@@ -1,34 +1,41 @@
 import { createElement } from '../render';
 import { EVENT_TYPES } from '../mock/destinations';
 import { EVENT_TYPE_ICONS } from '../../constants';
+import { capitalize } from '../utils';
 
 /**
+  * @param {import('../mock/trip').WaypointType} type
+  * @param {string} waypointId
+  * @returns {string} разметка
 */
-function createEventOption(type) {
+function createEventOptionMarkup(waypointId, type) {
 
-  const typeCapitalized = `${type[0].toUpperCase()}${type.slice(1)}`;
+  const typeCapitalized = capitalize(type);
+
   return `
     <div class="event__type-item">
-      <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" />
-      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${typeCapitalized}</label>
+      <input id="event-type-${type}-${waypointId}" class="event__type-input visually-hidden" type="radio" name="event-type" value="${type}" />
+      <label class="event__type-label event__type-label--${type}" for="event-type-${type}-${waypointId}">${typeCapitalized}</label>
     </div>`;
 }
 
 
 /**
+  * @param {string} waypointId
+  * @param {import('../mock/trip').WaypointType} selectedEventType
 */
-function eventTypeSelector(selectedEventType) {
+function createEventTypeSelectorMarkup(waypointId, selectedEventType) {
 
-  const eventsMarkup = EVENT_TYPES.map((type) => createEventOption(type)).join(' ');
+  const eventsMarkup = EVENT_TYPES.map((type) => createEventOptionMarkup(waypointId, type)).join(' ');
   const selectedEventTypeIcon = EVENT_TYPE_ICONS[selectedEventType];
 
   return `
     <div class="event__type-wrapper">
-      <label class="event__type  event__type-btn" for="event-type-toggle-1">
+      <label class="event__type  event__type-btn" for="event-type-toggle-${waypointId}">
         <span class="visually-hidden">Choose event type</span>
         <img class="event__type-icon" width="17" height="17" src="${selectedEventTypeIcon}" alt="Event type icon" />
       </label>
-      <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" />
+      <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${waypointId}" type="checkbox" />
 
       <div class="event__type-list">
         <fieldset class="event__type-group">
@@ -42,12 +49,12 @@ function eventTypeSelector(selectedEventType) {
 
 export default class EventTypeSelectorView {
 
-  constructor(selectedEventType) {
-    this.selectedEventType = selectedEventType;
+  constructor(waypoint) {
+    this.waypoint = waypoint;
   }
 
   getTemplate() {
-    return eventTypeSelector(this.selectedEventType);
+    return createEventTypeSelectorMarkup(this.waypoint.id, this.waypoint.type);
   }
 
   getElement() {

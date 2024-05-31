@@ -1,21 +1,19 @@
+import { DEFAULT_FILTER_ITEM_INDEX, FILTER_ITEMS } from '../../constants';
 import { createElement } from '../render';
 
-function filterItem(filterName) {
+function createFilterItemMarkup(filterName, active) {
   const filterNameLowerCase = filterName.toLowerCase();
   return `
     <div class="trip-filters__filter">
-      <input id="filter-${filterNameLowerCase}" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="${filterNameLowerCase}">
+      <input id="filter-${filterNameLowerCase}" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="${filterNameLowerCase}" ${active ? 'checked' : ''}>
       <label class="trip-filters__filter-label" for="filter-${filterNameLowerCase}">${filterName}</label>
     </div>
   `;
 }
 
-function filter() {
+function createFilterMarkup() {
 
-  const itemsMarkupArray = [];
-  for (const filterName of ['Everything', 'Future', 'Present', 'Past']) {
-    itemsMarkupArray.push(filterItem(filterName));
-  }
+  const itemsMarkupArray = FILTER_ITEMS.map((filter, i) => createFilterItemMarkup(filter, i === DEFAULT_FILTER_ITEM_INDEX));
 
   const filtersMarkup = itemsMarkupArray.join(' ');
 
@@ -26,14 +24,12 @@ function filter() {
       ${filtersMarkup}
       <button class="visually-hidden" type="submit">Accept filter</button>
     </form>
-  </div>
-  `;
-
+  </div>`;
 }
 
 export default class FilterView {
   getTemplate() {
-    return filter();
+    return createFilterMarkup();
   }
 
   getElement() {

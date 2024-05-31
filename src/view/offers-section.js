@@ -1,35 +1,35 @@
 import { createElement } from '../render';
 
 /**
+  * @param {import('../mock/trip').Waypoint} waypoint
+  * @param {import('../mock/offers').Offer} offer
+  * @returns {string} разметка
 */
-function createOptionMarkup(offer, selectedOffers) {
-  const isSelected = selectedOffers.find((offerId) => offerId === offer.id);
+function createOfferMarkup(waypoint, offer) {
+  const isSelected = waypoint.offers.find((offerId) => offerId === offer.id);
   return `
     <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}" ${isSelected ? 'checked' : ''}/>
-      <label class="event__offer-label" for="event-offer-${offer.id}-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-${waypoint.id}" type="checkbox" name="event-offer-${offer.id}" ${isSelected ? 'checked' : ''}/>
+      <label class="event__offer-label" for="event-offer-${offer.id}-${waypoint.id}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
       </label>
-    </div>
-    `;
+    </div>`;
 }
 
 /**
+  * @param {import('../mock/trip').Waypoint} waypoint
+  * @param {import('../mock/offers').Offer[]} availableOffers
+  * @returns {string} разметка
 */
-function getOffersMarkup(availableOffers, selectedOffers) {
+function createOffersMarkup(waypoint, availableOffers) {
 
   if (availableOffers.length === 0) {
     return '';
   }
 
-  const offersItems = [];
-  availableOffers.forEach((offer) => {
-    offersItems.push(createOptionMarkup(offer, selectedOffers));
-  });
-
-  const offersMarkup = offersItems.join(' ');
+  const offersMarkup = availableOffers.map((offer) => createOfferMarkup(waypoint, offer)).join(' ');
 
   return `
     <section class="event__section  event__section--offers">
@@ -45,13 +45,13 @@ function getOffersMarkup(availableOffers, selectedOffers) {
 
 export default class OffersSectionView {
 
-  constructor(offers, selectedOffers) {
+  constructor({waypoint, offers}) {
+    this.waypoint = waypoint;
     this.offers = offers;
-    this.selectedOffers = selectedOffers;
   }
 
   getTemplate() {
-    return getOffersMarkup(this.offers, this.selectedOffers);
+    return createOffersMarkup(this.waypoint, this.offers);
   }
 
   getElement() {
