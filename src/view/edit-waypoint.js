@@ -12,6 +12,11 @@ function createEditWaypointMarkup(waypoint, destinations) {
 
   const formId = waypoint.id || 0;
 
+  const rollupMarkup = `
+    <button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`;
+
   return `
     <li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -46,10 +51,8 @@ function createEditWaypointMarkup(waypoint, destinations) {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-          </button>
+          <button class="event__reset-btn" type="reset">${formId ? 'Delete' : 'Cancel'}</button>
+          ${formId ? rollupMarkup : ''}
         </header>
         <section class="event__details">
 
