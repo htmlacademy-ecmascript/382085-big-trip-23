@@ -11,11 +11,15 @@ const TIME_DURATION_INTERVALS = [
 
 export function getDurationString(dateFrom, dateTo) {
   let dayjsTo2 = dateTo;
-  return Array.from(TIME_DURATION_INTERVALS, (item) => {
-    const quantity = dayjsTo2.diff(dateFrom, item.dayjsName);
-    dayjsTo2 = dayjsTo2.subtract(quantity, item.dayjsName);
+  return Array.from(TIME_DURATION_INTERVALS, ({dayjsName, abbreviation}) => {
+    const quantity = dayjsTo2.diff(dateFrom, dayjsName);
+    dayjsTo2 = dayjsTo2.subtract(quantity, dayjsName);
     const formattedQuantity = String(quantity).padStart(2, '0');
-    return quantity ? `${formattedQuantity}${item.abbreviation}` : '';
+    return quantity ? `${formattedQuantity}${abbreviation}` : '';
   })
     .join(' ');
+}
+
+export function capitalize(str) {
+  return `${str[0].toUpperCase()}${str.slice(1)}`;
 }
