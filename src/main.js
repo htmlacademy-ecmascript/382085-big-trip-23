@@ -12,7 +12,12 @@ const waypointsModel = new WaypointsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 
-render(new TripInfoView(), tripMainContainer, RenderPosition.AFTERBEGIN);
+const tripInfoData = {
+  waypoints: waypointsModel.getWaypoints(),
+  destinations: destinationsModel.getDestinations(),
+  offers: offersModel.getOffers()
+};
+render(new TripInfoView(tripInfoData), tripMainContainer, RenderPosition.AFTERBEGIN);
 
 const eventsPresenter = new TripEventsPresenter({
   eventsContainer,
