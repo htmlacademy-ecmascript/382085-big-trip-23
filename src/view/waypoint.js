@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
+import AbstractView from '../framework/view/abstract-view';
 import { EVENT_TYPE_ICONS } from '../constants';
-import { createElement } from '../render';
 import { getDurationString } from '../utils';
 
 /**
@@ -80,27 +80,16 @@ function createWaypointTemplate(waypoint, destination, offers) {
     </li>`;
 }
 
-export default class WaypointView {
+export default class WaypointView extends AbstractView {
 
   constructor({waypoint, destination, offers}) {
+    super();
     this.waypoint = waypoint;
     this.destination = destination;
     this.offers = offers;
   }
 
-  getTemplate() {
+  get template() {
     return createWaypointTemplate(this.waypoint, this.destination, this.offers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

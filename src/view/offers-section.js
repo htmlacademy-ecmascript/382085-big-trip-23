@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 
 /**
   * @param {import('../mock/trip').Waypoint} waypoint
@@ -43,25 +43,15 @@ function createOffersMarkup(waypoint, availableOffers) {
     </section>`;
 }
 
-export default class OffersSectionView {
+export default class OffersSectionView extends AbstractView {
 
   constructor({waypoint, offers}) {
+    super();
     this.waypoint = waypoint;
     this.offers = offers;
   }
 
-  getTemplate() {
+  get template() {
     return createOffersMarkup(this.waypoint, this.offers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

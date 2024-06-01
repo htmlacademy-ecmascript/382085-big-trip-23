@@ -1,5 +1,5 @@
 import { DEFAULT_FILTER_ITEM_INDEX, FILTER_ITEMS } from '../constants';
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 
 function createFilterItemMarkup(filterName, active) {
   const filterNameLowerCase = filterName.toLowerCase();
@@ -27,20 +27,8 @@ function createFilterMarkup() {
   </div>`;
 }
 
-export default class FilterView {
-  getTemplate() {
+export default class FilterView extends AbstractView {
+  get template() {
     return createFilterMarkup();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

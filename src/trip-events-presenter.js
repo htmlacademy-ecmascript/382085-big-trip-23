@@ -1,4 +1,4 @@
-import { render, RenderPosition } from './render';
+import { render, RenderPosition } from './framework/render';
 import WaypointView from './view/waypoint';
 import FilterView from './view/filter';
 import SortView from './view/sort';

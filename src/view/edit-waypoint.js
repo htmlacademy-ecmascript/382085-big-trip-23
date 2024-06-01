@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 
 /**
   * @param {import('../mock/trip').Waypoint} waypoint
@@ -67,26 +67,16 @@ function createEditWaypointMarkup(waypoint, destinations) {
 }
 
 
-export default class EditWaypointView {
+export default class EditWaypointView extends AbstractView {
 
   constructor({waypoint, destinations}) {
+    super();
     this.waypoint = waypoint;
     this.destinations = destinations;
   }
 
-  getTemplate() {
+  get template() {
     return createEditWaypointMarkup(this.waypoint, this.destinations);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
 }
