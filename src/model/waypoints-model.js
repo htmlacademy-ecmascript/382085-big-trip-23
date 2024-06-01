@@ -1,9 +1,10 @@
 import { TRIP_WAYPOINTS } from '../mock/trip';
 
 export default class WaypointsModel {
-  waypoints = TRIP_WAYPOINTS;
+  #waypoints = TRIP_WAYPOINTS;
 
-  getWaypoints() {
-    return this.waypoints;
+  // во имя инкапсуляции!
+  get waypoints() {
+    return this.#waypoints;
   }
 }

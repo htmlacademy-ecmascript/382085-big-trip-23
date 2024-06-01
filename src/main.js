@@ -13,9 +13,9 @@ const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 
 const tripInfoData = {
-  waypoints: waypointsModel.getWaypoints(),
-  destinations: destinationsModel.getDestinations(),
-  offers: offersModel.getOffers()
+  waypoints: waypointsModel.waypoints,
+  destinations: destinationsModel.destinations,
+  offers: offersModel.offers
 };
 render(new TripInfoView(tripInfoData), tripMainContainer, RenderPosition.AFTERBEGIN);
 

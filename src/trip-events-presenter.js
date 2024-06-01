@@ -11,18 +11,22 @@ import { DUMMY_WAYPOINT } from './constants';
 
 export default class TripEventsPresenter {
   #tripEventsListView = new TripEventsListView();
+  #waypointsModel = null;
+  #destinationsModel = null;
+  #offersModel = null;
+  #container = null;
 
   constructor({eventsContainer, waypointsModel, destinationsModel, offersModel }) {
-    this.waypointsModel = waypointsModel;
-    this.destinationsModel = destinationsModel;
-    this.offersModel = offersModel;
-    this.container = eventsContainer;
+    this.#waypointsModel = waypointsModel;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
+    this.#container = eventsContainer;
   }
 
-  createEditWaypointElement(waypoint, waypointsListElement) {
+  createEditWaypointElement(waypoint) {
 
-    const offersForType = this.offersModel.getOffersForEventType(waypoint.type);
-    const selectedDestination = this.destinationsModel.getDestination(waypoint.destination);
+    const offersForType = this.#offersModel.getOffersForEventType(waypoint.type);
+    const selectedDestination = this.#destinationsModel.getDestination(waypoint.destination);
     // <header class="event__header">
     // waypointTypeSelector
 
@@ -31,17 +35,17 @@ export default class TripEventsPresenter {
     // description
     const editWaypointData = {
       waypoint,
-      destinations: this.destinationsModel.getDestinations(),
+      destinations: this.#destinationsModel.destinations,
     };
     const editWaypointView = new EditWaypointView(editWaypointData);
     const waypointTypeSelector = new EventTypeSelectorView(waypoint); // нужно id и type у waypoint
     const offerSectionView = new OffersSectionView({waypoint, offers: offersForType}); // нужно id и offers у waypoint
     const destinationView = new DestinationView(selectedDestination);
 
-    const editWaypointHeaderElement = editWaypointView.getElement().querySelector('.event__header');
-    const editWaypointDetailsElement = editWaypointView.getElement().querySelector('.event__details');
+    const editWaypointHeaderElement = editWaypointView.element.querySelector('.event__header');
+    const editWaypointDetailsElement = editWaypointView.element.querySelector('.event__details');
 
-    render(editWaypointView, waypointsListElement);
+    render(editWaypointView, this.#tripEventsListView.element);
 
     render(offerSectionView, editWaypointDetailsElement);
     render(destinationView, editWaypointDetailsElement);
@@ -50,15 +54,13 @@ export default class TripEventsPresenter {
 
 
   init() {
-    const waypoints = this.waypointsModel.getWaypoints();
+    const waypoints = this.#waypointsModel.waypoints;
 
-    const waypointsListElement = this.#tripEventsListView.getElement();
+    render(new SortView(), this.#container, RenderPosition.AFTERBEGIN);
 
-    render(new SortView(), this.container, RenderPosition.AFTERBEGIN);
+    render(this.#tripEventsListView, this.#container);
 
-    render(this.#tripEventsListView, this.container);
-
-    this.createEditWaypointElement(DUMMY_WAYPOINT, waypointsListElement);
+    this.createEditWaypointElement(DUMMY_WAYPOINT, this.#tripEventsListView.element);
 
     const filterContainer = document.querySelector('.trip-controls__filters');
     render(new FilterView(), filterContainer);
@@ -66,11 +68,11 @@ export default class TripEventsPresenter {
     const mockEditWaypointId = 'check-in-hotel-pyatigorsk';
     for (const waypoint of waypoints) {
       if (waypoint.id === mockEditWaypointId) {
-        this.createEditWaypointElement(waypoint, waypointsListElement);
+        this.createEditWaypointElement(waypoint, this.#tripEventsListView.element);
       } else {
-        const destination = this.destinationsModel.getDestination(waypoint.destination);
-        const offers = this.offersModel.getOffersForEventType(waypoint.type);
-        render(new WaypointView({waypoint, destination, offers}), waypointsListElement);
+        const destination = this.#destinationsModel.getDestination(waypoint.destination);
+        const offers = this.#offersModel.getOffersForEventType(waypoint.type);
+        render(new WaypointView({waypoint, destination, offers}), this.#tripEventsListView.element);
       }
     }
   }
