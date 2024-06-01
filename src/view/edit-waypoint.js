@@ -68,15 +68,16 @@ function createEditWaypointMarkup(waypoint, destinations) {
 
 
 export default class EditWaypointView extends AbstractView {
+  #waypoint = null;
+  #destinations = [];
 
   constructor({waypoint, destinations}) {
     super();
-    this.waypoint = waypoint;
-    this.destinations = destinations;
+    this.#waypoint = waypoint;
+    this.#destinations = destinations;
   }
 
   get template() {
-    return createEditWaypointMarkup(this.waypoint, this.destinations);
+    return createEditWaypointMarkup(this.#waypoint, this.#destinations);
   }
-
 }

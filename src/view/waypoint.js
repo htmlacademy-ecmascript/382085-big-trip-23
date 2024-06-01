@@ -81,15 +81,18 @@ function createWaypointTemplate(waypoint, destination, offers) {
 }
 
 export default class WaypointView extends AbstractView {
+  #waypoint = null;
+  #destination = null;
+  #offers = [];
 
   constructor({waypoint, destination, offers}) {
     super();
-    this.waypoint = waypoint;
-    this.destination = destination;
-    this.offers = offers;
+    this.#waypoint = waypoint;
+    this.#destination = destination;
+    this.#offers = offers;
   }
 
   get template() {
-    return createWaypointTemplate(this.waypoint, this.destination, this.offers);
+    return createWaypointTemplate(this.#waypoint, this.#destination, this.#offers);
   }
 }

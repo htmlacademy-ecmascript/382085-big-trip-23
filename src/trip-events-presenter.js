@@ -10,6 +10,8 @@ import TripEventsListView from './view/trip-events-list';
 import { DUMMY_WAYPOINT } from './constants';
 
 export default class TripEventsPresenter {
+  #tripEventsListView = new TripEventsListView();
+
   constructor({eventsContainer, waypointsModel, destinationsModel, offersModel }) {
     this.waypointsModel = waypointsModel;
     this.destinationsModel = destinationsModel;
@@ -50,13 +52,11 @@ export default class TripEventsPresenter {
   init() {
     const waypoints = this.waypointsModel.getWaypoints();
 
-    const tripEventsListView = new TripEventsListView();
-
-    const waypointsListElement = tripEventsListView.getElement();
+    const waypointsListElement = this.#tripEventsListView.getElement();
 
     render(new SortView(), this.container, RenderPosition.AFTERBEGIN);
 
-    render(tripEventsListView, this.container);
+    render(this.#tripEventsListView, this.container);
 
     this.createEditWaypointElement(DUMMY_WAYPOINT, waypointsListElement);
 

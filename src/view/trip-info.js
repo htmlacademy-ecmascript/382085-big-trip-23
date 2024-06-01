@@ -69,14 +69,18 @@ function createTripInfoMarkup(waypoints, destinations, offers) {
 }
 
 export default class TripInfoView extends AbstractView {
+  #waypoints = [];
+  #destinations = [];
+  #offers = [];
+
   constructor({waypoints, destinations, offers}) {
     super();
-    this.waypoints = waypoints;
-    this.destinations = destinations;
-    this.offers = offers;
+    this.#waypoints = waypoints;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
   get template() {
-    return createTripInfoMarkup(this.waypoints, this.destinations, this.offers);
+    return createTripInfoMarkup(this.#waypoints, this.#destinations, this.#offers);
   }
 }

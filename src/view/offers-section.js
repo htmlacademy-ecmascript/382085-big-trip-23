@@ -44,14 +44,16 @@ function createOffersMarkup(waypoint, availableOffers) {
 }
 
 export default class OffersSectionView extends AbstractView {
+  #waypoint = null;
+  #offers = [];
 
   constructor({waypoint, offers}) {
     super();
-    this.waypoint = waypoint;
-    this.offers = offers;
+    this.#waypoint = waypoint;
+    this.#offers = offers;
   }
 
   get template() {
-    return createOffersMarkup(this.waypoint, this.offers);
+    return createOffersMarkup(this.#waypoint, this.#offers);
   }
 }

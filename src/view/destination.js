@@ -52,13 +52,14 @@ function createDestinationMarkup(destination) {
 }
 
 export default class DestinationView extends AbstractView {
+  #destination = null;
 
   constructor(destination) {
     super();
-    this.destination = destination;
+    this.#destination = destination;
   }
 
   get template() {
-    return createDestinationMarkup(this.destination);
+    return createDestinationMarkup(this.#destination);
   }
 }

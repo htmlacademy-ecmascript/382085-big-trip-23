@@ -48,13 +48,14 @@ function createEventTypeSelectorMarkup(waypointId, selectedEventType) {
 }
 
 export default class EventTypeSelectorView extends AbstractView {
+  #waypoint = null;
 
   constructor(waypoint) {
     super();
-    this.waypoint = waypoint;
+    this.#waypoint = waypoint;
   }
 
   get template() {
-    return createEventTypeSelectorMarkup(this.waypoint.id, this.waypoint.type);
+    return createEventTypeSelectorMarkup(this.#waypoint.id, this.#waypoint.type);
   }
 }
