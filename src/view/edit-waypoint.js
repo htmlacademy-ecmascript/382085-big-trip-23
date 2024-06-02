@@ -70,14 +70,23 @@ function createEditWaypointMarkup(waypoint, destinations) {
 export default class EditWaypointView extends AbstractView {
   #waypoint = null;
   #destinations = [];
+  #handleFormSubmit = null;
 
-  constructor({waypoint, destinations}) {
+  constructor({waypoint, destinations, onFormSubmit}) {
     super();
     this.#waypoint = waypoint;
     this.#destinations = destinations;
+    this.#handleFormSubmit = onFormSubmit;
+
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#onFormSubmit);
   }
 
   get template() {
     return createEditWaypointMarkup(this.#waypoint, this.#destinations);
   }
+
+  #onFormSubmit = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 }

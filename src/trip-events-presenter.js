@@ -23,6 +23,12 @@ export default class TripEventsPresenter {
     this.#container = eventsContainer;
   }
 
+  #renderWaypoint(waypoint) {
+    const destination = this.#destinationsModel.getDestination(waypoint.destination);
+    const offers = this.#offersModel.getOffersForEventType(waypoint.type);
+    render(new WaypointView({waypoint, destination, offers}), this.#tripEventsListView.element);
+  }
+
   createEditWaypointElement(waypoint) {
 
     const offersForType = this.#offersModel.getOffersForEventType(waypoint.type);
@@ -60,7 +66,7 @@ export default class TripEventsPresenter {
 
     render(this.#tripEventsListView, this.#container);
 
-    this.createEditWaypointElement(DUMMY_WAYPOINT, this.#tripEventsListView.element);
+    this.createEditWaypointElement(DUMMY_WAYPOINT);
 
     const filterContainer = document.querySelector('.trip-controls__filters');
     render(new FilterView(), filterContainer);
@@ -68,11 +74,9 @@ export default class TripEventsPresenter {
     const mockEditWaypointId = 'check-in-hotel-pyatigorsk';
     for (const waypoint of waypoints) {
       if (waypoint.id === mockEditWaypointId) {
-        this.createEditWaypointElement(waypoint, this.#tripEventsListView.element);
+        this.createEditWaypointElement(waypoint);
       } else {
-        const destination = this.#destinationsModel.getDestination(waypoint.destination);
-        const offers = this.#offersModel.getOffersForEventType(waypoint.type);
-        render(new WaypointView({waypoint, destination, offers}), this.#tripEventsListView.element);
+        this.#renderWaypoint(waypoint);
       }
     }
   }
