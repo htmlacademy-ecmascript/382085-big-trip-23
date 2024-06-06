@@ -48,13 +48,13 @@ export default class TripEventsPresenter {
       }
     };
 
-    const onOpenClick = (evt) => {
+    const onOpenClick = () => {
       this.#renderEditWaypoint(waypointEdit);
       replace(waypointEdit.editWaypointView, waypointView);
       document.addEventListener('keydown', onEscapeKeyPress);
     };
 
-    const onFormSubmit = (evt) => {
+    const onFormSubmit = () => {
       replace(waypointView, waypointEdit.editWaypointView);
       document.removeEventListener('keydown', onEscapeKeyPress);
     };
