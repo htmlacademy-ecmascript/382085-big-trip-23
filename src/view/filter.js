@@ -15,13 +15,13 @@ function createFilterMarkup() {
 
   const itemsMarkupArray = FILTER_ITEMS.map((filter, i) => createFilterItemMarkup(filter, i === DEFAULT_FILTER_ITEM_INDEX));
 
-  const filtersMarkup = itemsMarkupArray.join(' ');
+  const filterItemsMarkup = itemsMarkupArray.join(' ');
 
   return `
   <div class="trip-controls__filters">
     <h2 class="visually-hidden">Filter events</h2>
     <form class="trip-filters" action="#" method="get">
-      ${filtersMarkup}
+      ${filterItemsMarkup}
       <button class="visually-hidden" type="submit">Accept filter</button>
     </form>
   </div>`;

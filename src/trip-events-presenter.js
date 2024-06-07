@@ -7,6 +7,7 @@ import OffersSectionView from './view/offers-section';
 import DestinationView from './view/destination';
 import EventTypeSelectorView from './view/event-type-selector';
 import TripEventsListView from './view/trip-events-list';
+import ListEmptyView from './view/list-empty';
 import { DUMMY_WAYPOINT } from './constants';
 
 export default class TripEventsPresenter {
@@ -40,7 +41,6 @@ export default class TripEventsPresenter {
     let waypointEdit = null;
 
     const onEscapeKeyPress = (evt) => {
-      console.log('key handler');
       if (evt.key === 'Escape') {
         evt.preventDefault();
         replace(waypointView, waypointEdit.editWaypointView);
@@ -95,23 +95,28 @@ export default class TripEventsPresenter {
   init() {
     const waypoints = this.#waypointsModel.waypoints;
 
-    render(new SortView(), this.#container, RenderPosition.AFTERBEGIN);
-
-    render(this.#tripEventsListView, this.#container);
-
     this.#createWaypointComponent(DUMMY_WAYPOINT);
 
     const filterContainer = document.querySelector('.trip-controls__filters');
     render(new FilterView(), filterContainer);
 
-    //const mockEditWaypointId = 'check-in-hotel-pyatigorsk';
-    for (const waypoint of waypoints) {
-      //if (waypoint.id === mockEditWaypointId) {
-      //  this.#createWaypointComponent(waypoint);
-      //} else {
-      //  this.#renderWaypoint(waypoint);
-      //}
-      this.#renderWaypoint(waypoint);
+    const mockFilterValue = 'everything';
+
+    if (waypoints.length === 0) {
+      const comp = new ListEmptyView(mockFilterValue);
+      render(comp, this.#container);
+    } else {
+      render(new SortView(), this.#container, RenderPosition.AFTERBEGIN);
+      render(this.#tripEventsListView, this.#container);
+      //const mockEditWaypointId = 'check-in-hotel-pyatigorsk';
+      for (const waypoint of waypoints) {
+        //if (waypoint.id === mockEditWaypointId) {
+        //  this.#createWaypointComponent(waypoint);
+        //} else {
+        //  this.#renderWaypoint(waypoint);
+        //}
+        this.#renderWaypoint(waypoint);
+      }
     }
   }
 }
