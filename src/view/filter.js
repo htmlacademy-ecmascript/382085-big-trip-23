@@ -1,10 +1,13 @@
 import { createElement } from '../render';
 
-function filterItem(filterName) {
+const FILTERS = ['Everything', 'Future', 'Present', 'Past'];
+const MOCK_SELECTED_FILTER = 'everything';
+
+function filterItem(filterName, checked) {
   const filterNameLowerCase = filterName.toLowerCase();
   return `
     <div class="trip-filters__filter">
-      <input id="filter-${filterNameLowerCase}" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="${filterNameLowerCase}">
+      <input id="filter-${filterNameLowerCase}" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="${filterNameLowerCase}" ${checked ? 'checked' : ''}>
       <label class="trip-filters__filter-label" for="filter-${filterNameLowerCase}">${filterName}</label>
     </div>
   `;
@@ -13,8 +16,9 @@ function filterItem(filterName) {
 function filter() {
 
   const itemsMarkupArray = [];
-  for (const filterName of ['Everything', 'Future', 'Present', 'Past']) {
-    itemsMarkupArray.push(filterItem(filterName));
+  for (const filterName of FILTERS) {
+    const checked = filterName.toLowerCase() === MOCK_SELECTED_FILTER.toLowerCase();
+    itemsMarkupArray.push(filterItem(filterName, checked));
   }
 
   const filtersMarkup = itemsMarkupArray.join(' ');
