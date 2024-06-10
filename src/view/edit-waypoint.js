@@ -55,6 +55,7 @@ function editWaypoint() {
   const offersMarkup = offersItems.join(' ');
 
   return `
+  <li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -121,6 +122,7 @@ function editWaypoint() {
       </section>
     </section>
   </form>
+  </li>
   `;
 }
 
