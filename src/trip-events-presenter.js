@@ -3,6 +3,7 @@ import WaypointView from './view/waypoint';
 import FilterView from './view/filter';
 import SortView from './view/sort';
 import EditWaypointView from './view/edit-waypoint';
+import TripEventsListView from './view/trip-events-list';
 
 /**
 * @typedef {Object} Offer
@@ -30,7 +31,8 @@ const WAYPOINT_DATA = [
       { title: 'offer one', price: 150 },
       { title: 'offer two', price: 150 }
     ]
-  },{
+  },
+  {
     title: 'waypoint two',
     from: new Date('2024-06-01T12:00'),
     to: new Date('2024-06-09T12:00'),
@@ -60,15 +62,21 @@ export default class TripEventsPresenter {
 
   init() {
 
-    render(new SortView(), this.container, RenderPosition.AFTERBEGIN);
-    render(new EditWaypointView, this.container);
+    const waypointsList = new TripEventsListView();
+
+    render(new SortView(), this.container, RenderPosition.BEFOREEND);
+
+    const editWaypointView = new EditWaypointView();
+    render(editWaypointView, waypointsList.getElement());
 
     const waypoints = Array.from(WAYPOINT_DATA, (item) => new WaypointView(item));
     for (const waypoint of waypoints) {
-      render(waypoint, this.container);
+      render(waypoint, waypointsList.getElement());
     }
 
     const filterContainer = document.querySelector('.trip-controls__filters');
     render(new FilterView(), filterContainer);
+
+    render(waypointsList, this.container);
   }
 }
