@@ -1,4 +1,4 @@
-import { render, RenderPosition } from './framework/render';
+import { render, RenderPosition, replace } from './framework/render';
 import WaypointView from './view/waypoint';
 import FilterView from './view/filter';
 import SortView from './view/sort';
@@ -24,9 +24,20 @@ export default class TripEventsPresenter {
   }
 
   #renderWaypoint(waypoint) {
+    // создаём и edit и view компоненты, меняем их по нажатию кнопки редактирования
+    //
     const destination = this.#destinationsModel.getDestination(waypoint.destination);
     const offers = this.#offersModel.getOffersForEventType(waypoint.type);
-    render(new WaypointView({waypoint, destination, offers}), this.#tripEventsListView.element);
+    const viewComponent = new WaypointView({waypoint, destination, offers});
+    render(viewComponent, this.#tripEventsListView.element);
+
+
+    const editComponent = this.createEditWaypointElement(waypoint);
+
+    const onEscKeyPressed = (evt) => {
+      replace(viewComponent, editComponent);
+      removeEventListener('keypress', onEscKeyPressed);
+    };
   }
 
   createEditWaypointElement(waypoint) {
@@ -56,6 +67,8 @@ export default class TripEventsPresenter {
     render(offerSectionView, editWaypointDetailsElement);
     render(destinationView, editWaypointDetailsElement);
     render(waypointTypeSelector, editWaypointHeaderElement, RenderPosition.AFTERBEGIN);
+
+    return editWaypointView;
   }
 
 
