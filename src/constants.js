@@ -26,6 +26,13 @@ export const DUMMY_WAYPOINT = {
 export const FILTER_ITEMS = ['Everything', 'Future', 'Present', 'Past'];
 export const DEFAULT_FILTER_ITEM_INDEX = 0;
 
+export const FilterType = {
+  ALL: 'Everything',
+  FUTURE: 'Future',
+  PRESENT: 'Present',
+  PAST: 'Past'
+};
+
 export const SORT_ITEMS = [
   {canSort: true, title: 'Day'},
   {canSort: false, title: 'Event'},

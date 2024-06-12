@@ -101,7 +101,6 @@ export default class WaypointView extends AbstractView {
   }
 
   #onOpenClick = (evt) => {
-    console.log('waypoint rollup click');
     evt.preventDefault();
     this.#handleOnClick(evt);
   };

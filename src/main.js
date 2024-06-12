@@ -12,12 +12,15 @@ const waypointsModel = new WaypointsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 
-const tripInfoData = {
-  waypoints: waypointsModel.waypoints,
-  destinations: destinationsModel.destinations,
-  offers: offersModel.offers
-};
-render(new TripInfoView(tripInfoData), tripMainContainer, RenderPosition.AFTERBEGIN);
+
+if (waypointsModel.waypoints.length !== 0) {
+  const tripInfoData = {
+    waypoints: waypointsModel.waypoints,
+    destinations: destinationsModel.destinations,
+    offers: offersModel.offers
+  };
+  render(new TripInfoView(tripInfoData), tripMainContainer, RenderPosition.AFTERBEGIN);
+}
 
 const eventsPresenter = new TripEventsPresenter({
   eventsContainer,
