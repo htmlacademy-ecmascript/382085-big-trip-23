@@ -17,9 +17,7 @@
 */
 
 /** @type Waypoint[] */
-export const TRIP_WAYPOINTS = [];
-/** @type Waypoint[] */
-export const TRIP_WAYPOINTS2 = [
+export const TRIP_WAYPOINTS = [
   {
     id: 'taxi-airport-led',
     basePrice: 10,

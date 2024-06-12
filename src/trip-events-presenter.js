@@ -48,6 +48,11 @@ export default class TripEventsPresenter {
       }
     };
 
+    const onFormCancel = () => {
+      replace(waypointView, waypointEdit.editWaypointView);
+      document.removeEventListener('keydown', onEscapeKeyPress);
+    };
+
     const onOpenClick = () => {
       this.#renderEditWaypoint(waypointEdit);
       replace(waypointEdit.editWaypointView, waypointView);
@@ -55,6 +60,7 @@ export default class TripEventsPresenter {
     };
 
     const onFormSubmit = () => {
+      // TODO тут потом будет POST запрос
       replace(waypointView, waypointEdit.editWaypointView);
       document.removeEventListener('keydown', onEscapeKeyPress);
     };
@@ -63,12 +69,12 @@ export default class TripEventsPresenter {
     const offers = this.#offersModel.getOffersForEventType(waypoint.type);
     waypointView = new WaypointView({waypoint, destination, offers, onOpenClick});
 
-    waypointEdit = this.#createWaypointComponent(waypoint, onFormSubmit);
+    waypointEdit = this.#createWaypointComponent(waypoint, onFormSubmit, onFormCancel);
 
     render(waypointView, this.#tripEventsListView.element);
   }
 
-  #createWaypointComponent(waypoint, onFormSubmit) {
+  #createWaypointComponent(waypoint, onFormSubmit, onFormCancel) {
 
     const offersForType = this.#offersModel.getOffersForEventType(waypoint.type);
     const selectedDestination = this.#destinationsModel.getDestination(waypoint.destination);
@@ -81,7 +87,8 @@ export default class TripEventsPresenter {
     const editWaypointData = {
       waypoint,
       destinations: this.#destinationsModel.destinations,
-      onFormSubmit
+      onFormSubmit,
+      onFormCancel
     };
     const editWaypointView = new EditWaypointView(editWaypointData);
     const waypointTypeSelector = new EventTypeSelectorView(waypoint); // нужно id и type у waypoint

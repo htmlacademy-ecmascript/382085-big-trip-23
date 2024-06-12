@@ -71,14 +71,17 @@ export default class EditWaypointView extends AbstractView {
   #waypoint = null;
   #destinations = [];
   #handleFormSubmit = null;
+  #handleFormCancel = null;
 
-  constructor({waypoint, destinations, onFormSubmit}) {
+  constructor({waypoint, destinations, onFormSubmit, onFormCancel}) {
     super();
     this.#waypoint = waypoint;
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormCancel = onFormCancel;
 
     this.element.querySelector('.event--edit').addEventListener('submit', this.#onFormSubmit);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onFormCancel);
   }
 
   get template() {
@@ -88,5 +91,11 @@ export default class EditWaypointView extends AbstractView {
   #onFormSubmit = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit();
+  };
+
+  #onFormCancel = (evt) => {
+    console.log('on form cancel');
+    evt.preventDefault();
+    this.#handleFormCancel?.();
   };
 }
