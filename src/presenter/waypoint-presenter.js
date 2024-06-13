@@ -1,4 +1,4 @@
-import { render, RenderPosition, replace } from '../framework/render';
+import { remove, render, RenderPosition, replace } from '../framework/render';
 import WaypointView from '../view/waypoint';
 import EditWaypointView from '../view/edit-waypoint';
 import OffersSectionView from '../view/offers-section';
@@ -106,10 +106,32 @@ export default class WaypointPresenter {
   init(waypoint) {
     this.#waypoint = waypoint;
 
+    const prevViewComponent = this.#waypointViewComponent;
+    const prevEditComponent = this.#waypointEditComponent;
+
     this.#waypointViewComponent = this.#createWaypointViewComponent();
 
     this.#waypointEditComponent = this.#createWaypointEditComponent();
 
-    this.#renderViewWaypoint();
+    if (prevViewComponent === null || prevEditComponent === null) {
+      this.#renderViewWaypoint();
+      return;
+    }
+
+    if (this.#waypointsListContainer.contains(prevViewComponent.element)) {
+      replace(this.#waypointViewComponent, prevViewComponent);
+    }
+
+    if (this.#waypointsListContainer.contains(prevEditComponent.element)) {
+      replace(this.#waypointEditComponent, prevEditComponent);
+    }
+
+    remove(prevViewComponent);
+    remove(prevEditComponent);
+  }
+
+  destroy() {
+    remove(this.#waypointViewComponent);
+    remove(this.#waypointEditComponent);
   }
 }
