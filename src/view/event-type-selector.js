@@ -1,6 +1,6 @@
 import { EVENT_TYPES } from '../mock/destinations';
 import { EVENT_TYPE_ICONS } from '../constants';
-import { capitalize } from '../utils';
+import { capitalize } from '../utils/common';
 import AbstractView from '../framework/view/abstract-view';
 
 /**

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view';
 import { EVENT_TYPE_ICONS } from '../constants';
-import { getDurationString } from '../utils';
+import { getDurationString } from '../utils/common.js';
 
 /**
 * @param {import('../mock/offers').Offer} offer
