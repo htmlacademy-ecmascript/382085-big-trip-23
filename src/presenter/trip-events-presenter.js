@@ -24,8 +24,8 @@ export default class TripEventsPresenter {
     this.#container = eventsContainer;
   }
 
-  #clearWaypointsList() {
 
+  #clearWaypointsList() {
     this.#waypointsPresenters.forEach((presenter) => presenter.destroy());
     this.#waypointsPresenters.clear();
     this.#renderEmptyListView();
@@ -36,6 +36,7 @@ export default class TripEventsPresenter {
       waypointsListContainer: this.#tripEventsListComponent,
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
+      onDataChange: this.#handleUpdateWaypoint,
     };
     const waypointPresenter = new WaypointPresenter(waypointPresenterData);
 
@@ -73,6 +74,11 @@ export default class TripEventsPresenter {
   #renderSortComponent() {
     render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
   }
+
+  #handleUpdateWaypoint = (waypoint) => {
+    // нет сохранённых точек, поэтому нечего обновлять
+    this.#waypointsPresenters.get(waypoint.id).init(waypoint);
+  };
 
   init(selectedFilter) {
     const waypoints = this.#waypointsModel.waypoints;
