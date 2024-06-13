@@ -1,5 +1,19 @@
-import { FilterType } from '../constants';
 import dayjs from 'dayjs';
+
+export const FilterType = {
+  ALL: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
+};
+
+export const FILTER_TO_MESSAGE_MAP = new Map([
+  [FilterType.ALL, 'Click New Event to create your first point'],
+  [FilterType.PAST, 'There are no past events now'],
+  [FilterType.PRESENT, 'There are no present events now'],
+  [FilterType.FUTURE, 'There are no future events now'],
+]);
+
 
 /**
  * @param {import('../mock/trip').Waypoint} waypoint

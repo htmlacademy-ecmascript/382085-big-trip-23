@@ -103,14 +103,15 @@ export default class TripEventsPresenter {
     const waypoints = this.#waypointsModel.waypoints;
 
     this.#createWaypointComponent(DUMMY_WAYPOINT);
+    const mockSelectedFilter = 'everything';
 
     const filterContainer = document.querySelector('.trip-controls__filters');
-    render(new FilterView(), filterContainer);
+    const filterView = new FilterView({waypoints, selectedFilter: mockSelectedFilter});
+    render(filterView, filterContainer);
 
-    const mockFilterValue = 'everything';
 
     if (waypoints.length === 0) {
-      const comp = new ListEmptyView(mockFilterValue);
+      const comp = new ListEmptyView(mockSelectedFilter);
       render(comp, this.#container);
     } else {
       render(new SortView(), this.#container, RenderPosition.AFTERBEGIN);
