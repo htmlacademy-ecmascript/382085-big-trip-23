@@ -15,11 +15,20 @@ export default class TripEventsPresenter {
   #sortComponent = new SortView();
   #tripEventsListComponent = new TripEventsListView();
 
-  constructor({eventsContainer, waypointsModel, destinationsModel, offersModel }) {
+  #waypointsPresenters = new Map();
+
+  constructor({eventsContainer, waypointsModel, destinationsModel, offersModel}) {
     this.#waypointsModel = waypointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#container = eventsContainer;
+  }
+
+  #clearWaypointsList() {
+
+    this.#waypointsPresenters.forEach((presenter) => presenter.destroy());
+    this.#waypointsPresenters.clear();
+    this.#renderEmptyListView();
   }
 
   #renderWaypoint(waypoint) {
@@ -31,6 +40,8 @@ export default class TripEventsPresenter {
     const waypointPresenter = new WaypointPresenter(waypointPresenterData);
 
     waypointPresenter.init(waypoint);
+
+    this.#waypointsPresenters.set(waypoint.id, waypointPresenter);
   }
 
   #renderWaypointsList(waypoints, selectedFilter) {
