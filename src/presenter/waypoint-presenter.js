@@ -5,7 +5,7 @@ import OffersSectionView from '../view/offers-section';
 import DestinationView from '../view/destination';
 import EventTypeSelectorView from '../view/event-type-selector';
 
-export default class TaskPresenter {
+export default class WaypointPresenter {
   #waypointViewComponent = null;
   #waypointEditComponent = null;
 
@@ -16,8 +16,8 @@ export default class TaskPresenter {
 
   #waypoint = null;
 
-  constructor({waypointListContainer, destinationsModel, offersModel}) {
-    this.#waypointsListContainer = waypointListContainer;
+  constructor({waypointsListContainer, destinationsModel, offersModel}) {
+    this.#waypointsListContainer = waypointsListContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
   }
@@ -109,5 +109,7 @@ export default class TaskPresenter {
     this.#waypointViewComponent = this.#createWaypointViewComponent();
 
     this.#waypointEditComponent = this.#createWaypointEditComponent();
+
+    this.#renderViewWaypoint();
   }
 }
