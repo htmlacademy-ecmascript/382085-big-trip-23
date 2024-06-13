@@ -1,5 +1,5 @@
 import { RenderPosition, render } from './framework/render.js';
-import TripEventsPresenter from './trip-events-presenter';
+import TripEventsPresenter from './presenter/trip-events-presenter';
 import TripInfoView from './view/trip-info';
 import WaypointsModel from './model/waypoints-model.js';
 import DestinationsModel from './model/destinations-model.js';

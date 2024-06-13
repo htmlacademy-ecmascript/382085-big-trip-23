@@ -1,12 +1,12 @@
-import { render, RenderPosition, replace } from './framework/render';
-import WaypointView from './view/waypoint';
-import SortView from './view/sort';
-import EditWaypointView from './view/edit-waypoint';
-import OffersSectionView from './view/offers-section';
-import DestinationView from './view/destination';
-import EventTypeSelectorView from './view/event-type-selector';
-import TripEventsListView from './view/trip-events-list';
-import ListEmptyView from './view/list-empty';
+import { render, RenderPosition, replace } from '../framework/render';
+import WaypointView from '../view/waypoint';
+import SortView from '../view/sort';
+import EditWaypointView from '../view/edit-waypoint';
+import OffersSectionView from '../view/offers-section';
+import DestinationView from '../view/destination';
+import EventTypeSelectorView from '../view/event-type-selector';
+import TripEventsListView from '../view/trip-events-list';
+import ListEmptyView from '../view/list-empty';
 //import { DUMMY_WAYPOINT } from './constants';
 
 export default class TripEventsPresenter {
