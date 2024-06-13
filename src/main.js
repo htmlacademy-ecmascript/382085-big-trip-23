@@ -4,6 +4,7 @@ import TripInfoView from './view/trip-info';
 import WaypointsModel from './model/waypoints-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
+import FilterView from './view/filter.js';
 
 const eventsContainer = document.querySelector('.trip-events');
 const tripMainContainer = document.querySelector('.trip-main');
@@ -22,11 +23,18 @@ if (waypointsModel.waypoints.length !== 0) {
   render(new TripInfoView(tripInfoData), tripMainContainer, RenderPosition.AFTERBEGIN);
 }
 
+const mockSelectedFilter = 'everything';
+
+const filterContainer = document.querySelector('.trip-controls__filters');
+const filterView = new FilterView({waypoints: waypointsModel.waypoints, selectedFilter: mockSelectedFilter});
+render(filterView, filterContainer);
+
 const eventsPresenter = new TripEventsPresenter({
   eventsContainer,
   waypointsModel,
   destinationsModel,
-  offersModel
+  offersModel,
+  selectedFilter: mockSelectedFilter
 });
 
 eventsPresenter.init();
