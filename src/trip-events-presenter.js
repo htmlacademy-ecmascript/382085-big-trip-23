@@ -54,7 +54,7 @@ export default class TripEventsPresenter {
 
     const waypointsListElement = tripEventsListView.getElement();
 
-    render(new SortView(), this.container, RenderPosition.AFTERBEGIN);
+    render(new SortView(), this.container);
 
     render(tripEventsListView, this.container);
 
