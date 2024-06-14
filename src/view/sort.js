@@ -2,7 +2,11 @@ import { DEFAULT_SORT_ITEM_INDEX, SORT_ITEMS } from '../constants';
 import AbstractView from '../framework/view/abstract-view';
 
 /**
-  * @param {string} sortName
+  * @param {Object} param0
+  * @param {string} param0.title название критерия сортировки
+  * @param {boolean} param0.canSort возможна ли сортировка по этому критерию
+  * @param {boolean} checked выбран ли этот пункт
+  * @returns {string} разметка
   */
 function createSortItemMarkup({title, canSort}, checked) {
   const sortNameLowerCase = title.toLowerCase();
@@ -14,10 +18,8 @@ function createSortItemMarkup({title, canSort}, checked) {
 }
 
 function createSortMarkup() {
-
   const innerMarkup = SORT_ITEMS.map((sortItem, idx) => createSortItemMarkup(sortItem, idx === DEFAULT_SORT_ITEM_INDEX)).join(' ');
-
-  return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get"> ${innerMarkup} </form>`;
+  return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">${innerMarkup}</form>`;
 }
 
 export default class SortView extends AbstractView {
