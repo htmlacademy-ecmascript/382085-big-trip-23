@@ -1,34 +1,28 @@
+import { DEFAULT_SORT_ITEM_INDEX, SORT_ITEMS } from '../constants';
 import { createElement } from '../render';
 
-
-const SORTING_ITEMS = ['Day', 'Event', 'Time', 'Price', 'Offer'];
-const MOCK_SELECTED_SORTING_ITEM = 'day';
-
-function sortItem(sortName, checked) {
-  const sortByLowerCase = sortName.toLowerCase();
+/**
+  * @param {string} sortName
+  */
+function createSortItemMarkup({title, canSort}, checked) {
+  const sortNameLowerCase = title.toLowerCase();
   return `
-    <div class="trip-sort__item  trip-sort__item--${sortByLowerCase}">
-      <input id="sort-${sortByLowerCase}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortByLowerCase}" ${checked ? 'checked' : ''}>
-      <label class="trip-sort__btn" for="sort-${sortByLowerCase}">${sortName}</label>
-    </div>
-  `;
+    <div class="trip-sort__item  trip-sort__item--${sortNameLowerCase}">
+      <input id="sort-${sortNameLowerCase}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortNameLowerCase}" ${canSort ? '' : 'disabled'} ${checked ? 'checked' : ''}>
+      <label class="trip-sort__btn" for="sort-${sortNameLowerCase}">${title}</label>
+    </div>`;
 }
 
-function sort() {
+function createSortMarkup() {
 
-  const itemsMarkupArray = [];
-  for (const sortColumnName of SORTING_ITEMS) {
-    const checked = sortColumnName.toLowerCase() === MOCK_SELECTED_SORTING_ITEM.toLowerCase();
-    itemsMarkupArray.push(sortItem(sortColumnName, checked));
-  }
+  const innerMarkup = SORT_ITEMS.map((sortItem, idx) => createSortItemMarkup(sortItem, idx === DEFAULT_SORT_ITEM_INDEX)).join(' ');
 
-  const innerMarkup = itemsMarkupArray.join(' ');
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get"> ${innerMarkup} </form>`;
 }
 
 export default class SortView {
   getTemplate() {
-    return sort();
+    return createSortMarkup();
   }
 
   getElement() {

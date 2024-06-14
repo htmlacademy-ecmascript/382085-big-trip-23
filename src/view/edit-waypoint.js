@@ -1,135 +1,81 @@
 import { createElement } from '../render';
 
-const EVENTS_RADIO_OPTIONS = [
-  { id: 'taxi', text: 'Taxi' },
-  { id: 'bus', text: 'Bus' },
-  { id: 'train', text: 'Train' },
-  { id: 'ship', text: 'Ship' },
-  { id: 'drive', text: 'Drive' },
-  { id: 'flight', text: 'Flight' },
-  { id: 'check-in', text: 'Check-in' },
-  { id: 'sightseeing', text: 'Sightseeing' },
-  { id: 'restaurant', text: 'Restaurant' },
-];
+/**
+  * @param {import('../mock/trip').Waypoint} waypoint
+  * @param {import('../mock/destinations').Destination[]} destinations
+  * @returns {string} разметка
+  */
+function createEditWaypointMarkup(waypoint, destinations) {
 
+  const dataListMarkup = destinations.map(({name}) => `<option value="${name}"></option>`).join(' ');
+  const destination = destinations.find(({id}) => waypoint.destination === id);
 
-function createEventOption({id, text}) {
-  return `
-    <div class="event__type-item">
-      <input id="event-type-${id}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${id}" />
-      <label class="event__type-label  event__type-label--${id}" for="event-type-${id}-1">${text}</label>
-    </div>
-    `;
-}
+  const formId = waypoint.id || 0;
 
-const OFFERS_OPTIONS = [
-  { id: 'luggage', text: 'Add luggage', price: 50 },
-  { id: 'comfort', text: 'Switch to comfort', price: 80 },
-  { id: 'meal', text: 'Add meal', price: 15 },
-  { id: 'seats', text: 'Choose seats', price: 5 },
-  { id: 'train', text: 'Travel by train', price: 40 },
-];
-
-const SELECTED_OFFERS = new Set(['luggage','comfort']);
-
-function createOptionMarkup({id, text, price}) {
-  return `
-    <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}-1" type="checkbox" name="event-offer-${id}" ${SELECTED_OFFERS.has(id) ? 'checked' : ''}/>
-      <label class="event__offer-label" for="event-offer-${id}-1">
-        <span class="event__offer-title">${text}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${price}</span>
-      </label>
-    </div>
-    `;
-}
-
-
-function editWaypoint() {
-
-  const radioItems = Array.from(EVENTS_RADIO_OPTIONS, (option) => createEventOption(option));
-  const eventsMarkup = radioItems.join(' ');
-
-  const offersItems = Array.from(OFFERS_OPTIONS, (option) => createOptionMarkup(option));
-  const offersMarkup = offersItems.join(' ');
+  const rollupMarkup = `
+    <button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`;
 
   return `
-  <li class="trip-events__item">
-  <form class="event event--edit" action="#" method="post">
-    <header class="event__header">
-      <div class="event__type-wrapper">
-        <label class="event__type  event__type-btn" for="event-type-toggle-1">
-          <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon" />
-        </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" />
+    <li class="trip-events__item">
+      <form class="event event--edit" action="#" method="post">
+        <header class="event__header">
 
-        <div class="event__type-list">
-          <fieldset class="event__type-group">
-            <legend class="visually-hidden">Event type</legend>
-            ${eventsMarkup}
-          </fieldset>
-        </div>
-      </div>
+          <!-- тут будет event selector view -->
 
-      <div class="event__field-group  event__field-group--destination">
-        <label class="event__label  event__type-output" for="event-destination-1">
-          Flight
-        </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1" />
-        <datalist id="destination-list-1">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
-        </datalist>
-      </div>
+          <div class="event__field-group  event__field-group--destination">
+            <label class="event__label  event__type-output" for="event-destination-${formId}">
+              ${waypoint.type}
+            </label>
+            <input class="event__input  event__input--destination" id="event-destination-${formId}" type="text" name="event-destination" value="${destination.name}" list="destination-list-${formId}" />
+            <datalist id="destination-list-${formId}">
+              ${dataListMarkup}
+            </datalist>
+          </div>
 
-      <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25" />
-        &mdash;
-        <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35" />
-      </div>
+          <div class="event__field-group  event__field-group--time">
+            <label class="visually-hidden" for="event-start-time-${formId}">From</label>
+            <input class="event__input  event__input--time" id="event-start-time-${formId}" type="text" name="event-start-time" value="${waypoint.dateFrom}" />
+            &mdash;
+            <label class="visually-hidden" for="event-end-time-${formId}">To</label>
+            <input class="event__input  event__input--time" id="event-end-time-${formId}" type="text" name="event-end-time" value="${waypoint.dateTo}" />
+          </div>
 
-      <div class="event__field-group  event__field-group--price">
-        <label class="event__label" for="event-price-1">
-          <span class="visually-hidden">Price</span>
-          &euro;
-        </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="160" />
-      </div>
+          <div class="event__field-group  event__field-group--price">
+            <label class="event__label" for="event-price-${formId}">
+              <span class="visually-hidden">Price</span>
+              &euro;
+            </label>
+            <input class="event__input  event__input--price" id="event-price-${formId}" type="text" name="event-price" value="${waypoint.basePrice}" />
+          </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
-    </header>
-    <section class="event__details">
-      <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__reset-btn" type="reset">${formId ? 'Delete' : 'Cancel'}</button>
+          ${formId ? rollupMarkup : ''}
+        </header>
+        <section class="event__details">
 
-        <div class="event__available-offers">
-          ${offersMarkup}
-        </div>
-      </section>
+          <!-- тут будет offers -->
 
-      <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France, Switzerland and Italy. At the base of Mont Blanc, the highest summit in the Alps, it's renowned for its skiing.</p>
-      </section>
-    </section>
-  </form>
-  </li>
+          <!-- тут будет destination -->
+
+        </section>
+      </form>
+    </li>
   `;
 }
 
 
 export default class EditWaypointView {
+
+  constructor({waypoint, destinations}) {
+    this.waypoint = waypoint;
+    this.destinations = destinations;
+  }
+
   getTemplate() {
-    return editWaypoint();
+    return createEditWaypointMarkup(this.waypoint, this.destinations);
   }
 
   getElement() {
