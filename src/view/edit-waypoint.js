@@ -90,7 +90,7 @@ export default class EditWaypointView extends AbstractView {
 
   #onFormSubmit = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(this.#waypoint);
   };
 
   #onFormCancel = (evt) => {

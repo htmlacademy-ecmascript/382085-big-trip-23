@@ -25,7 +25,7 @@ export const DESTINATIONS = [
     name: 'Mineral\'niye Vody airport',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://loremflickr.com/300/200',
         description: 'Mineral\'niye Vody airport'
       }
     ]
@@ -36,7 +36,7 @@ export const DESTINATIONS = [
     name: 'Pulkovo airport',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://loremflickr.com/300/200',
         description: 'Pulkovo airport'
       }
     ]
@@ -47,7 +47,7 @@ export const DESTINATIONS = [
     name: 'Intourist',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://loremflickr.com/300/200',
         description: 'Intourist'
       }
     ]
@@ -58,7 +58,7 @@ export const DESTINATIONS = [
     name: 'Kislovodsk railroad station',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://loremflickr.com/300/200',
         description: 'Kislovodsk railroad station'
       }
     ]
@@ -69,7 +69,7 @@ export const DESTINATIONS = [
     name: 'Pyatigorsk railroad station',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://loremflickr.com/300/200',
         description: 'Pyatigorsk station'
       }
     ]
@@ -80,7 +80,7 @@ export const DESTINATIONS = [
     name: 'Kislovodsk park',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://loremflickr.com/300/200',
         description: 'Kislovodsk park'
       }
     ]
