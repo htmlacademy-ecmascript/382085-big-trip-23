@@ -34,7 +34,6 @@ export default class WaypointPresenter {
   }
 
   #createWaypointViewComponent() {
-    console.log('[wp presenter::create wp view]');
     const destination = this.#destinationsModel.getDestination(this.#waypoint.destination);
     const offersForType = this.#offersModel.getOffersForEventType(this.#waypoint.type);
     const waypointViewData = {
@@ -49,7 +48,6 @@ export default class WaypointPresenter {
 
   #createWaypointEditComponent() {
 
-    console.log('[wp presenter::create wp edit]');
     const editWaypointData = {
       waypoint: this.#waypoint,
       destinations: this.#destinationsModel.destinations,
@@ -76,8 +74,6 @@ export default class WaypointPresenter {
   }
 
   #renderEditWaypoint({editWaypointView, waypointTypeSelector, offerSectionView, destinationView}) {
-    console.log('[wp presenter::render edit waypoint] edit wp view');
-    console.log(editWaypointView.element.parentElement);
     const editWaypointHeaderElement = editWaypointView.element.querySelector('.event__header');
     const editWaypointDetailsElement = editWaypointView.element.querySelector('.event__details');
 
@@ -93,8 +89,6 @@ export default class WaypointPresenter {
     this.#renderEditWaypoint(this.#waypointEditObject);
     replace(this.#waypointEditObject.editWaypointView, this.#waypointViewComponent);
     document.addEventListener('keydown', this.#handleEscapeKeyPress);
-    console.log('[wp presenter::set edit mode] wp edit obj edit view element parent');
-    console.log(this.#waypointEditObject.editWaypointView.element.parentElement);
     this.#handleModeChange(); // важно чтобы это было до смены режима!
 
     this.#mode = Mode.EDIT;
@@ -159,9 +153,7 @@ export default class WaypointPresenter {
 
   resetView() {
     if (this.#mode !== Mode.VIEW) {
-      console.log('[wp presenter::reset view] edit wp parent');
-      console.log(this.#waypointEditObject.editWaypointView.element.parentElement);
-      replace(this.#waypointViewComponent, this.#waypointEditObject.editWaypointView);
+      this.#setViewMode();
     }
   }
 
