@@ -5,6 +5,11 @@ import OffersSectionView from '../view/offers-section';
 import DestinationView from '../view/destination';
 import EventTypeSelectorView from '../view/event-type-selector';
 
+const Mode = {
+  VIEW: 'view',
+  EDIT: 'edit',
+};
+
 export default class WaypointPresenter {
   #waypointViewComponent = null;
   #waypointEditObject = null;
@@ -15,17 +20,21 @@ export default class WaypointPresenter {
   #offersModel = null;
 
   #handleDataChange = null;
+  #handleModeChange = null;
 
   #waypoint = null;
+  #mode = Mode.VIEW;
 
-  constructor({waypointsListContainer, destinationsModel, offersModel, onDataChange}) {
+  constructor({waypointsListContainer, destinationsModel, offersModel, onDataChange, onModeChange}) {
     this.#waypointsListContainer = waypointsListContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   #createWaypointViewComponent() {
+    console.log('[wp presenter::create wp view]');
     const destination = this.#destinationsModel.getDestination(this.#waypoint.destination);
     const offersForType = this.#offersModel.getOffersForEventType(this.#waypoint.type);
     const waypointViewData = {
@@ -40,6 +49,7 @@ export default class WaypointPresenter {
 
   #createWaypointEditComponent() {
 
+    console.log('[wp presenter::create wp edit]');
     const editWaypointData = {
       waypoint: this.#waypoint,
       destinations: this.#destinationsModel.destinations,
@@ -66,6 +76,8 @@ export default class WaypointPresenter {
   }
 
   #renderEditWaypoint({editWaypointView, waypointTypeSelector, offerSectionView, destinationView}) {
+    console.log('[wp presenter::render edit waypoint] edit wp view');
+    console.log(editWaypointView.element.parentElement);
     const editWaypointHeaderElement = editWaypointView.element.querySelector('.event__header');
     const editWaypointDetailsElement = editWaypointView.element.querySelector('.event__details');
 
@@ -77,56 +89,80 @@ export default class WaypointPresenter {
     render(waypointTypeSelector, editWaypointHeaderElement, RenderPosition.AFTERBEGIN);
   }
 
-  #handleFormCancel = () => {
+  #setEditMode() {
+    this.#renderEditWaypoint(this.#waypointEditObject);
+    replace(this.#waypointEditObject.editWaypointView, this.#waypointViewComponent);
+    document.addEventListener('keydown', this.#handleEscapeKeyPress);
+    console.log('[wp presenter::set edit mode] wp edit obj edit view element parent');
+    console.log(this.#waypointEditObject.editWaypointView.element.parentElement);
+    this.#handleModeChange(); // важно чтобы это было до смены режима!
+
+    this.#mode = Mode.EDIT;
+  }
+
+  #setViewMode() {
     replace(this.#waypointViewComponent, this.#waypointEditObject.editWaypointView);
     document.removeEventListener('keydown', this.#handleEscapeKeyPress);
+    this.#mode = Mode.VIEW;
+  }
+
+  #handleFormCancel = () => {
+    this.#setViewMode();
   };
 
   #handleEscapeKeyPress = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
-      replace(this.#waypointViewComponent, this.#waypointEditObject.editWaypointView);
-      document.removeEventListener('keydown', this.#handleEscapeKeyPress);
+      this.#setViewMode();
     }
   };
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (waypoint) => {
+    this.#handleDataChange(waypoint);
     // TODO тут потом будет POST запрос
-    replace(this.#waypointViewComponent, this.#waypointEditObject.editWaypointView);
-    document.removeEventListener('keydown', this.#handleEscapeKeyPress);
+    this.#setViewMode();
   };
 
   #handleOpenEdit = () => {
-    this.#renderEditWaypoint(this.#waypointEditObject);
-    replace(this.#waypointEditObject.editWaypointView, this.#waypointViewComponent);
-    document.addEventListener('keydown', this.#handleEscapeKeyPress);
+    this.#setEditMode();
   };
 
   init(waypoint) {
     this.#waypoint = waypoint;
 
     const prevViewComponent = this.#waypointViewComponent;
-    const prevEditComponent = this.#waypointEditObject;
+    const prevEditObject = this.#waypointEditObject;
 
     this.#waypointViewComponent = this.#createWaypointViewComponent();
 
     this.#waypointEditObject = this.#createWaypointEditComponent();
 
-    if (prevViewComponent === null || prevEditComponent === null) {
+    if (prevViewComponent === null || prevEditObject === null) {
       this.#renderViewWaypoint();
       return;
     }
 
-    if (this.#waypointsListContainer.element.contains(prevViewComponent.element)) {
+    //if (this.#waypointsListContainer.element.contains(prevViewComponent.element)) {
+    if (this.#mode === Mode.VIEW) {
       replace(this.#waypointViewComponent, prevViewComponent);
     }
 
-    if (this.#waypointsListContainer.element.contains(prevEditComponent.element)) {
-      replace(this.#waypointEditObject.editWaypointView, prevEditComponent);
+    //if (this.#waypointsListContainer.element.contains(prevEditObject.element)) {
+    if (this.#mode === Mode.EDIT) {
+      this.#renderEditWaypoint(this.#waypointEditObject);
+      replace(this.#waypointEditObject.editWaypointView, prevEditObject.editWaypointView);
     }
 
     remove(prevViewComponent);
-    remove(prevEditComponent.editWaypointView);
+    remove(prevEditObject.editWaypointView);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.VIEW) {
+      console.log('[wp presenter::reset view] edit wp parent');
+      console.log(this.#waypointEditObject.editWaypointView.element.parentElement);
+      replace(this.#waypointViewComponent, this.#waypointEditObject.editWaypointView);
+    }
   }
 
   destroy() {

@@ -111,7 +111,6 @@ export default class WaypointView extends AbstractView {
 
   #onFavoriteClick = (evt) => {
     evt.preventDefault();
-    this.#waypoint.isFavorite = !this.#waypoint.isFavorite;
-    this.#handleFavoriteClick({...this.#waypoint});
+    this.#handleFavoriteClick({...this.#waypoint, isFavorite: !this.#waypoint.isFavorite});
   };
 }

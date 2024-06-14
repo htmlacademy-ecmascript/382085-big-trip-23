@@ -24,7 +24,6 @@ export default class TripEventsPresenter {
     this.#container = eventsContainer;
   }
 
-
   #clearWaypointsList() {
     this.#waypointsPresenters.forEach((presenter) => presenter.destroy());
     this.#waypointsPresenters.clear();
@@ -37,6 +36,7 @@ export default class TripEventsPresenter {
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
       onDataChange: this.#handleUpdateWaypoint,
+      onModeChange: this.#handleWaypointModeChange,
     };
     const waypointPresenter = new WaypointPresenter(waypointPresenterData);
 
@@ -78,6 +78,10 @@ export default class TripEventsPresenter {
   #handleUpdateWaypoint = (waypoint) => {
     // нет сохранённых точек, поэтому нечего обновлять
     this.#waypointsPresenters.get(waypoint.id).init(waypoint);
+  };
+
+  #handleWaypointModeChange = () => {
+    this.#waypointsPresenters.forEach((presenter) => presenter.resetView());
   };
 
   init(selectedFilter) {
