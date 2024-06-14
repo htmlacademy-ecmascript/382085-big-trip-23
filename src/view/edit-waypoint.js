@@ -94,7 +94,6 @@ export default class EditWaypointView extends AbstractView {
   };
 
   #onFormCancel = (evt) => {
-    console.log('on form cancel');
     evt.preventDefault();
     this.#handleFormCancel?.();
   };
