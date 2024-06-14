@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
+import AbstractView from '../framework/view/abstract-view';
 import { EVENT_TYPE_ICONS } from '../constants';
-import { createElement } from '../render';
-import { getDurationString } from '../utils';
+import { getDurationString } from '../utils/common.js';
 
 /**
 * @param {import('../mock/offers').Offer} offer
@@ -80,27 +80,28 @@ function createWaypointTemplate(waypoint, destination, offers) {
     </li>`;
 }
 
-export default class WaypointView {
+export default class WaypointView extends AbstractView {
+  #waypoint = null;
+  #destination = null;
+  #offers = [];
+  #handleOnClick = null;
 
-  constructor({waypoint, destination, offers}) {
-    this.waypoint = waypoint;
-    this.destination = destination;
-    this.offers = offers;
+  constructor({waypoint, destination, offers, onOpenClick}) {
+    super();
+    this.#handleOnClick = onOpenClick;
+    this.#waypoint = waypoint;
+    this.#destination = destination;
+    this.#offers = offers;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onOpenClick);
   }
 
-  getTemplate() {
-    return createWaypointTemplate(this.waypoint, this.destination, this.offers);
+  get template() {
+    return createWaypointTemplate(this.#waypoint, this.#destination, this.#offers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #onOpenClick = (evt) => {
+    evt.preventDefault();
+    this.#handleOnClick(evt);
+  };
 }

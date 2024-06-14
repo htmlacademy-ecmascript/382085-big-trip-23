@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import { createElement } from '../render';
-
+import AbstractView from '../framework/view/abstract-view';
 
 /**
   * @param {import('../mock/trip').Waypoint[]} waypoints
@@ -69,26 +68,19 @@ function createTripInfoMarkup(waypoints, destinations, offers) {
     </section>`;
 }
 
-export default class TripInfoView {
+export default class TripInfoView extends AbstractView {
+  #waypoints = [];
+  #destinations = [];
+  #offers = [];
+
   constructor({waypoints, destinations, offers}) {
-    this.waypoints = waypoints;
-    this.destinations = destinations;
-    this.offers = offers;
+    super();
+    this.#waypoints = waypoints;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
-  getTemplate() {
-    return createTripInfoMarkup(this.waypoints, this.destinations, this.offers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createTripInfoMarkup(this.#waypoints, this.#destinations, this.#offers);
   }
 }

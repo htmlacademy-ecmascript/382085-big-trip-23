@@ -1,4 +1,4 @@
-import { render, RenderPosition } from './render';
+import { render, RenderPosition, replace } from './framework/render';
 import WaypointView from './view/waypoint';
 import FilterView from './view/filter';
 import SortView from './view/sort';
@@ -7,20 +7,77 @@ import OffersSectionView from './view/offers-section';
 import DestinationView from './view/destination';
 import EventTypeSelectorView from './view/event-type-selector';
 import TripEventsListView from './view/trip-events-list';
+import ListEmptyView from './view/list-empty';
 import { DUMMY_WAYPOINT } from './constants';
 
 export default class TripEventsPresenter {
+  #tripEventsListView = new TripEventsListView();
+  #waypointsModel = null;
+  #destinationsModel = null;
+  #offersModel = null;
+  #container = null;
+
   constructor({eventsContainer, waypointsModel, destinationsModel, offersModel }) {
-    this.waypointsModel = waypointsModel;
-    this.destinationsModel = destinationsModel;
-    this.offersModel = offersModel;
-    this.container = eventsContainer;
+    this.#waypointsModel = waypointsModel;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
+    this.#container = eventsContainer;
   }
 
-  createEditWaypointElement(waypoint, waypointsListElement) {
+  #renderEditWaypoint({editWaypointView, waypointTypeSelector, offerSectionView, destinationView}) {
+    const editWaypointHeaderElement = editWaypointView.element.querySelector('.event__header');
+    const editWaypointDetailsElement = editWaypointView.element.querySelector('.event__details');
 
-    const offersForType = this.offersModel.getOffersForEventType(waypoint.type);
-    const selectedDestination = this.destinationsModel.getDestination(waypoint.destination);
+    render(editWaypointView, this.#tripEventsListView.element);
+
+    render(offerSectionView, editWaypointDetailsElement);
+    render(destinationView, editWaypointDetailsElement);
+    render(waypointTypeSelector, editWaypointHeaderElement, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderWaypoint(waypoint) {
+
+    let waypointView = null;
+    let waypointEdit = null;
+
+    const onEscapeKeyPress = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replace(waypointView, waypointEdit.editWaypointView);
+        document.removeEventListener('keydown', onEscapeKeyPress);
+      }
+    };
+
+    const onFormCancel = () => {
+      replace(waypointView, waypointEdit.editWaypointView);
+      document.removeEventListener('keydown', onEscapeKeyPress);
+    };
+
+    const onOpenClick = () => {
+      this.#renderEditWaypoint(waypointEdit);
+      replace(waypointEdit.editWaypointView, waypointView);
+      document.addEventListener('keydown', onEscapeKeyPress);
+    };
+
+    const onFormSubmit = () => {
+      // TODO тут потом будет POST запрос
+      replace(waypointView, waypointEdit.editWaypointView);
+      document.removeEventListener('keydown', onEscapeKeyPress);
+    };
+
+    const destination = this.#destinationsModel.getDestination(waypoint.destination);
+    const offers = this.#offersModel.getOffersForEventType(waypoint.type);
+    waypointView = new WaypointView({waypoint, destination, offers, onOpenClick});
+
+    waypointEdit = this.#createWaypointComponent(waypoint, onFormSubmit, onFormCancel);
+
+    render(waypointView, this.#tripEventsListView.element);
+  }
+
+  #createWaypointComponent(waypoint, onFormSubmit, onFormCancel) {
+
+    const offersForType = this.#offersModel.getOffersForEventType(waypoint.type);
+    const selectedDestination = this.#destinationsModel.getDestination(waypoint.destination);
     // <header class="event__header">
     // waypointTypeSelector
 
@@ -29,48 +86,44 @@ export default class TripEventsPresenter {
     // description
     const editWaypointData = {
       waypoint,
-      destinations: this.destinationsModel.getDestinations(),
+      destinations: this.#destinationsModel.destinations,
+      onFormSubmit,
+      onFormCancel
     };
     const editWaypointView = new EditWaypointView(editWaypointData);
     const waypointTypeSelector = new EventTypeSelectorView(waypoint); // нужно id и type у waypoint
     const offerSectionView = new OffersSectionView({waypoint, offers: offersForType}); // нужно id и offers у waypoint
     const destinationView = new DestinationView(selectedDestination);
 
-    const editWaypointHeaderElement = editWaypointView.getElement().querySelector('.event__header');
-    const editWaypointDetailsElement = editWaypointView.getElement().querySelector('.event__details');
-
-    render(editWaypointView, waypointsListElement);
-
-    render(offerSectionView, editWaypointDetailsElement);
-    render(destinationView, editWaypointDetailsElement);
-    render(waypointTypeSelector, editWaypointHeaderElement, RenderPosition.AFTERBEGIN);
+    return {editWaypointView, waypointTypeSelector, offerSectionView, destinationView};
   }
 
 
   init() {
-    const waypoints = this.waypointsModel.getWaypoints();
+    const waypoints = this.#waypointsModel.waypoints;
 
-    const tripEventsListView = new TripEventsListView();
-
-    const waypointsListElement = tripEventsListView.getElement();
-
-    render(new SortView(), this.container);
-
-    render(tripEventsListView, this.container);
-
-    this.createEditWaypointElement(DUMMY_WAYPOINT, waypointsListElement);
+    this.#createWaypointComponent(DUMMY_WAYPOINT);
+    const mockSelectedFilter = 'everything';
 
     const filterContainer = document.querySelector('.trip-controls__filters');
-    render(new FilterView(), filterContainer);
+    const filterView = new FilterView({waypoints, selectedFilter: mockSelectedFilter});
+    render(filterView, filterContainer);
 
-    const mockEditWaypointId = 'check-in-hotel-pyatigorsk';
-    for (const waypoint of waypoints) {
-      if (waypoint.id === mockEditWaypointId) {
-        this.createEditWaypointElement(waypoint, waypointsListElement);
-      } else {
-        const destination = this.destinationsModel.getDestination(waypoint.destination);
-        const offers = this.offersModel.getOffersForEventType(waypoint.type);
-        render(new WaypointView({waypoint, destination, offers}), waypointsListElement);
+
+    if (waypoints.length === 0) {
+      const comp = new ListEmptyView(mockSelectedFilter);
+      render(comp, this.#container);
+    } else {
+      render(new SortView(), this.#container, RenderPosition.AFTERBEGIN);
+      render(this.#tripEventsListView, this.#container);
+      //const mockEditWaypointId = 'check-in-hotel-pyatigorsk';
+      for (const waypoint of waypoints) {
+        //if (waypoint.id === mockEditWaypointId) {
+        //  this.#createWaypointComponent(waypoint);
+        //} else {
+        //  this.#renderWaypoint(waypoint);
+        //}
+        this.#renderWaypoint(waypoint);
       }
     }
   }

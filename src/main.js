@@ -1,4 +1,4 @@
-import { RenderPosition, render } from './render.js';
+import { RenderPosition, render } from './framework/render.js';
 import TripEventsPresenter from './trip-events-presenter';
 import TripInfoView from './view/trip-info';
 import WaypointsModel from './model/waypoints-model.js';
@@ -12,12 +12,15 @@ const waypointsModel = new WaypointsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 
-const tripInfoData = {
-  waypoints: waypointsModel.getWaypoints(),
-  destinations: destinationsModel.getDestinations(),
-  offers: offersModel.getOffers()
-};
-render(new TripInfoView(tripInfoData), tripMainContainer, RenderPosition.AFTERBEGIN);
+
+if (waypointsModel.waypoints.length !== 0) {
+  const tripInfoData = {
+    waypoints: waypointsModel.waypoints,
+    destinations: destinationsModel.destinations,
+    offers: offersModel.offers
+  };
+  render(new TripInfoView(tripInfoData), tripMainContainer, RenderPosition.AFTERBEGIN);
+}
 
 const eventsPresenter = new TripEventsPresenter({
   eventsContainer,

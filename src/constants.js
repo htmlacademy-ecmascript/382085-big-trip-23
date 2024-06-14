@@ -1,3 +1,4 @@
+/** */
 export const EVENT_TYPE_ICONS = {
   'check-in': 'img/icons/check-in.png',
   'sightseeing': 'img/icons/sightseeing.png',
@@ -23,7 +24,6 @@ export const DUMMY_WAYPOINT = {
   isFavorite: false,
 };
 
-export const FILTER_ITEMS = ['Everything', 'Future', 'Present', 'Past'];
 export const DEFAULT_FILTER_ITEM_INDEX = 0;
 
 export const SORT_ITEMS = [

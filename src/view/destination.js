@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 
 /**
   * @param {Object} param0
@@ -51,25 +51,15 @@ function createDestinationMarkup(destination) {
     </section>`;
 }
 
-export default class DestinationView {
+export default class DestinationView extends AbstractView {
+  #destination = null;
 
   constructor(destination) {
-    this.destination = destination;
+    super();
+    this.#destination = destination;
   }
 
-  getTemplate() {
-    return createDestinationMarkup(this.destination);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createDestinationMarkup(this.#destination);
   }
 }

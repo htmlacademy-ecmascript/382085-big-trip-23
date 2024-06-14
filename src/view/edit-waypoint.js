@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 
 /**
   * @param {import('../mock/trip').Waypoint} waypoint
@@ -67,26 +67,34 @@ function createEditWaypointMarkup(waypoint, destinations) {
 }
 
 
-export default class EditWaypointView {
+export default class EditWaypointView extends AbstractView {
+  #waypoint = null;
+  #destinations = [];
+  #handleFormSubmit = null;
+  #handleFormCancel = null;
 
-  constructor({waypoint, destinations}) {
-    this.waypoint = waypoint;
-    this.destinations = destinations;
+  constructor({waypoint, destinations, onFormSubmit, onFormCancel}) {
+    super();
+    this.#waypoint = waypoint;
+    this.#destinations = destinations;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormCancel = onFormCancel;
+
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#onFormSubmit);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onFormCancel);
   }
 
-  getTemplate() {
-    return createEditWaypointMarkup(this.waypoint, this.destinations);
+  get template() {
+    return createEditWaypointMarkup(this.#waypoint, this.#destinations);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #onFormSubmit = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #onFormCancel = (evt) => {
+    evt.preventDefault();
+    this.#handleFormCancel?.();
+  };
 }

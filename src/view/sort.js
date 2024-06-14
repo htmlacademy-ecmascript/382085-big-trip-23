@@ -1,5 +1,5 @@
 import { DEFAULT_SORT_ITEM_INDEX, SORT_ITEMS } from '../constants';
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 
 /**
   * @param {string} sortName
@@ -20,20 +20,8 @@ function createSortMarkup() {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get"> ${innerMarkup} </form>`;
 }
 
-export default class SortView {
-  getTemplate() {
+export default class SortView extends AbstractView {
+  get template() {
     return createSortMarkup();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
