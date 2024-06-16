@@ -1,17 +1,28 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractView from '../../framework/view/abstract-view';
+import { createEventTypeSelectorMarkup } from './event-type-selector';
+import { createDestinationMarkup } from './destination';
+import { createOffersMarkup } from './offers-section';
+
 
 /**
   * @param {import('../mock/trip').Waypoint} waypoint
   * @param {import('../mock/destinations').Destination[]} destinations
   * @returns {string} разметка
   */
-function createEditWaypointMarkup(waypoint, destinations) {
+function createEditWaypointMarkup(waypoint, destinations, offers) {
 
-  const dataListMarkup = destinations.map(({name}) => `<option value="${name}"></option>`).join(' ');
   const destination = destinations.find(({id}) => waypoint.destination === id);
+
+  const offerListItem = offers.find((item) => item.type === waypoint.type);
+  const offersForSelectedType = offerListItem.offers;
 
   const formId = waypoint.id || 0;
 
+  const waypointTypeSelectorMarkup = createEventTypeSelectorMarkup(formId, waypoint.type);
+  const destinationMarkup = createDestinationMarkup(destination);
+  const offersMarkup = createOffersMarkup(waypoint, offersForSelectedType);
+
+  const dataListMarkup = destinations.map(({name}) => `<option value="${name}"></option>`).join(' ');
   const rollupMarkup = `
     <button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
@@ -22,7 +33,7 @@ function createEditWaypointMarkup(waypoint, destinations) {
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
 
-          <!-- тут будет event selector view -->
+          ${waypointTypeSelectorMarkup}
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-${formId}">
@@ -56,9 +67,9 @@ function createEditWaypointMarkup(waypoint, destinations) {
         </header>
         <section class="event__details">
 
-          <!-- тут будет offers -->
+          ${offersMarkup}
 
-          <!-- тут будет destination -->
+          ${destinationMarkup}
 
         </section>
       </form>
@@ -70,13 +81,16 @@ function createEditWaypointMarkup(waypoint, destinations) {
 export default class EditWaypointView extends AbstractView {
   #waypoint = null;
   #destinations = [];
+  #offers = [];
+
   #handleFormSubmit = null;
   #handleFormCancel = null;
 
-  constructor({waypoint, destinations, onFormSubmit, onFormCancel}) {
+  constructor({waypoint, destinations, offers, onFormSubmit, onFormCancel}) {
     super();
     this.#waypoint = waypoint;
     this.#destinations = destinations;
+    this.#offers = offers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormCancel = onFormCancel;
 
@@ -85,7 +99,7 @@ export default class EditWaypointView extends AbstractView {
   }
 
   get template() {
-    return createEditWaypointMarkup(this.#waypoint, this.#destinations);
+    return createEditWaypointMarkup(this.#waypoint, this.#destinations, this.#offers);
   }
 
   #onFormSubmit = (evt) => {

@@ -1,5 +1,3 @@
-import AbstractView from '../framework/view/abstract-view';
-
 /**
   * @param {import('../mock/trip').Waypoint} waypoint
   * @param {import('../mock/offers').Offer} offer
@@ -23,7 +21,7 @@ function createOfferMarkup(waypoint, offer) {
   * @param {import('../mock/offers').Offer[]} availableOffers
   * @returns {string} разметка
 */
-function createOffersMarkup(waypoint, availableOffers) {
+export function createOffersMarkup(waypoint, availableOffers) {
 
   if (availableOffers.length === 0) {
     return '';
@@ -41,19 +39,4 @@ function createOffersMarkup(waypoint, availableOffers) {
 
       </div>
     </section>`;
-}
-
-export default class OffersSectionView extends AbstractView {
-  #waypoint = null;
-  #offers = [];
-
-  constructor({waypoint, offers}) {
-    super();
-    this.#waypoint = waypoint;
-    this.#offers = offers;
-  }
-
-  get template() {
-    return createOffersMarkup(this.#waypoint, this.#offers);
-  }
 }
