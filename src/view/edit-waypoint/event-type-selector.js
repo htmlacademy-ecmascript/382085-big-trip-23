@@ -1,7 +1,6 @@
-import { EVENT_TYPES } from '../mock/destinations';
-import { EVENT_TYPE_ICONS } from '../constants';
-import { capitalize } from '../utils/common';
-import AbstractView from '../framework/view/abstract-view';
+import { EVENT_TYPES } from '../../mock/destinations';
+import { EVENT_TYPE_ICONS } from '../../constants';
+import { capitalize } from '../../utils/common';
 
 /**
   * @param {import('../mock/trip').WaypointType} type
@@ -23,8 +22,9 @@ function createEventOptionMarkup(waypointId, type) {
 /**
   * @param {string} waypointId
   * @param {import('../mock/trip').WaypointType} selectedEventType
+  * @returns {string} разметка
 */
-function createEventTypeSelectorMarkup(waypointId, selectedEventType) {
+export function createEventTypeSelectorMarkup(waypointId, selectedEventType) {
 
   const eventsMarkup = EVENT_TYPES.map((type) => createEventOptionMarkup(waypointId, type)).join(' ');
   const selectedEventTypeIcon = EVENT_TYPE_ICONS[selectedEventType];
@@ -45,17 +45,4 @@ function createEventTypeSelectorMarkup(waypointId, selectedEventType) {
       </div>
 
     </div>`;
-}
-
-export default class EventTypeSelectorView extends AbstractView {
-  #waypoint = null;
-
-  constructor(waypoint) {
-    super();
-    this.#waypoint = waypoint;
-  }
-
-  get template() {
-    return createEventTypeSelectorMarkup(this.#waypoint.id, this.#waypoint.type);
-  }
 }

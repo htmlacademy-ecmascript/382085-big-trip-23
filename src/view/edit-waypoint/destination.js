@@ -1,5 +1,3 @@
-import AbstractView from '../framework/view/abstract-view';
-
 /**
   * @param {Object} param0
   * @param {import('../mock/destinations').PictureData[]} param0.pictures
@@ -27,7 +25,7 @@ function createPicturesMarkup({pictures}) {
 * @param {import('../mock/destinations').Destination} destination
 * @returns {string} разметка
 */
-function createDestinationMarkup(destination) {
+export function createDestinationMarkup(destination) {
 
   if (!destination) {
     return '';
@@ -51,15 +49,3 @@ function createDestinationMarkup(destination) {
     </section>`;
 }
 
-export default class DestinationView extends AbstractView {
-  #destination = null;
-
-  constructor(destination) {
-    super();
-    this.#destination = destination;
-  }
-
-  get template() {
-    return createDestinationMarkup(this.#destination);
-  }
-}

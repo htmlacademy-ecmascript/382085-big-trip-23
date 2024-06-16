@@ -1,9 +1,6 @@
-import { remove, render, RenderPosition, replace } from '../framework/render';
+import { remove, render, replace } from '../framework/render';
 import WaypointView from '../view/waypoint';
-import EditWaypointView from '../view/edit-waypoint';
-import OffersSectionView from '../view/offers-section';
-import DestinationView from '../view/destination';
-import EventTypeSelectorView from '../view/event-type-selector';
+import EditWaypointView from '../view/edit-waypoint/edit-waypoint';
 
 const Mode = {
   VIEW: 'view',
@@ -12,7 +9,7 @@ const Mode = {
 
 export default class WaypointPresenter {
   #waypointViewComponent = null;
-  #waypointEditObject = null;
+  #waypointEditComponent = null;
 
   #waypointsListContainer = null;
 
@@ -47,47 +44,27 @@ export default class WaypointPresenter {
   }
 
   #createWaypointEditComponent() {
-
     const editWaypointData = {
       waypoint: this.#waypoint,
       destinations: this.#destinationsModel.destinations,
+      offers: this.#offersModel.offers,
       onFormSubmit: this.#handleFormSubmit,
       onFormCancel: this.#handleFormCancel,
     };
-    const editWaypointView = new EditWaypointView(editWaypointData);
-
-    const waypointTypeSelector = new EventTypeSelectorView(this.#waypoint); // нужно id и type у waypoint
-
-    // при изменении типа точки маршрута нужнро будет подгружать предложения (offers)
-    const offersForType = this.#offersModel.getOffersForEventType(this.#waypoint.type);
-    const offerSectionView = new OffersSectionView({waypoint: this.#waypoint, offers: offersForType}); // нужно id и offers у waypoint
-
-    // при изменении пункта назначения нужно будет подгружать его описание и фото
-    const selectedDestination = this.#destinationsModel.getDestination(this.#waypoint.destination);
-    const destinationView = new DestinationView(selectedDestination);
-
-    return {editWaypointView, waypointTypeSelector, offerSectionView, destinationView};
+    return new EditWaypointView(editWaypointData);
   }
 
   #renderViewWaypoint() {
     render(this.#waypointViewComponent, this.#waypointsListContainer.element);
   }
 
-  #renderEditWaypoint({editWaypointView, waypointTypeSelector, offerSectionView, destinationView}) {
-    const editWaypointHeaderElement = editWaypointView.element.querySelector('.event__header');
-    const editWaypointDetailsElement = editWaypointView.element.querySelector('.event__details');
-
-    render(editWaypointView, this.#waypointsListContainer.element);
-
-    render(offerSectionView, editWaypointDetailsElement);
-    render(destinationView, editWaypointDetailsElement);
-
-    render(waypointTypeSelector, editWaypointHeaderElement, RenderPosition.AFTERBEGIN);
+  #renderEditWaypoint() {
+    render(this.#waypointEditComponent, this.#waypointsListContainer.element);
   }
 
   #setEditMode() {
-    this.#renderEditWaypoint(this.#waypointEditObject);
-    replace(this.#waypointEditObject.editWaypointView, this.#waypointViewComponent);
+    this.#renderEditWaypoint();
+    replace(this.#waypointEditComponent, this.#waypointViewComponent);
     document.addEventListener('keydown', this.#handleEscapeKeyPress);
     this.#handleModeChange(); // важно чтобы это было до смены режима!
 
@@ -95,7 +72,7 @@ export default class WaypointPresenter {
   }
 
   #setViewMode() {
-    replace(this.#waypointViewComponent, this.#waypointEditObject.editWaypointView);
+    replace(this.#waypointViewComponent, this.#waypointEditComponent);
     document.removeEventListener('keydown', this.#handleEscapeKeyPress);
     this.#mode = Mode.VIEW;
   }
@@ -125,30 +102,26 @@ export default class WaypointPresenter {
     this.#waypoint = waypoint;
 
     const prevViewComponent = this.#waypointViewComponent;
-    const prevEditObject = this.#waypointEditObject;
+    const prevEditComponent = this.#waypointEditComponent;
 
     this.#waypointViewComponent = this.#createWaypointViewComponent();
+    this.#waypointEditComponent = this.#createWaypointEditComponent();
 
-    this.#waypointEditObject = this.#createWaypointEditComponent();
-
-    if (prevViewComponent === null || prevEditObject === null) {
+    if (prevViewComponent === null || prevEditComponent === null) {
       this.#renderViewWaypoint();
       return;
     }
 
-    //if (this.#waypointsListContainer.element.contains(prevViewComponent.element)) {
     if (this.#mode === Mode.VIEW) {
       replace(this.#waypointViewComponent, prevViewComponent);
     }
 
-    //if (this.#waypointsListContainer.element.contains(prevEditObject.element)) {
     if (this.#mode === Mode.EDIT) {
-      this.#renderEditWaypoint(this.#waypointEditObject);
-      replace(this.#waypointEditObject.editWaypointView, prevEditObject.editWaypointView);
+      replace(this.#waypointEditComponent, prevEditComponent);
     }
 
     remove(prevViewComponent);
-    remove(prevEditObject.editWaypointView);
+    remove(prevEditComponent);
   }
 
   resetView() {
@@ -159,6 +132,6 @@ export default class WaypointPresenter {
 
   destroy() {
     remove(this.#waypointViewComponent);
-    remove(this.#waypointEditObject.editWaypointView);
+    remove(this.#waypointEditComponent);
   }
 }
