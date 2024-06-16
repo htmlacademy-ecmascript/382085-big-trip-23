@@ -1,3 +1,4 @@
+
 /** */
 export const EVENT_TYPE_ICONS = {
   'check-in': 'img/icons/check-in.png',
@@ -25,13 +26,5 @@ export const DUMMY_WAYPOINT = {
 };
 
 export const DEFAULT_FILTER_ITEM_INDEX = 0;
+export const DEFAULT_SORT_ID = 'day';
 
-export const SORT_ITEMS = [
-  {canSort: true, title: 'Day'},
-  {canSort: false, title: 'Event'},
-  {canSort: true, title: 'Time'},
-  {canSort: true, title: 'Price'},
-  {canSort: false, title: 'Offer'}
-];
-
-export const DEFAULT_SORT_ITEM_INDEX = 0;

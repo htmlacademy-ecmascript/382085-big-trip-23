@@ -22,6 +22,7 @@ function createEventOptionMarkup(waypointId, type) {
 /**
   * @param {string} waypointId
   * @param {import('../mock/trip').WaypointType} selectedEventType
+  * @returns {string} разметка
 */
 export function createEventTypeSelectorMarkup(waypointId, selectedEventType) {
 

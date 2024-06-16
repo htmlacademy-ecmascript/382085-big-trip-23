@@ -3,6 +3,7 @@ import SortView from '../view/sort';
 import TripEventsListView from '../view/trip-events-list';
 import ListEmptyView from '../view/list-empty';
 import WaypointPresenter from './waypoint-presenter';
+import { SORT_ITEMS } from '../utils/sort';
 //import { DUMMY_WAYPOINT } from './constants';
 
 export default class TripEventsPresenter {
@@ -12,10 +13,12 @@ export default class TripEventsPresenter {
   #destinationsModel = null;
   #offersModel = null;
 
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #tripEventsListComponent = new TripEventsListView();
 
   #waypointsPresenters = new Map();
+
+  #selectedFilter = null;
 
   constructor({eventsContainer, waypointsModel, destinationsModel, offersModel}) {
     this.#waypointsModel = waypointsModel;
@@ -27,7 +30,7 @@ export default class TripEventsPresenter {
   #clearWaypointsList() {
     this.#waypointsPresenters.forEach((presenter) => presenter.destroy());
     this.#waypointsPresenters.clear();
-    this.#renderEmptyListView();
+    //this.#renderEmptyListView();
   }
 
   #renderWaypoint(waypoint) {
@@ -45,11 +48,11 @@ export default class TripEventsPresenter {
     this.#waypointsPresenters.set(waypoint.id, waypointPresenter);
   }
 
-  #renderWaypointsList(waypoints, selectedFilter) {
+  #renderWaypointsList(waypoints) {
     //const createWaypointComponent = this.#createWaypointEditComponent(DUMMY_WAYPOINT);
 
     if (waypoints.length === 0) {
-      this.#renderEmptyListView(selectedFilter);
+      this.#renderEmptyListView(this.#selectedFilter);
       return;
     }
 
@@ -66,8 +69,8 @@ export default class TripEventsPresenter {
     }
   }
 
-  #renderEmptyListView(selectedFilter) {
-    const comp = new ListEmptyView(selectedFilter);
+  #renderEmptyListView() {
+    const comp = new ListEmptyView(this.#selectedFilter);
     render(comp, this.#container);
   }
 
@@ -84,9 +87,20 @@ export default class TripEventsPresenter {
     this.#waypointsPresenters.forEach((presenter) => presenter.resetView());
   };
 
+  #handleSortTypeChange = (sortId) => {
+    this.#clearWaypointsList();
+    const sortItem = SORT_ITEMS.get(sortId);
+    const sortedWaypoints = [...this.#waypointsModel.waypoints].sort(sortItem.sortFunction);
+
+    this.#renderWaypointsList(sortedWaypoints, this.#selectedFilter);
+  };
+
   init(selectedFilter) {
+    this.#selectedFilter = selectedFilter;
     const waypoints = this.#waypointsModel.waypoints;
 
-    this.#renderWaypointsList(waypoints, selectedFilter);
+    this.#sortComponent = new SortView({onSortTypeChange: this.#handleSortTypeChange});
+
+    this.#renderWaypointsList(waypoints);
   }
 }
