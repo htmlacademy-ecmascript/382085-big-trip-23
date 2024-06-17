@@ -75,9 +75,9 @@ export const OFFERS = [
     type: 'drive',
     offers: [
       {
-        id: 'b4c3e4e6-9053-42ce-b747-e281314baa31',
-        title: 'Upgrade to a business class',
-        price: 120
+        id: 'drive-gt',
+        title: 'Rent gran-tourismo class car',
+        price: 300
       }
     ]
   },
@@ -108,13 +108,7 @@ export const OFFERS = [
   },
   {
     type: 'ship',
-    offers: [
-      {
-        id: 'b4c3e4e6-9053-42ce-b747-e281314baa31',
-        title: 'Upgrade to a business class',
-        price: 120
-      }
-    ]
+    offers: []
   },
   {
     type: 'flight',
