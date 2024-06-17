@@ -139,9 +139,7 @@ export default class EditWaypointView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#onDestinationChange);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onDeleteClicked);
 
-    this.element.querySelectorAll('.event__offer-checkbox').forEach((item) => {
-      item.addEventListener('change', this.#onOffersChange);
-    });
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((item) => item.addEventListener('change', this.#onOffersChange));
 
     const eventTypeInputs = this.element.querySelectorAll('.event__type-input');
     eventTypeInputs.forEach((item) => {

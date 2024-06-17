@@ -38,11 +38,14 @@ export default class TripEventsPresenter {
     return sortedWaypoints;
   }
 
-  #clearList() {
+  #clearAll() {
     this.#waypointsPresenters.forEach((presenter) => presenter.destroy());
     this.#waypointsPresenters.clear();
 
-    remove(this.#sortComponent);
+    if (this.#sortComponent) {
+      remove(this.#sortComponent);
+      this.#sortComponent = null;
+    }
     if (this.#emptyListComponent) {
       remove(this.#emptyListComponent);
       this.#emptyListComponent = null;
@@ -64,8 +67,7 @@ export default class TripEventsPresenter {
     this.#waypointsPresenters.set(waypoint.id, waypointPresenter);
   }
 
-  #renderWaypointsList() {
-    //const createWaypointComponent = this.#createWaypointEditComponent(DUMMY_WAYPOINT);
+  #renderAll() {
     const sortedWaypoints = this.waypoints;
 
     if (sortedWaypoints.length === 0) {
@@ -73,7 +75,16 @@ export default class TripEventsPresenter {
       return;
     }
 
+    this.#sortComponent = new SortView({onSortTypeChange: this.#handleSortTypeChange, selectedSorting: this.#selectedSorting});
     this.#renderSortComponent();
+
+    this.#renderWaypointsList();
+  }
+
+  #renderWaypointsList() {
+    //const createWaypointComponent = this.#createWaypointEditComponent(DUMMY_WAYPOINT);
+    const sortedWaypoints = this.waypoints;
+
     render(this.#tripEventsListComponent, this.#container);
     //const mockEditWaypointId = 'check-in-hotel-pyatigorsk';
     for (const waypoint of sortedWaypoints) {
@@ -119,11 +130,11 @@ export default class TripEventsPresenter {
         this.#waypointsPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        this.#clearList();
-        this.#renderWaypointsList();
+        this.#clearAll();
+        this.#renderAll();
         break;
       case UpdateType.MAJOR:
-        this.#clearList();
+        this.#clearAll();
         this.init(this.#selectedFilter);
         break;
       default:
@@ -137,17 +148,15 @@ export default class TripEventsPresenter {
 
   #handleSortTypeChange = (sortId) => {
     this.#selectedSorting = sortId;
-    this.#clearList();
 
-    this.#renderWaypointsList();
+    this.#clearAll();
+    this.#renderAll();
   };
 
   init(selectedFilter) {
     this.#selectedFilter = selectedFilter;
 
-    this.#sortComponent = new SortView({onSortTypeChange: this.#handleSortTypeChange});
-
-    this.#clearList();
-    this.#renderWaypointsList();
+    this.#clearAll();
+    this.#renderAll();
   }
 }
