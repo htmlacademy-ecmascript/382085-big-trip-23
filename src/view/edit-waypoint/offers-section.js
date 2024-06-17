@@ -1,13 +1,13 @@
 /**
-  * @param {import('../mock/trip').Waypoint} waypoint
+  * @param {Object} waypoint
   * @param {import('../mock/offers').Offer} offer
   * @returns {string} разметка
 */
 function createOfferMarkup(waypoint, offer) {
-  const isSelected = waypoint.offers.find((offerId) => offerId === offer.id);
+  const isSelected = waypoint.offers.has(offer.id);
   return `
     <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-${waypoint.id}" type="checkbox" name="event-offer-${offer.id}" ${isSelected ? 'checked' : ''}/>
+      <input class="event__offer-checkbox  visually-hidden" data-offer="${offer.id}" id="event-offer-${offer.id}-${waypoint.id}" type="checkbox" name="event-offer-${offer.id}" ${isSelected ? 'checked' : ''}/>
       <label class="event__offer-label" for="event-offer-${offer.id}-${waypoint.id}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -17,7 +17,7 @@ function createOfferMarkup(waypoint, offer) {
 }
 
 /**
-  * @param {import('../mock/trip').Waypoint} waypoint
+  * @param {Object} waypoint
   * @param {import('../mock/offers').Offer[]} availableOffers
   * @returns {string} разметка
 */
