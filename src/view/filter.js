@@ -13,8 +13,7 @@ function createFilterItemMarkup(filterName, selected, enabled) {
     <div class="trip-filters__filter">
       <input id="filter-${filterNameLowerCase}" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="${filterNameLowerCase}" ${selected ? 'checked' : ''} ${enabled ? '' : 'disabled'}>
       <label class="trip-filters__filter-label" for="filter-${filterNameLowerCase}">${filterName}</label>
-    </div>
-  `;
+    </div>`;
 }
 
 /**

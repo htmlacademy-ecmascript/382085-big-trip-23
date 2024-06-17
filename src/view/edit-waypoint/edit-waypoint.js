@@ -107,6 +107,7 @@ export default class EditWaypointView extends AbstractStatefulView {
 
   #handleFormSubmit = null;
   #handleFormCancel = null;
+  #handleDeleteClicked = null;
 
   #startTimePicker = null;
   #endTimePicker = null;
@@ -119,13 +120,14 @@ export default class EditWaypointView extends AbstractStatefulView {
    * @param {Function} param0.onFormSubmit
    * @param {Function} param0.onFormCancel
    */
-  constructor({waypoint, destinations, offers, onFormSubmit, onFormCancel}) {
+  constructor({waypoint, destinations, offers, onFormSubmit, onFormCancel, onWaypointDelete}) {
     super();
     this.#destinations = destinations;
     this.#offers = offers;
     this._state = EditWaypointView.convertDataToState(waypoint);
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormCancel = onFormCancel;
+    this.#handleDeleteClicked = onWaypointDelete;
 
     this._restoreHandlers();
   }
@@ -135,6 +137,7 @@ export default class EditWaypointView extends AbstractStatefulView {
     this.element.querySelector('.event__input--price').addEventListener('input', this.#onPriceChange);
     // on input + debounce???
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#onDestinationChange);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onDeleteClicked);
 
     this.element.querySelectorAll('.event__offer-checkbox').forEach((item) => {
       item.addEventListener('change', this.#onOffersChange);
@@ -209,7 +212,7 @@ export default class EditWaypointView extends AbstractStatefulView {
 
   #onWaypointTypeChange = (evt) => {
     // обновить список предложений
-    this.updateElement({type: evt.target.value});
+    this.updateElement({type: evt.target.value, offers: new Set()});
   };
 
   #onDestinationChange = (evt) => {
@@ -241,5 +244,14 @@ export default class EditWaypointView extends AbstractStatefulView {
   #onFormCancel = (evt) => {
     evt.preventDefault();
     this.#handleFormCancel();
+  };
+
+  #onDeleteClicked = (evt) => {
+    evt.preventDefault();
+    // По большому счёту, передача состояния тут не нужна, т.к. связей, по которым при удалении задачи
+    // нужно удалять другие сущности, нет, и крмое waypoint.id нам ничего в модели не нужно. Здесь так
+    // для того, чтобы понимать, что связи могут быть сложнее и удаляемый объект целиком может
+    // потребоваться в модели.
+    this.#handleDeleteClicked(EditWaypointView.convertStateToData(this._state));
   };
 }

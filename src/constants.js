@@ -26,5 +26,18 @@ export const DUMMY_WAYPOINT = {
 };
 
 export const DEFAULT_FILTER_ITEM_INDEX = 0;
+export const DEFAULT_FILTER_ID = 'everything';
 export const DEFAULT_SORT_ID = 'day';
+
+export const UpdateType = {
+  PATCH: 'patch',
+  MINOR: 'minor',
+  MAJOR: 'major'
+};
+
+export const UserAction = {
+  ADD_WAYPOINT: 'add-waypoint',
+  DELETE_WAYPOINT: 'delete-waypoint',
+  UPDATE_WAYPOINT: 'update-waypoint',
+};
 
