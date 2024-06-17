@@ -1,40 +1,75 @@
-import { RenderPosition, render } from './framework/render.js';
-import TripEventsPresenter from './presenter/trip-events-presenter';
-import TripInfoView from './view/trip-info';
+import { DEFAULT_FILTER_ID } from './constants.js';
+
 import WaypointsModel from './model/waypoints-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
-import FilterView from './view/filter.js';
+import FilterModel from './model/filter-model.js';
 
-const eventsContainer = document.querySelector('.trip-events');
-const tripMainContainer = document.querySelector('.trip-main');
+import { RenderPosition, remove, render, replace } from './framework/render.js';
+import TripInfoView from './view/trip-info';
+
+import TripEventsPresenter from './presenter/trip-events-presenter';
+import FilterPresenter from './presenter/filter-presenter.js';
+
 
 const waypointsModel = new WaypointsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
+const filterModel = new FilterModel();
 
 
-if (waypointsModel.waypoints.length !== 0) {
+let tripInfoView = null;
+const tripMainContainer = document.querySelector('.trip-main');
+
+function createTripInfoView() {
   const tripInfoData = {
     waypoints: waypointsModel.waypoints,
     destinations: destinationsModel.destinations,
     offers: offersModel.offers
   };
-  render(new TripInfoView(tripInfoData), tripMainContainer, RenderPosition.AFTERBEGIN);
+  tripInfoView = new TripInfoView(tripInfoData);
 }
 
-const mockSelectedFilter = 'everything';
+const initTripInfoView = () => {
+  const prevTripInfoView = tripInfoView;
+  if (waypointsModel.waypoints.length === 0) {
+    if (prevTripInfoView) {
+      remove(prevTripInfoView);
+    }
+    tripInfoView = null;
+    return;
+  }
+  createTripInfoView();
+  if (prevTripInfoView) {
+    replace(tripInfoView, prevTripInfoView);
+    remove(prevTripInfoView);
+    return;
+  }
+
+  render(tripInfoView, tripMainContainer, RenderPosition.AFTERBEGIN);
+};
+
+waypointsModel.addObserver(initTripInfoView);
+
+initTripInfoView();
 
 const filterContainer = document.querySelector('.trip-controls__filters');
-const filterView = new FilterView({waypoints: waypointsModel.waypoints, selectedFilter: mockSelectedFilter});
-render(filterView, filterContainer);
+const filterPresenterData = {
+  container: filterContainer,
+  filterModel,
+  waypointsModel,
+};
+const filterPresenter = new FilterPresenter(filterPresenterData);
+filterPresenter.init();
 
+const eventsContainer = document.querySelector('.trip-events');
 const eventsPresenter = new TripEventsPresenter({
+  filterModel,
   eventsContainer,
   waypointsModel,
   destinationsModel,
   offersModel,
-  selectedFilter: mockSelectedFilter
+  selectedFilter: DEFAULT_FILTER_ID
 });
 
 eventsPresenter.init();

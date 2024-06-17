@@ -25,7 +25,6 @@ export const DUMMY_WAYPOINT = {
   isFavorite: false,
 };
 
-export const DEFAULT_FILTER_ITEM_INDEX = 0;
 export const DEFAULT_FILTER_ID = 'everything';
 export const DEFAULT_SORT_ID = 'day';
 

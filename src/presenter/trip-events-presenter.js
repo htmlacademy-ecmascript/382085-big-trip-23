@@ -5,6 +5,7 @@ import ListEmptyView from '../view/list-empty';
 import WaypointPresenter from './waypoint-presenter';
 import { SORT_ITEMS } from '../utils/sort';
 import { DEFAULT_SORT_ID, UpdateType, UserAction, /*DUMMY_WAYPOINT*/ } from '../constants';
+import { FILTERS_OBJECT } from '../utils/filter';
 
 export default class TripEventsPresenter {
   #container = null;
@@ -12,6 +13,7 @@ export default class TripEventsPresenter {
   #waypointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+  #filterModel = null;
 
   #sortComponent = null;
   #emptyListComponent = null;
@@ -19,22 +21,27 @@ export default class TripEventsPresenter {
 
   #waypointsPresenters = new Map();
 
-  #selectedFilter = null;
   #selectedSorting = null;
 
-  constructor({eventsContainer, waypointsModel, destinationsModel, offersModel}) {
+  constructor({eventsContainer, waypointsModel, destinationsModel, offersModel, filterModel}) {
     this.#waypointsModel = waypointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#filterModel = filterModel;
     this.#container = eventsContainer;
     this.#selectedSorting = DEFAULT_SORT_ID;
 
     this.#waypointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get waypoints() {
+    const filter = this.#filterModel.filter;
+    const filteredTasks = FILTERS_OBJECT[filter]([...this.#waypointsModel.waypoints]);
+
     const sortItem = SORT_ITEMS.get(this.#selectedSorting);
-    const sortedWaypoints = [...this.#waypointsModel.waypoints].sort(sortItem.sortFunction);
+    const sortedWaypoints = filteredTasks.sort(sortItem.sortFunction);
+
     return sortedWaypoints;
   }
 
@@ -71,7 +78,8 @@ export default class TripEventsPresenter {
     const sortedWaypoints = this.waypoints;
 
     if (sortedWaypoints.length === 0) {
-      this.#renderEmptyListView(this.#selectedFilter);
+      this.#emptyListComponent = new ListEmptyView(this.#filterModel.filter);
+      this.#renderEmptyListComponent();
       return;
     }
 
@@ -97,9 +105,8 @@ export default class TripEventsPresenter {
     }
   }
 
-  #renderEmptyListView() {
-    const comp = new ListEmptyView(this.#selectedFilter);
-    render(comp, this.#container);
+  #renderEmptyListComponent() {
+    render(this.#emptyListComponent, this.#container);
   }
 
   #renderSortComponent() {
@@ -107,7 +114,7 @@ export default class TripEventsPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
-    //console.log('[TripEventsPresenter::handleViewAction]', update.isFavorite, update.id);
+    //console.log('[TripEventsPresenter::handleViewAction]', actionType, updateType);
     switch (actionType) {
       case UserAction.ADD_WAYPOINT:
         this.#waypointsModel.addWaypoint(updateType, update);
@@ -124,18 +131,16 @@ export default class TripEventsPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    //console.log('[TripEventsPresenter::handleModelEvent]');
+    //console.log('[TripEventsPresenter::handleModelEvent]', updateType);
     switch (updateType) {
       case UpdateType.PATCH:
         this.#waypointsPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        this.#clearAll();
-        this.#renderAll();
+        this.init();
         break;
       case UpdateType.MAJOR:
-        this.#clearAll();
-        this.init(this.#selectedFilter);
+        this.init();
         break;
       default:
         throw new Error('[TripEventsPresenter::handleModelEvent] Unknown update type');
@@ -149,13 +154,10 @@ export default class TripEventsPresenter {
   #handleSortTypeChange = (sortId) => {
     this.#selectedSorting = sortId;
 
-    this.#clearAll();
-    this.#renderAll();
+    this.init();
   };
 
-  init(selectedFilter) {
-    this.#selectedFilter = selectedFilter;
-
+  init() {
     this.#clearAll();
     this.#renderAll();
   }

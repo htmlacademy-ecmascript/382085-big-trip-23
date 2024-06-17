@@ -8,7 +8,6 @@ import AbstractView from '../framework/view/abstract-view';
   * @returns {string} разметка
   */
 function createTripInfoMarkup(waypoints, destinations, offers) {
-
   // Первый и последний пункты маршрута ===========================================
   let textElements = [];
   if (waypoints.length <= 3) {

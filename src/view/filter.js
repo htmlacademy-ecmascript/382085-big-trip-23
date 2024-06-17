@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { FilterType, filter } from '../utils/filter';
+import { FilterType } from '../utils/filter';
 
 /**
 * @param {string} filterName
@@ -45,16 +45,26 @@ export default class FilterView extends AbstractView {
   #filteredMap = null;
   #selectedFilter = null;
 
-  constructor({waypoints, selectedFilter}) {
-    super();
-    this.#filteredMap = new Map();
-    for (const [filterName, filterFunc] of Object.entries(filter)) {
-      const filtered = filterFunc(waypoints);
-      this.#filteredMap.set(filterName, filtered);
-    }
+  #handleFilterChange = null;
 
+  constructor({filteredMap, selectedFilter, onFilterChange}) {
+    super();
+    this.#filteredMap = filteredMap;
+    this.#handleFilterChange = onFilterChange;
     this.#selectedFilter = selectedFilter;
+
+    this.element.querySelectorAll('.trip-filters__filter-input').forEach((filterInput) =>
+      filterInput.addEventListener('change', this.#onFilterChange)
+    );
   }
+
+  #onFilterChange = (evt) => {
+    if (!evt.target.disabled
+      && (evt.target.value !== this.#selectedFilter)) {
+      this.#selectedFilter = evt.target.value;
+      this.#handleFilterChange(this.#selectedFilter);
+    }
+  };
 
   get template() {
     return createFilterMarkup(this.#filteredMap, this.#selectedFilter);
