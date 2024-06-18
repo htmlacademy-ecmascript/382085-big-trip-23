@@ -1,4 +1,5 @@
 export default class DestinationsModel {
+  /** @type {import("../constants").Destination[]} */
   #destinations = [];
 
   #apiService = null;

@@ -9,17 +9,22 @@ const Mode = {
 };
 
 export default class WaypointPresenter {
+  /** @type {WaypointView} */
   #waypointViewComponent = null;
+  /** @type {EditWaypointView} */
   #waypointEditComponent = null;
 
   #waypointsListContainer = null;
 
+  /** @type {import('../model/destinations-model').default} */
   #destinationsModel = null;
+  /** @type {import('../model/offers-model').default} */
   #offersModel = null;
 
   #handleDataChange = null;
   #handleModeChange = null;
 
+  /** @type {import('../constants').Waypoint} */
   #waypoint = null;
   #mode = Mode.VIEW;
 
@@ -102,8 +107,6 @@ export default class WaypointPresenter {
 
   #handleFormSubmit = (waypoint) => {
     this.#handleDataChange(UserAction.UPDATE_WAYPOINT, UpdateType.MINOR, waypoint);
-    // todo
-    //this.#setViewMode();
   };
 
   #handleOpenEdit = () => {

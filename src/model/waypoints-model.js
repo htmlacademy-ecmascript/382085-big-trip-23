@@ -2,6 +2,7 @@ import { UpdateType } from '../constants';
 import Observable from '../framework/observable';
 
 export default class WaypointsModel extends Observable {
+  /** @type {import('../constants').Waypoint[]} */
   #waypoints = [];
 
   #apiService = null;

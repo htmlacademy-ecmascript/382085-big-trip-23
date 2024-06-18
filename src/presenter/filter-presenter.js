@@ -7,9 +7,12 @@ import { FILTERS_OBJECT } from '../utils/filter';
 export default class FilterPresenter {
   #container = null;
 
+  /** @type {import('../model/waypoints-model').default} */
   #waypointsModel = null;
+  /** @type {import('../model/filter-model').default} */
   #filterModel = null;
 
+  /** @type {FilterView} */
   #filterComponent = null;
 
   constructor({container, waypointsModel, filterModel}) {
@@ -21,6 +24,9 @@ export default class FilterPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
+  /**
+   * @returns {Map<string, import('../constants').Waypoint[]>}
+   */
   get filters() {
     const filtersMap = new Map();
     for (const [filterName, filterFunc] of Object.entries(FILTERS_OBJECT)) {

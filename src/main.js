@@ -70,7 +70,6 @@ function main() {
 
   initTripInfoView();
 
-
   const eventsContainer = document.querySelector('.trip-events');
 
   const tripEventsPresenter = new TripEventsPresenter({
@@ -82,7 +81,7 @@ function main() {
     onNewWaypointClose: onNewWaypointClose
   });
 
-  // new task button presenter ======================================================
+  // new task button ======================================================
   const newButtonElement = document.querySelector('.trip-main__event-add-btn');
   const newWaypointButton = new NewWaypointButtonView({buttonElement: newButtonElement, onNewButtonClicked});
 
