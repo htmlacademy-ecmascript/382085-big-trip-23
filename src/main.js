@@ -1,4 +1,4 @@
-import { DEFAULT_FILTER_ID } from './constants.js';
+import { DEFAULT_FILTER_ID, UpdateType } from './constants.js';
 
 import WaypointsModel from './model/waypoints-model.js';
 import DestinationsModel from './model/destinations-model.js';
@@ -73,6 +73,7 @@ const newButtonElement = document.querySelector('.trip-main__event-add-btn');
 const newWaypointButton = new NewWaypointButtonView({buttonElement: newButtonElement, onNewButtonClicked});
 
 function onNewButtonClicked() {
+  filterModel.setFilter(UpdateType.MINOR, DEFAULT_FILTER_ID);
   newWaypointButton.disableButton();
   tripEventsPresenter.createNewWaypoint();
 }

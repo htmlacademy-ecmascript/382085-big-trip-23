@@ -51,6 +51,7 @@ export default class TripEventsPresenter {
   }
 
   createNewWaypoint() {
+    this.#handleSortTypeChange(DEFAULT_SORT_ID);
     this.#waypointsPresenters.forEach((presenter) => presenter.resetView());
     const newWaypointPresenterData = {
       container: this.#tripEventsListComponent.element,

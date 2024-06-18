@@ -2,8 +2,9 @@ import AbstractStatefulView from '../../framework/view/abstract-stateful-view';
 import { createEventTypeSelectorMarkup } from './event-type-selector';
 import { createDestinationMarkup } from './destination';
 import { createOffersMarkup } from './offers-section';
-import flatpickr from 'flatpickr';
 
+import he from 'he';
+import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 
@@ -31,8 +32,8 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
       <span class="visually-hidden">Open event</span>
     </button>`;
 
-  return `
-    <li class="trip-events__item">
+  return (
+    `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
 
@@ -76,7 +77,8 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
 
         </section>
       </form>
-    </li>`;
+    </li>`
+  );
 }
 
 
@@ -88,6 +90,9 @@ export default class EditWaypointView extends AbstractStatefulView {
    */
   static convertDataToState(waypoint) {
     const state = {...waypoint};
+    state.basePrice = he.decode(String(waypoint.basePrice));
+    state.dateFrom = he.decode(String(waypoint.dateFrom));
+    state.dateTo = he.decode(String(waypoint.dateTo));
     state.offers = new Set(waypoint.offers);
     return state;
   }
@@ -98,6 +103,9 @@ export default class EditWaypointView extends AbstractStatefulView {
    */
   static convertStateToData(state) {
     const waypoint = {...state};
+    waypoint.basePrice = he.encode(String(state.basePrice));
+    waypoint.dateFrom = he.encode(String(state.dateFrom));
+    waypoint.dateTo = he.encode(String(state.dateTo));
     waypoint.offers = Array.from(state.offers);
     return waypoint;
   }
@@ -134,7 +142,7 @@ export default class EditWaypointView extends AbstractStatefulView {
 
   _restoreHandlers() {
 
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#onPriceChange);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#onPriceInput);
     // on input + debounce???
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#onDestinationChange);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onDeleteClicked);
@@ -209,12 +217,15 @@ export default class EditWaypointView extends AbstractStatefulView {
   };
 
   #onWaypointTypeChange = (evt) => {
-    // обновить список предложений
+    const newType = evt.target.value;
+    if (newType === this._state.type) {
+      return;
+    }
     this.updateElement({type: evt.target.value, offers: new Set()});
   };
 
   #onDestinationChange = (evt) => {
-    const destinationFound = this.#destinations.find((destination) => destination.name === evt.target.value);
+    const destinationFound = this.#destinations.find(({name}) => name === evt.target.value);
     // обновить блок с инфой про destination
 
     if (destinationFound) {
@@ -230,8 +241,11 @@ export default class EditWaypointView extends AbstractStatefulView {
     this._setState({dateTo: time.toISOString()});
   };
 
-  #onPriceChange = (evt) => {
-    this._setState({basePrice: evt.target.value});
+  #onPriceInput = (evt) => {
+    const value = Number(evt.target.value);
+    if (!Number.isNaN(value) && Number.isFinite(value)) {
+      this._setState({basePrice: value});
+    }
   };
 
   #onFormSubmit = (evt) => {
