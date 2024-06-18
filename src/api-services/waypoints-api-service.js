@@ -1,4 +1,4 @@
-import ApiService from './framework/api-service';
+import ApiService from '../framework/api-service';
 
 export default class WaypointsApiService extends ApiService {
   get waypoints () {
