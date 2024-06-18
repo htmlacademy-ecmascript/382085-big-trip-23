@@ -62,13 +62,12 @@ export const EVENT_TYPE_ICONS = {
 
 /** @type {Waypoint} */
 export const DUMMY_WAYPOINT = {
-  id: 'none',
   type: 'flight',
   dateTo: (new Date()).toISOString(),
   dateFrom: (new Date()).toISOString(),
   basePrice: 10,
   offers: [],
-  destination: 'kislovodsk-park',
+  destination: '',
   isFavorite: false,
 };
 

@@ -6,6 +6,7 @@ import { createOffersMarkup } from './offers-section';
 import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import dayjs from 'dayjs';
 
 
 /**
@@ -43,7 +44,7 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
             <label class="event__label  event__type-output" for="event-destination-${formId}">
               ${waypoint.type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${formId}" type="text" name="event-destination" value="${destination.name}" list="destination-list-${formId}" />
+            <input class="event__input  event__input--destination" id="event-destination-${formId}" type="text" name="event-destination" value="${destination?.name ?? ''}" list="destination-list-${formId}" />
             <datalist id="destination-list-${formId}">
               ${dataListMarkup}
             </datalist>
@@ -103,7 +104,7 @@ export default class EditWaypointView extends AbstractStatefulView {
    */
   static convertStateToData(state) {
     const waypoint = {...state};
-    waypoint.basePrice = he.encode(String(state.basePrice));
+    waypoint.basePrice = Number(he.encode(String(state.basePrice)));
     waypoint.dateFrom = he.encode(String(state.dateFrom));
     waypoint.dateTo = he.encode(String(state.dateTo));
     waypoint.offers = Array.from(state.offers);
@@ -155,7 +156,9 @@ export default class EditWaypointView extends AbstractStatefulView {
     });
 
     this.element.querySelector('.event--edit').addEventListener('submit', this.#onFormSubmit);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onFormCancel);
+    if (this._state.id) {
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onFormCancel);
+    }
 
     this.#setTimePicker();
   }
@@ -190,7 +193,8 @@ export default class EditWaypointView extends AbstractStatefulView {
         defaultDate: this._state.dateFrom,
         enableTime: true,
         time_24hr: true, // eslint-disable-line
-        onChange: this.#onStartTimeChange
+        onChange: this.#onStartTimeChange,
+        disable: [this.#disableStartTime]
       }
     );
 
@@ -201,10 +205,21 @@ export default class EditWaypointView extends AbstractStatefulView {
         defaultDate: this._state.dateTo,
         enableTime: true,
         time_24hr: true, // eslint-disable-line
-        onChange: this.#onEndTimeChange
+        onChange: this.#onEndTimeChange,
+        disable: [this.#disableEndTime]
       }
     );
   }
+
+  #disableStartTime = (time) => {
+    const newMaxLimit = dayjs(time).add(15, 'minute').toDate();
+    return dayjs(this._state.dateTo).isBefore(newMaxLimit);
+  };
+
+  #disableEndTime = (time) => {
+    const newMinLimit = dayjs(time).subtract(15, 'minute').toDate();
+    return dayjs(this._state.dateFrom).isAfter(newMinLimit);
+  };
 
   #onOffersChange = (evt) => {
     if (evt.target.checked) {
