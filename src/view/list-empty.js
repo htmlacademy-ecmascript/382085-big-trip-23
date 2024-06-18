@@ -1,21 +1,22 @@
 import AbstractView from '../framework/view/abstract-view';
-import { FILTER_TO_MESSAGE_MAP } from '../utils/filter';
+import { STATE_TO_MESSAGE_MAP } from '../utils/filter';
 
 
-function createEmptyListMarkup(filterValue) {
-  const message = FILTER_TO_MESSAGE_MAP.get(filterValue);
+function createEmptyListMarkup(reason) {
+  const message = STATE_TO_MESSAGE_MAP.get(reason);
   return `<p class="trip-events__msg">${message}</p>`;
 }
 
 export default class EmptyListView extends AbstractView {
-  #filterValue;
+  /** @type {string} */
+  #reason;
 
-  constructor(filterValue) {
+  constructor(reason) {
     super();
-    this.#filterValue = filterValue;
+    this.#reason = reason;
   }
 
   get template() {
-    return createEmptyListMarkup(this.#filterValue);
+    return createEmptyListMarkup(this.#reason);
   }
 }

@@ -43,7 +43,7 @@
 * @prop {PictureData[]} pictures
 */
 
-/** @type WaypointType[] */
+/** @type {WaypointType[]} */
 export const EVENT_TYPES = ['check-in', 'sightseeing', 'restaurant', 'taxi', 'bus', 'train', 'ship', 'drive', 'flight'];
 
 /** */

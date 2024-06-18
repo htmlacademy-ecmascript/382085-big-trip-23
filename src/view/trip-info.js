@@ -2,13 +2,12 @@ import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view';
 
 /**
+  * Краткое содержание путешествия
   * @param {import('../constants').Waypoint[]} waypoints
   * @param {import('../constants').Destination[]} destinations
-  * @param {import('../constants').Offer[]} offers
-  * @returns {string} разметка
+  * @returns {string} строка с началом и концом путешествия
   */
-function createTripInfoMarkup(waypoints, destinations, offers) {
-  // Первый и последний пункты маршрута ===========================================
+function getTripBrief(waypoints, destinations) {
   let textElements = [];
   if (waypoints.length <= 3) {
     textElements = waypoints.map(({destination}) => destinations.find(({id}) => id === destination).name);
@@ -22,22 +21,33 @@ function createTripInfoMarkup(waypoints, destinations, offers) {
       destinations.find(({id}) => id === lastWaypoint.destination).name
     ];
   }
-  const tripBrief = textElements.join(' &mdash; ');
+  return textElements.join(' &mdash; ');
+}
 
-  // Полная стоймость путешествия ===========================================
-  const totalPrice = waypoints.reduce((acc, waypoint) => {
+/**
+  * Полная стоймость путешествия
+  * @param {import('../constants').Waypoint[]} waypoints
+  * @param {import('../constants').Offer[]} offers
+  * @returns {number} число - полная стоймость поездки
+  */
+function getTripTotalPrice(waypoints, offers) {
+  return waypoints.reduce((acc, waypoint) => {
     const offersForWaypointType = offers.find(({type}) => type === waypoint.type).offers;
-    acc += Number(waypoint.basePrice);
     const totalOffersPrice = waypoint.offers.reduce((offersPriceAcc, offer) => {
       offersPriceAcc += offersForWaypointType.find(({id}) => id === offer).price;
       return offersPriceAcc;
     }, 0);
-    acc += Number(totalOffersPrice);
+    acc += Number(waypoint.basePrice) + Number(totalOffersPrice);
     return acc;
   }, 0);
+}
 
-
-  // Временной отрезок путешествия ===========================================
+/**
+  * Временной отрезок путешествия
+  * @param {import('../constants').Waypoint[]} waypoints
+  * @returns {string} строка с временным интервалом поездки
+  */
+function getTripTimeSpan(waypoints) {
   let earliest = dayjs(waypoints[0].dateFrom);
   let latest = dayjs(waypoints[waypoints.length - 1].dateTo);
   waypoints.forEach(({dateFrom, dateTo}) => {
@@ -56,6 +66,20 @@ function createTripInfoMarkup(waypoints, destinations, offers) {
     timePeriod = `${earliest.format('HH:mm')}&nbsp;&mdash;&nbsp;${latest.format('HH:mm')} ${latest.format('DD MMM')}`;
   }
 
+  return timePeriod;
+}
+
+/**
+  * @param {import('../constants').Waypoint[]} waypoints
+  * @param {import('../constants').Destination[]} destinations
+  * @param {import('../constants').Offer[]} offers
+  * @returns {string} разметка
+  */
+function createTripInfoMarkup(waypoints, destinations, offers) {
+  const tripBrief = getTripBrief(waypoints, destinations);
+  const totalPrice = getTripTotalPrice(waypoints, offers);
+  const timePeriod = getTripTimeSpan(waypoints);
+
   return (
     `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
@@ -72,8 +96,11 @@ function createTripInfoMarkup(waypoints, destinations, offers) {
 }
 
 export default class TripInfoView extends AbstractView {
+  /** @type {import('../constants').Waypoint[]} */
   #waypoints = [];
+  /** @type {import('../constants').Destination[]} */
   #destinations = [];
+  /** @type {import('../constants').OffersList} */
   #offers = [];
 
   constructor({waypoints, destinations, offers}) {

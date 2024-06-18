@@ -7,7 +7,7 @@ export const FilterType = {
   PAST: 'past'
 };
 
-export const FILTER_TO_MESSAGE_MAP = new Map([
+export const STATE_TO_MESSAGE_MAP = new Map([
   ['loading', 'Loading...'],
   [FilterType.ALL, 'Click New Event to create your first point'],
   [FilterType.PAST, 'There are no past events now'],
