@@ -8,16 +8,18 @@ import AbstractView from '../framework/view/abstract-view';
   * @returns {string} разметка
   */
 function createTripInfoMarkup(waypoints, destinations, offers) {
-
   // Первый и последний пункты маршрута ===========================================
   let textElements = [];
   if (waypoints.length <= 3) {
     textElements = waypoints.map(({destination}) => destinations.find(({id}) => id === destination).name);
   } else {
+
+    const lastWaypoint = waypoints.at(-1);
+    const firstWaypoint = waypoints.at(0);
     textElements = [
-      destinations.find(({id}) => id === waypoints[0].destination).name,
+      destinations.find(({id}) => id === firstWaypoint.destination).name,
       '...',
-      destinations.find(({id}) => id === waypoints[waypoints.length - 1].destination).name
+      destinations.find(({id}) => id === lastWaypoint.destination).name
     ];
   }
   const tripBrief = textElements.join(' &mdash; ');
@@ -25,12 +27,12 @@ function createTripInfoMarkup(waypoints, destinations, offers) {
   // Полная стоймость путешествия ===========================================
   const totalPrice = waypoints.reduce((acc, waypoint) => {
     const offersForWaypointType = offers.find(({type}) => type === waypoint.type).offers;
-    acc += waypoint.basePrice;
+    acc += Number(waypoint.basePrice);
     const totalOffersPrice = waypoint.offers.reduce((offersPriceAcc, offer) => {
       offersPriceAcc += offersForWaypointType.find(({id}) => id === offer).price;
       return offersPriceAcc;
     }, 0);
-    acc += totalOffersPrice;
+    acc += Number(totalOffersPrice);
     return acc;
   }, 0);
 
@@ -54,8 +56,8 @@ function createTripInfoMarkup(waypoints, destinations, offers) {
     timePeriod = `${earliest.format('HH:mm')}&nbsp;&mdash;&nbsp;${latest.format('HH:mm')} ${latest.format('DD MMM')}`;
   }
 
-  return `
-    <section class="trip-main__trip-info  trip-info">
+  return (
+    `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
         <h1 class="trip-info__title">${tripBrief}</h1>
 
@@ -65,7 +67,8 @@ function createTripInfoMarkup(waypoints, destinations, offers) {
       <p class="trip-info__cost">
         Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>
       </p>
-    </section>`;
+    </section>`
+  );
 }
 
 export default class TripInfoView extends AbstractView {

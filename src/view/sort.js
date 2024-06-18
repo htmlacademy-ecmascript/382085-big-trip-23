@@ -1,6 +1,5 @@
-import { DEFAULT_SORT_ID } from '../constants';
-import { SORT_ITEMS } from '../utils/sort';
 import AbstractView from '../framework/view/abstract-view';
+import { SORT_ITEMS } from '../utils/sort';
 
 /**
   * @param {Object} param0
@@ -25,28 +24,31 @@ function createSortItemMarkup({title, canSort}, id, checked) {
     </div>`;
 }
 
-function createSortMarkup() {
+function createSortMarkup(selectedSorting) {
   const innerMarkup = [];
-  SORT_ITEMS.forEach((sortItem, sortId) => innerMarkup.push(createSortItemMarkup(sortItem, sortId, sortId === DEFAULT_SORT_ID)));
+  SORT_ITEMS.forEach((sortItem, sortId) => innerMarkup.push(createSortItemMarkup(sortItem, sortId, sortId === selectedSorting)));
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">${innerMarkup.join(' ')}</form>`;
 }
 
 export default class SortView extends AbstractView {
   #handleSortTypeChange = null;
 
-  constructor({onSortTypeChange}) {
+  #selectedSorting = null;
+
+  constructor({onSortTypeChange, selectedSorting}) {
     super();
     this.#handleSortTypeChange = onSortTypeChange;
+    this.#selectedSorting = selectedSorting;
 
     const enabledSortItems = this.element.querySelectorAll('.trip-sort__input:not([disabled])');
-    enabledSortItems.forEach((item) => item.addEventListener('change', (evt) => this.onSortTypeChange(evt)));
+    enabledSortItems.forEach((item) => item.addEventListener('change', (evt) => this.#onSortTypeChange(evt)));
   }
 
   get template() {
-    return createSortMarkup();
+    return createSortMarkup(this.#selectedSorting);
   }
 
-  onSortTypeChange = (evt) => {
+  #onSortTypeChange = (evt) => {
     const sortItemId = evt.target.value.replace('sort-', '');
     this.#handleSortTypeChange(sortItemId);
   };

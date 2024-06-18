@@ -1,6 +1,7 @@
 import { remove, render, replace } from '../framework/render';
 import WaypointView from '../view/waypoint';
 import EditWaypointView from '../view/edit-waypoint/edit-waypoint';
+import { UpdateType, UserAction } from '../constants';
 
 const Mode = {
   VIEW: 'view',
@@ -38,20 +39,21 @@ export default class WaypointPresenter {
       destination,
       offers: offersForType,
       onOpenClick: this.#handleOpenEdit,
-      onFavoriteClick: this.#handleDataChange,
+      onFavoriteClick: this.#handleFavoritesClick
     };
     return new WaypointView(waypointViewData);
   }
 
   #createWaypointEditComponent() {
-    const editWaypointData = {
+    const waypointEditData = {
       waypoint: this.#waypoint,
       destinations: this.#destinationsModel.destinations,
       offers: this.#offersModel.offers,
       onFormSubmit: this.#handleFormSubmit,
       onFormCancel: this.#handleFormCancel,
+      onWaypointDelete: this.#handleWaypointDelete,
     };
-    return new EditWaypointView(editWaypointData);
+    return new EditWaypointView(waypointEditData);
   }
 
   #renderViewWaypoint() {
@@ -88,9 +90,18 @@ export default class WaypointPresenter {
     }
   };
 
+  #handleFavoritesClick = () => {
+    //console.log('[WaypointPresenter::handleFavoritesClick]', this.#waypoint.isFavorite);
+    this.#handleDataChange(UserAction.UPDATE_WAYPOINT, UpdateType.MINOR, {...this.#waypoint, isFavorite: !this.#waypoint.isFavorite});
+  };
+
+  #handleWaypointDelete = (waypoint) => {
+    // см. комментарий в EditWaypointView
+    this.#handleDataChange(UserAction.DELETE_WAYPOINT, UpdateType.MINOR, {...waypoint});
+  };
+
   #handleFormSubmit = (waypoint) => {
-    this.#handleDataChange(waypoint);
-    // TODO тут потом будет POST запрос
+    this.#handleDataChange(UserAction.UPDATE_WAYPOINT, UpdateType.MINOR, waypoint);
     this.#setViewMode();
   };
 
@@ -131,6 +142,9 @@ export default class WaypointPresenter {
   }
 
   destroy() {
+    if (this.#mode === Mode.EDIT) {
+      document.removeEventListener('keydown', this.#handleEscapeKeyPress);
+    }
     remove(this.#waypointViewComponent);
     remove(this.#waypointEditComponent);
   }

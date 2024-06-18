@@ -1,40 +1,95 @@
-import { RenderPosition, render } from './framework/render.js';
-import TripEventsPresenter from './presenter/trip-events-presenter';
-import TripInfoView from './view/trip-info';
+import { DEFAULT_FILTER_ID, UpdateType } from './constants.js';
+
 import WaypointsModel from './model/waypoints-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
-import FilterView from './view/filter.js';
+import FilterModel from './model/filter-model.js';
 
-const tripMainContainer = document.querySelector('.trip-main');
-const eventsContainer = document.querySelector('.trip-events');
+import { RenderPosition, remove, render, replace } from './framework/render.js';
+import TripInfoView from './view/trip-info';
+import NewWaypointButtonView from './view/new-waypoint-button.js';
+
+import TripEventsPresenter from './presenter/trip-events-presenter';
+import FilterPresenter from './presenter/filter-presenter.js';
 
 const waypointsModel = new WaypointsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
+const filterModel = new FilterModel();
 
+// trip info presenter ================================================================
+let tripInfoView = null;
+const tripMainContainer = document.querySelector('.trip-main');
 
-if (waypointsModel.waypoints.length !== 0) {
+function createTripInfoView() {
   const tripInfoData = {
     waypoints: waypointsModel.waypoints,
     destinations: destinationsModel.destinations,
     offers: offersModel.offers
   };
-  render(new TripInfoView(tripInfoData), tripMainContainer, RenderPosition.AFTERBEGIN);
+  tripInfoView = new TripInfoView(tripInfoData);
 }
 
-const mockSelectedFilter = 'everything';
+const initTripInfoView = () => {
+  const prevTripInfoView = tripInfoView;
+  if (waypointsModel.waypoints.length === 0) {
+    if (prevTripInfoView) {
+      remove(prevTripInfoView);
+    }
+    tripInfoView = null;
+    return;
+  }
+  createTripInfoView();
+  if (prevTripInfoView) {
+    replace(tripInfoView, prevTripInfoView);
+    remove(prevTripInfoView);
+    return;
+  }
 
-const filterContainer = document.querySelector('.trip-controls__filters');
-const filterView = new FilterView({waypoints: waypointsModel.waypoints, selectedFilter: mockSelectedFilter});
-render(filterView, filterContainer);
+  render(tripInfoView, tripMainContainer, RenderPosition.AFTERBEGIN);
+};
 
-const eventsPresenter = new TripEventsPresenter({
+
+//================================================================================
+waypointsModel.addObserver(initTripInfoView);
+
+initTripInfoView();
+
+
+const eventsContainer = document.querySelector('.trip-events');
+
+const tripEventsPresenter = new TripEventsPresenter({
   eventsContainer,
   waypointsModel,
   destinationsModel,
   offersModel,
-  selectedFilter: mockSelectedFilter
+  filterModel,
+  onNewWaypointClose: onNewWaypointClose
 });
 
-eventsPresenter.init();
+// new task button presenter ======================================================
+const newButtonElement = document.querySelector('.trip-main__event-add-btn');
+const newWaypointButton = new NewWaypointButtonView({buttonElement: newButtonElement, onNewButtonClicked});
+
+function onNewButtonClicked() {
+  filterModel.setFilter(UpdateType.MINOR, DEFAULT_FILTER_ID);
+  newWaypointButton.disableButton();
+  tripEventsPresenter.createNewWaypoint();
+}
+
+function onNewWaypointClose() {
+  newWaypointButton.enableButton();
+}
+// ================================================================================
+
+const filterContainer = document.querySelector('.trip-controls__filters');
+const filterPresenterData = {
+  container: filterContainer,
+  filterModel,
+  waypointsModel,
+};
+const filterPresenter = new FilterPresenter(filterPresenterData);
+filterPresenter.init();
+
+
+tripEventsPresenter.init();
