@@ -1,8 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Георгий](https://up.htmlacademy.ru/ecmascript/23/user/382085).
-* Наставник: [Сергей](https://htmlacademy.ru/profile/id1069033).
-
+* Наставник: [Олег](https://htmlacademy.ru/profile/id305355).
 ---
 
 _Не удаляйте и не изменяйте папки и файлы:_

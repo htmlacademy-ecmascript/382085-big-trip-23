@@ -12,7 +12,6 @@ import NewWaypointButtonView from './view/new-waypoint-button.js';
 import TripEventsPresenter from './presenter/trip-events-presenter';
 import FilterPresenter from './presenter/filter-presenter.js';
 
-
 const waypointsModel = new WaypointsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
