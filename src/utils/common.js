@@ -1,8 +1,4 @@
 
-export function getRandomArrayElement(anArray) {
-  return anArray[Math.floor(Math.random() * anArray.length)];
-}
-
 const TIME_DURATION_INTERVALS = [
   {dayjsName: 'day', abbreviation: 'D'},
   {dayjsName: 'hour', abbreviation: 'H'},
