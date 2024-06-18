@@ -14,18 +14,21 @@ import dayjs from 'dayjs';
   * @param {import('../../constants').Destination[]} destinations
   * @returns {string} разметка
   */
-function createEditWaypointMarkup(waypoint, destinations, offers, disabled, saving, deleting) {
+function createEditWaypointMarkup(state, destinations, offers) {
+  const disabled = state.isDisabled;
+  const saving = state.isSaving;
+  const deleting = state.isDeleting;
 
-  const destination = destinations.find(({id}) => waypoint.destination === id);
+  const destination = destinations.find(({id}) => state.destination === id);
 
-  const offerListItem = offers.find((item) => item.type === waypoint.type);
+  const offerListItem = offers.find((item) => item.type === state.type);
   const offersForSelectedType = offerListItem.offers;
 
-  const formId = waypoint.id || 0;
+  const formId = state.id || 0;
 
-  const waypointTypeSelectorMarkup = createEventTypeSelectorMarkup(formId, waypoint.type, disabled);
+  const waypointTypeSelectorMarkup = createEventTypeSelectorMarkup(formId, state.type, disabled);
   const destinationMarkup = createDestinationMarkup(destination);
-  const offersMarkup = createOffersMarkup(waypoint, offersForSelectedType, disabled);
+  const offersMarkup = createOffersMarkup(state, offersForSelectedType, disabled);
 
   const dataListMarkup = destinations.map(({name}) => `<option value="${name}"></option>`).join(' ');
 
@@ -37,10 +40,10 @@ function createEditWaypointMarkup(waypoint, destinations, offers, disabled, savi
   let cancelButtonText = 'Cancel';
   if (formId) {
     cancelButtonText = 'Delete';
-  } else if (deleting) {
-    cancelButtonText = 'Deleting...';
+    if (deleting) {
+      cancelButtonText = 'Deleting...';
+    }
   }
-
   const saveButtonText = saving ? 'Saving...' : 'Save';
 
   return (
@@ -52,7 +55,7 @@ function createEditWaypointMarkup(waypoint, destinations, offers, disabled, savi
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-${formId}">
-              ${waypoint.type}
+              ${state.type}
             </label>
             <input
               class="event__input  event__input--destination"
@@ -75,7 +78,7 @@ function createEditWaypointMarkup(waypoint, destinations, offers, disabled, savi
               type="text"
               name="event-start-time"
               ${disabled ? 'disabled' : ''}
-              value="${waypoint.dateFrom}" />
+              value="${state.dateFrom}" />
             &mdash;
             <label class="visually-hidden" for="event-end-time-${formId}">To</label>
             <input
@@ -84,7 +87,7 @@ function createEditWaypointMarkup(waypoint, destinations, offers, disabled, savi
               type="text"
               name="event-end-time"
               ${disabled ? 'disabled' : ''}
-              value="${waypoint.dateTo}" />
+              value="${state.dateTo}" />
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -98,11 +101,11 @@ function createEditWaypointMarkup(waypoint, destinations, offers, disabled, savi
               type="text"
               name="event-price"
               ${disabled ? 'disabled' : ''}
-              value="${waypoint.basePrice}" />
+              value="${state.basePrice}" />
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
-          <button class="event__reset-btn" type="reset">${cancelButtonText}</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${disabled ? 'disabled' : ''}>${saveButtonText}</button>
+          <button class="event__reset-btn" type="reset" ${disabled ? 'disabled' : ''}>${cancelButtonText}</button>
           ${rollupMarkup}
         </header>
         <section class="event__details">
@@ -205,7 +208,7 @@ export default class EditWaypointView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditWaypointMarkup(this._state, this.#destinations, this.#offers, this._state.isDisabled);
+    return createEditWaypointMarkup(this._state, this.#destinations, this.#offers);
   }
 
   removeElement() {
