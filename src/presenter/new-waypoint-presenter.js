@@ -34,9 +34,17 @@ export default class NewWaypointPresenter {
     document.addEventListener('keydown', this.#handleEscapeKeyPress);
   }
 
+  setSaving() {
+    this.#waypointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
   #onFormSubmit = (newWaypoint) => {
     this.#handleFormSubmit(UserAction.ADD_WAYPOINT, UpdateType.MINOR, newWaypoint);
-    this.destroy();
+    // todo
+    //this.destroy();
   };
 
   #handleFormCancel = () => {

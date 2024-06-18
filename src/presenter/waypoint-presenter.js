@@ -102,12 +102,31 @@ export default class WaypointPresenter {
 
   #handleFormSubmit = (waypoint) => {
     this.#handleDataChange(UserAction.UPDATE_WAYPOINT, UpdateType.MINOR, waypoint);
-    this.#setViewMode();
+    // todo
+    //this.#setViewMode();
   };
 
   #handleOpenEdit = () => {
     this.#setEditMode();
   };
+
+  setSaving() {
+    if (this.#mode === Mode.EDIT) {
+      this.#waypointEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDIT) {
+      this.#waypointEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
 
   init(waypoint) {
     this.#waypoint = waypoint;
