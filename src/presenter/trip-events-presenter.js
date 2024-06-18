@@ -1,4 +1,5 @@
 import { render, remove, RenderPosition } from '../framework/render';
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
 import SortView from '../view/sort';
 import TripEventsListView from '../view/trip-events-list';
 import ListEmptyView from '../view/list-empty';
@@ -7,6 +8,11 @@ import NewWaypointPresenter from './new-waypoint-presenter';
 import { SORT_ITEMS } from '../utils/sort';
 import { DEFAULT_SORT_ID, UpdateType, UserAction } from '../constants';
 import { FILTERS_OBJECT } from '../utils/filter';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class TripEventsPresenter {
   #container = null;
@@ -34,6 +40,8 @@ export default class TripEventsPresenter {
 
   #selectedSorting = null;
   #isLoading = true;
+
+  #uiBlocker = new UiBlocker({lowerLimit: TimeLimit.LOWER_LIMIT, upperLimit: TimeLimit.UPPER_LIMIT});
 
   constructor({eventsContainer, waypointsModel, destinationsModel, offersModel, filterModel, onNewWaypointClose}) {
     this.#container = eventsContainer;
@@ -153,6 +161,7 @@ export default class TripEventsPresenter {
   #handleViewAction = async (actionType, updateType, update) => {
     //console.log('[TripEventsPresenter::handleViewAction]', actionType, updateType);
     //console.log(update);
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.ADD_WAYPOINT:
         this.#newWaypointPresenter.setSaving(); // ???
@@ -181,6 +190,7 @@ export default class TripEventsPresenter {
       default:
         throw new Error('[TripEventsPresenter::handleViewAction] unknown action type');
     }
+    this.#uiBlocker.unblock();
   };
 
   /**
