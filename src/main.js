@@ -7,6 +7,7 @@ import FilterModel from './model/filter-model.js';
 
 import { RenderPosition, remove, render, replace } from './framework/render.js';
 import TripInfoView from './view/trip-info';
+import NewWaypointButtonView from './view/new-waypoint-button.js';
 
 import TripEventsPresenter from './presenter/trip-events-presenter';
 import FilterPresenter from './presenter/filter-presenter.js';
@@ -17,7 +18,7 @@ const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 const filterModel = new FilterModel();
 
-
+// trip info presenter ================================================================
 let tripInfoView = null;
 const tripMainContainer = document.querySelector('.trip-main');
 
@@ -49,9 +50,37 @@ const initTripInfoView = () => {
   render(tripInfoView, tripMainContainer, RenderPosition.AFTERBEGIN);
 };
 
+
+//================================================================================
 waypointsModel.addObserver(initTripInfoView);
 
 initTripInfoView();
+
+
+const eventsContainer = document.querySelector('.trip-events');
+
+const tripEventsPresenter = new TripEventsPresenter({
+  eventsContainer,
+  waypointsModel,
+  destinationsModel,
+  offersModel,
+  filterModel,
+  onNewWaypointClose: onNewWaypointClose
+});
+
+// new task button presenter ======================================================
+const newButtonElement = document.querySelector('.trip-main__event-add-btn');
+const newWaypointButton = new NewWaypointButtonView({buttonElement: newButtonElement, onNewButtonClicked});
+
+function onNewButtonClicked() {
+  newWaypointButton.disableButton();
+  tripEventsPresenter.createNewWaypoint();
+}
+
+function onNewWaypointClose() {
+  newWaypointButton.enableButton();
+}
+// ================================================================================
 
 const filterContainer = document.querySelector('.trip-controls__filters');
 const filterPresenterData = {
@@ -62,14 +91,5 @@ const filterPresenterData = {
 const filterPresenter = new FilterPresenter(filterPresenterData);
 filterPresenter.init();
 
-const eventsContainer = document.querySelector('.trip-events');
-const eventsPresenter = new TripEventsPresenter({
-  filterModel,
-  eventsContainer,
-  waypointsModel,
-  destinationsModel,
-  offersModel,
-  selectedFilter: DEFAULT_FILTER_ID
-});
 
-eventsPresenter.init();
+tripEventsPresenter.init();

@@ -2,6 +2,7 @@ import Observable from '../framework/observable';
 import { TRIP_WAYPOINTS } from '../mock/trip';
 
 export default class WaypointsModel extends Observable {
+  #newWaypointCounter = 0;
   #waypoints = TRIP_WAYPOINTS;
 
   updateWaypoint(updateType, update) {
@@ -14,6 +15,8 @@ export default class WaypointsModel extends Observable {
   }
 
   addWaypoint(updateType, update) {
+    update.id = `fake_id-${this.#newWaypointCounter}`;
+    this.#newWaypointCounter += 1;
     this.#waypoints.push(update);
     this._notify(updateType, update);
   }

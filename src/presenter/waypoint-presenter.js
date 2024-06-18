@@ -142,6 +142,9 @@ export default class WaypointPresenter {
   }
 
   destroy() {
+    if (this.#mode === Mode.EDIT) {
+      document.removeEventListener('keydown', this.#handleEscapeKeyPress);
+    }
     remove(this.#waypointViewComponent);
     remove(this.#waypointEditComponent);
   }
