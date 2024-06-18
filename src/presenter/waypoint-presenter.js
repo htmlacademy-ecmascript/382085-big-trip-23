@@ -119,6 +119,23 @@ export default class WaypointPresenter {
     }
   }
 
+  setAborting() {
+    if (this.#mode === Mode.VIEW) {
+      this.#waypointViewComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#waypointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#waypointEditComponent.shake(resetFormState);
+  }
+
   setDeleting() {
     if (this.#mode === Mode.EDIT) {
       this.#waypointEditComponent.updateElement({

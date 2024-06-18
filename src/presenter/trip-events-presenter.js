@@ -150,21 +150,33 @@ export default class TripEventsPresenter {
    * @param {string} updateType
    * @param {import('../constants').Waypoint} update
    */
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     //console.log('[TripEventsPresenter::handleViewAction]', actionType, updateType);
     //console.log(update);
     switch (actionType) {
       case UserAction.ADD_WAYPOINT:
         this.#newWaypointPresenter.setSaving(); // ???
-        this.#waypointsModel.addWaypoint(updateType, update);
+        try {
+          await this.#waypointsModel.addWaypoint(updateType, update);
+        } catch (err) {
+          this.#newWaypointPresenter.setAborting(); // ???
+        }
         break;
       case UserAction.DELETE_WAYPOINT:
         this.#waypointsPresenters.get(update.id).setDeleting(); // ???
-        this.#waypointsModel.deleteWaypoint(updateType, update);
+        try {
+          await this.#waypointsModel.deleteWaypoint(updateType, update);
+        } catch (err) {
+          this.#waypointsPresenters.get(update.id).setAborting(); // ???
+        }
         break;
       case UserAction.UPDATE_WAYPOINT:
         this.#waypointsPresenters.get(update.id).setSaving(); // ???
-        this.#waypointsModel.updateWaypoint(updateType, update);
+        try {
+          await this.#waypointsModel.updateWaypoint(updateType, update);
+        } catch (err) {
+          this.#waypointsPresenters.get(update.id).setAborting(); // ???
+        }
         break;
       default:
         throw new Error('[TripEventsPresenter::handleViewAction] unknown action type');

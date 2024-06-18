@@ -41,6 +41,18 @@ export default class NewWaypointPresenter {
     });
   }
 
+  setAborting() {
+    const resetFormState = () => {
+      this.#waypointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#waypointEditComponent.shake(resetFormState);
+  }
+
   #onFormSubmit = (newWaypoint) => {
     this.#handleFormSubmit(UserAction.ADD_WAYPOINT, UpdateType.MINOR, newWaypoint);
     // todo
