@@ -18,6 +18,8 @@ import OffersApiService from './api-services/offers-api-service';
 
 const AUTHORIZATION = 'Basic 2point718281828459045';
 
+document.querySelector('.trip-main__event-add-btn').setAttribute('disabled', '');
+
 const waypointService = new WaypointsApiService(BIG_TRIP_URI, AUTHORIZATION);
 const waypointsModel = new WaypointsModel({apiService: waypointService});
 
@@ -111,4 +113,7 @@ Promise.allSettled([destinationsModel.init(), offersModel.init()]) // эти п�
   .then(() => {
     waypointsModel.init(); // эта модель уведомляет подписчиков
     main();
+  })
+  .finally(() => {
+    document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
   });
