@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
   * @param {import('../../constants').Destination[]} destinations
   * @returns {string} разметка
   */
-function createEditWaypointMarkup(waypoint, destinations, offers) {
+function createEditWaypointMarkup(waypoint, destinations, offers, disabled, saving, deleting) {
 
   const destination = destinations.find(({id}) => waypoint.destination === id);
 
@@ -23,15 +23,25 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
 
   const formId = waypoint.id || 0;
 
-  const waypointTypeSelectorMarkup = createEventTypeSelectorMarkup(formId, waypoint.type);
+  const waypointTypeSelectorMarkup = createEventTypeSelectorMarkup(formId, waypoint.type, disabled);
   const destinationMarkup = createDestinationMarkup(destination);
-  const offersMarkup = createOffersMarkup(waypoint, offersForSelectedType);
+  const offersMarkup = createOffersMarkup(waypoint, offersForSelectedType, disabled);
 
   const dataListMarkup = destinations.map(({name}) => `<option value="${name}"></option>`).join(' ');
-  const rollupMarkup = `
-    <button class="event__rollup-btn" type="button">
+
+  const rollupMarkup = (formId === 0) ? '' : (
+    `<button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
-    </button>`;
+    </button>`);
+
+  let cancelButtonText = 'Cancel';
+  if (formId) {
+    cancelButtonText = 'Delete';
+  } else if (deleting) {
+    cancelButtonText = 'Deleting...';
+  }
+
+  const saveButtonText = saving ? 'Saving...' : 'Save';
 
   return (
     `<li class="trip-events__item">
@@ -44,7 +54,14 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
             <label class="event__label  event__type-output" for="event-destination-${formId}">
               ${waypoint.type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${formId}" type="text" name="event-destination" value="${destination?.name ?? ''}" list="destination-list-${formId}" />
+            <input
+              class="event__input  event__input--destination"
+              id="event-destination-${formId}"
+              type="text"
+              name="event-destination"
+              value="${destination?.name ?? ''}"
+              ${disabled ? 'disabled' : ''}
+              list="destination-list-${formId}" />
             <datalist id="destination-list-${formId}">
               ${dataListMarkup}
             </datalist>
@@ -52,10 +69,22 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-${formId}">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-${formId}" type="text" name="event-start-time" value="${waypoint.dateFrom}" />
+            <input
+              class="event__input  event__input--time"
+              id="event-start-time-${formId}"
+              type="text"
+              name="event-start-time"
+              ${disabled ? 'disabled' : ''}
+              value="${waypoint.dateFrom}" />
             &mdash;
             <label class="visually-hidden" for="event-end-time-${formId}">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-${formId}" type="text" name="event-end-time" value="${waypoint.dateTo}" />
+            <input
+              class="event__input  event__input--time"
+              id="event-end-time-${formId}"
+              type="text"
+              name="event-end-time"
+              ${disabled ? 'disabled' : ''}
+              value="${waypoint.dateTo}" />
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -63,12 +92,18 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-${formId}" type="text" name="event-price" value="${waypoint.basePrice}" />
+            <input
+              class="event__input  event__input--price"
+              id="event-price-${formId}"
+              type="text"
+              name="event-price"
+              ${disabled ? 'disabled' : ''}
+              value="${waypoint.basePrice}" />
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${formId ? 'Delete' : 'Cancel'}</button>
-          ${formId ? rollupMarkup : ''}
+          <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
+          <button class="event__reset-btn" type="reset">${cancelButtonText}</button>
+          ${rollupMarkup}
         </header>
         <section class="event__details">
 
@@ -91,6 +126,9 @@ export default class EditWaypointView extends AbstractStatefulView {
    */
   static convertDataToState(waypoint) {
     const state = {...waypoint};
+    state.isDisabled = false;
+    state.isSaving = false;
+    state.isDeleting = false;
     state.basePrice = he.decode(String(waypoint.basePrice));
     state.dateFrom = he.decode(String(waypoint.dateFrom));
     state.dateTo = he.decode(String(waypoint.dateTo));
@@ -108,6 +146,9 @@ export default class EditWaypointView extends AbstractStatefulView {
     waypoint.dateFrom = he.encode(String(state.dateFrom));
     waypoint.dateTo = he.encode(String(state.dateTo));
     waypoint.offers = Array.from(state.offers);
+    delete waypoint.isDisabled;
+    delete waypoint.isSaving;
+    delete waypoint.isDeleting;
     return waypoint;
   }
 
@@ -164,7 +205,7 @@ export default class EditWaypointView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditWaypointMarkup(this._state, this.#destinations, this.#offers);
+    return createEditWaypointMarkup(this._state, this.#destinations, this.#offers, this._state.isDisabled);
   }
 
   removeElement() {
