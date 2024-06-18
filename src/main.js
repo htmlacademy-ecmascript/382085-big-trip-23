@@ -6,8 +6,8 @@ import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
 import FilterView from './view/filter.js';
 
-const eventsContainer = document.querySelector('.trip-events');
 const tripMainContainer = document.querySelector('.trip-main');
+const eventsContainer = document.querySelector('.trip-events');
 
 const waypointsModel = new WaypointsModel();
 const destinationsModel = new DestinationsModel();
