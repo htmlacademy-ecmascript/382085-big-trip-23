@@ -1,3 +1,50 @@
+/**
+* @typedef {('check-in'|'sightseeing'|'restaurant'|'taxi'|'bus'|'train'|'ship'|'drive'|'flight')} WaypointType
+*/
+
+/**
+* @typedef {Object} Waypoint
+* @prop {string} id
+* @prop {number} basePrice
+* @prop {string} dateFrom
+* @prop {string} dateTo
+* @prop {string} destination
+* @prop {boolean} isFavorite
+* @prop {string[]} offers
+* @prop {WaypointType} type
+*/
+
+/**
+* @typedef {Object} Offer
+* @prop {string} id
+* @prop {string} title
+* @prop {number} price
+*/
+
+/**
+* @typedef {Object} OffersListItem
+* @prop {import("./trip").WaypointType} type
+* @prop {Offer[]} offers
+*/
+
+/** @typedef {OffersListItem[]} OffersList */
+
+/**
+* @typedef {Object} PictureData
+* @prop {string} src
+* @prop {string} description
+*/
+
+/**
+* @typedef {Object} Destination
+* @prop {string} id
+* @prop {string} description
+* @prop {string} name
+* @prop {PictureData[]} pictures
+*/
+
+/** @type WaypointType[] */
+export const EVENT_TYPES = ['check-in', 'sightseeing', 'restaurant', 'taxi', 'bus', 'train', 'ship', 'drive', 'flight'];
 
 /** */
 export const EVENT_TYPE_ICONS = {
@@ -13,15 +60,14 @@ export const EVENT_TYPE_ICONS = {
 };
 
 
-/** @type {import('./mock/trip').Waypoint} */
+/** @type {Waypoint} */
 export const DUMMY_WAYPOINT = {
-  id: 'none',
   type: 'flight',
   dateTo: (new Date()).toISOString(),
   dateFrom: (new Date()).toISOString(),
   basePrice: 10,
   offers: [],
-  destination: 'kislovodsk-park',
+  destination: '',
   isFavorite: false,
 };
 
@@ -31,7 +77,8 @@ export const DEFAULT_SORT_ID = 'day';
 export const UpdateType = {
   PATCH: 'patch',
   MINOR: 'minor',
-  MAJOR: 'major'
+  MAJOR: 'major',
+  INIT: 'init',
 };
 
 export const UserAction = {
@@ -40,3 +87,5 @@ export const UserAction = {
   UPDATE_WAYPOINT: 'update-waypoint',
 };
 
+
+export const BIG_TRIP_URI = 'https://23.objects.htmlacademy.pro/big-trip';

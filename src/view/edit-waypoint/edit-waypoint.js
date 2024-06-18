@@ -6,31 +6,45 @@ import { createOffersMarkup } from './offers-section';
 import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import dayjs from 'dayjs';
 
 
 /**
-  * @param {import('../mock/trip').Waypoint} waypoint
-  * @param {import('../mock/destinations').Destination[]} destinations
+  * @param {import('../../constants').Waypoint} waypoint
+  * @param {import('../../constants').Destination[]} destinations
   * @returns {string} разметка
   */
-function createEditWaypointMarkup(waypoint, destinations, offers) {
+function createEditWaypointMarkup(state, destinations, offers) {
+  const disabled = state.isDisabled;
+  const saving = state.isSaving;
+  const deleting = state.isDeleting;
 
-  const destination = destinations.find(({id}) => waypoint.destination === id);
+  const destination = destinations.find(({id}) => state.destination === id);
 
-  const offerListItem = offers.find((item) => item.type === waypoint.type);
+  const offerListItem = offers.find((item) => item.type === state.type);
   const offersForSelectedType = offerListItem.offers;
 
-  const formId = waypoint.id || 0;
+  const formId = state.id || 0;
 
-  const waypointTypeSelectorMarkup = createEventTypeSelectorMarkup(formId, waypoint.type);
+  const waypointTypeSelectorMarkup = createEventTypeSelectorMarkup(formId, state.type, disabled);
   const destinationMarkup = createDestinationMarkup(destination);
-  const offersMarkup = createOffersMarkup(waypoint, offersForSelectedType);
+  const offersMarkup = createOffersMarkup(state, offersForSelectedType, disabled);
 
   const dataListMarkup = destinations.map(({name}) => `<option value="${name}"></option>`).join(' ');
-  const rollupMarkup = `
-    <button class="event__rollup-btn" type="button">
+
+  const rollupMarkup = (formId === 0) ? '' : (
+    `<button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
-    </button>`;
+    </button>`);
+
+  let cancelButtonText = 'Cancel';
+  if (formId) {
+    cancelButtonText = 'Delete';
+    if (deleting) {
+      cancelButtonText = 'Deleting...';
+    }
+  }
+  const saveButtonText = saving ? 'Saving...' : 'Save';
 
   return (
     `<li class="trip-events__item">
@@ -41,9 +55,16 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-${formId}">
-              ${waypoint.type}
+              ${state.type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${formId}" type="text" name="event-destination" value="${destination.name}" list="destination-list-${formId}" />
+            <input
+              class="event__input  event__input--destination"
+              id="event-destination-${formId}"
+              type="text"
+              name="event-destination"
+              value="${destination?.name ?? ''}"
+              ${disabled ? 'disabled' : ''}
+              list="destination-list-${formId}" />
             <datalist id="destination-list-${formId}">
               ${dataListMarkup}
             </datalist>
@@ -51,10 +72,22 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-${formId}">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-${formId}" type="text" name="event-start-time" value="${waypoint.dateFrom}" />
+            <input
+              class="event__input  event__input--time"
+              id="event-start-time-${formId}"
+              type="text"
+              name="event-start-time"
+              ${disabled ? 'disabled' : ''}
+              value="${state.dateFrom}" />
             &mdash;
             <label class="visually-hidden" for="event-end-time-${formId}">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-${formId}" type="text" name="event-end-time" value="${waypoint.dateTo}" />
+            <input
+              class="event__input  event__input--time"
+              id="event-end-time-${formId}"
+              type="text"
+              name="event-end-time"
+              ${disabled ? 'disabled' : ''}
+              value="${state.dateTo}" />
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -62,12 +95,18 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-${formId}" type="text" name="event-price" value="${waypoint.basePrice}" />
+            <input
+              class="event__input  event__input--price"
+              id="event-price-${formId}"
+              type="text"
+              name="event-price"
+              ${disabled ? 'disabled' : ''}
+              value="${state.basePrice}" />
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${formId ? 'Delete' : 'Cancel'}</button>
-          ${formId ? rollupMarkup : ''}
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${disabled ? 'disabled' : ''}>${saveButtonText}</button>
+          <button class="event__reset-btn" type="reset" ${disabled ? 'disabled' : ''}>${cancelButtonText}</button>
+          ${rollupMarkup}
         </header>
         <section class="event__details">
 
@@ -85,11 +124,14 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
 export default class EditWaypointView extends AbstractStatefulView {
 
   /**
-   * @param {import('../../mock/trip').Waypoint} waypoint
+   * @param {import('../../constants').Waypoint} waypoint
    * @returns {Object} внутреннее состояние компонента
    */
   static convertDataToState(waypoint) {
     const state = {...waypoint};
+    state.isDisabled = false;
+    state.isSaving = false;
+    state.isDeleting = false;
     state.basePrice = he.decode(String(waypoint.basePrice));
     state.dateFrom = he.decode(String(waypoint.dateFrom));
     state.dateTo = he.decode(String(waypoint.dateTo));
@@ -99,14 +141,17 @@ export default class EditWaypointView extends AbstractStatefulView {
 
   /**
    * @param {Object} state
-   * @returns {import('../../mock/trip').Waypoint} данные
+   * @returns {import('../../constants').Waypoint} данные
    */
   static convertStateToData(state) {
     const waypoint = {...state};
-    waypoint.basePrice = he.encode(String(state.basePrice));
+    waypoint.basePrice = Number(he.encode(String(state.basePrice)));
     waypoint.dateFrom = he.encode(String(state.dateFrom));
     waypoint.dateTo = he.encode(String(state.dateTo));
     waypoint.offers = Array.from(state.offers);
+    delete waypoint.isDisabled;
+    delete waypoint.isSaving;
+    delete waypoint.isDeleting;
     return waypoint;
   }
 
@@ -122,9 +167,9 @@ export default class EditWaypointView extends AbstractStatefulView {
 
   /**
    * @param {Object} param0
-   * @param {import('../../mock/trip').Waypoint} param0.waypoint
-   * @param {import('../../mock/destinations').Destination[]} param0.destinations
-   * @param {import('../../mock/offers').OffersList} param0.offers
+   * @param {import('../../constants').Waypoint} param0.waypoint
+   * @param {import('../../constants').Destination[]} param0.destinations
+   * @param {import('../../constants').OffersList} param0.offers
    * @param {Function} param0.onFormSubmit
    * @param {Function} param0.onFormCancel
    */
@@ -155,7 +200,9 @@ export default class EditWaypointView extends AbstractStatefulView {
     });
 
     this.element.querySelector('.event--edit').addEventListener('submit', this.#onFormSubmit);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onFormCancel);
+    if (this._state.id) {
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onFormCancel);
+    }
 
     this.#setTimePicker();
   }
@@ -190,7 +237,8 @@ export default class EditWaypointView extends AbstractStatefulView {
         defaultDate: this._state.dateFrom,
         enableTime: true,
         time_24hr: true, // eslint-disable-line
-        onChange: this.#onStartTimeChange
+        onChange: this.#onStartTimeChange,
+        disable: [this.#disableStartTime]
       }
     );
 
@@ -201,10 +249,21 @@ export default class EditWaypointView extends AbstractStatefulView {
         defaultDate: this._state.dateTo,
         enableTime: true,
         time_24hr: true, // eslint-disable-line
-        onChange: this.#onEndTimeChange
+        onChange: this.#onEndTimeChange,
+        disable: [this.#disableEndTime]
       }
     );
   }
+
+  #disableStartTime = (time) => {
+    const newMaxLimit = dayjs(time).add(15, 'minute').toDate();
+    return dayjs(this._state.dateTo).isBefore(newMaxLimit);
+  };
+
+  #disableEndTime = (time) => {
+    const newMinLimit = dayjs(time).subtract(15, 'minute').toDate();
+    return dayjs(this._state.dateFrom).isAfter(newMinLimit);
+  };
 
   #onOffersChange = (evt) => {
     if (evt.target.checked) {

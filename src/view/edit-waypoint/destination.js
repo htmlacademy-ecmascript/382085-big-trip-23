@@ -1,6 +1,6 @@
 /**
   * @param {Object} param0
-  * @param {import('../mock/destinations').PictureData[]} param0.pictures
+  * @param {import('../../constants').PictureData[]} param0.pictures
   * @returns {string} разметка
   */
 function createPicturesMarkup({pictures}) {
@@ -22,7 +22,7 @@ function createPicturesMarkup({pictures}) {
 }
 
 /**
-* @param {import('../mock/destinations').Destination} destination
+* @param {import('../../constants').Destination} destination
 * @returns {string} разметка
 */
 export function createDestinationMarkup(destination) {

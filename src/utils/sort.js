@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 
 /**
   * Функция сортировки по дате начала, от старых к новым
-  * @param {import('./mock/trip').Waypoint} left
-  * @param {import('./mock/trip').Waypoint} right
+  * @param {import('./constants').Waypoint} left
+  * @param {import('./constants').Waypoint} right
   * @returns {-1 | 0 | 1}
   */
 function sortByDay(left, right) {
@@ -26,8 +26,8 @@ function sortByDay(left, right) {
 
 /**
   * функция сортировки по длительности, от долгих к быстрым
-  * @param {import('./mock/trip').Waypoint} left
-  * @param {import('./mock/trip').Waypoint} right
+  * @param {import('./constants').Waypoint} left
+  * @param {import('./constants').Waypoint} right
   * @returns {-1 | 0 | 1}
   */
 function sortByTimeDuration(left, right) {
@@ -43,8 +43,8 @@ function sortByTimeDuration(left, right) {
 
 /**
   * функция сортировки по цене, от дорогих к дешёвым
-  * @param {import('./mock/trip').Waypoint} left
-  * @param {import('./mock/trip').Waypoint} right
+  * @param {import('./constants').Waypoint} left
+  * @param {import('./constants').Waypoint} right
   * @returns {-1 | 0 | 1}
   */
 function sortByPrice(left, right) {

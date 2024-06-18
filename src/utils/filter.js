@@ -8,6 +8,7 @@ export const FilterType = {
 };
 
 export const FILTER_TO_MESSAGE_MAP = new Map([
+  ['loading', 'Loading...'],
   [FilterType.ALL, 'Click New Event to create your first point'],
   [FilterType.PAST, 'There are no past events now'],
   [FilterType.PRESENT, 'There are no present events now'],
@@ -16,7 +17,7 @@ export const FILTER_TO_MESSAGE_MAP = new Map([
 
 
 /**
- * @param {import('../mock/trip').Waypoint} waypoint
+ * @param {import('../constants').Waypoint} waypoint
  * @returns {boolean}
  */
 function filterFuture(waypoint) {
@@ -24,7 +25,7 @@ function filterFuture(waypoint) {
 }
 
 /**
- * @param {import('../mock/trip').Waypoint} waypoint
+ * @param {import('../constants').Waypoint} waypoint
  * @returns {boolean}
  */
 function filterPast(waypoint) {
@@ -32,7 +33,7 @@ function filterPast(waypoint) {
 }
 
 /**
- * @param {import('../mock/trip').Waypoint} waypoint
+ * @param {import('../constants').Waypoint} waypoint
  * @returns {boolean}
  */
 function filterPresent(waypoint) {

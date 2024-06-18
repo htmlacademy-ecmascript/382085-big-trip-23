@@ -17,7 +17,7 @@ function createFilterItemMarkup(filterName, selected, enabled) {
 }
 
 /**
-* @param {Map<string, import('../mock/trip').Waypoint[]>} filteredMap
+* @param {Map<string, import('../constants').Waypoint[]>} filteredMap
 * @param {string} selectedFilter
 * @returns {string}
 */

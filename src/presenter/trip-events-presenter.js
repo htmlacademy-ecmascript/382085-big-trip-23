@@ -1,4 +1,5 @@
 import { render, remove, RenderPosition } from '../framework/render';
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
 import SortView from '../view/sort';
 import TripEventsListView from '../view/trip-events-list';
 import ListEmptyView from '../view/list-empty';
@@ -8,24 +9,39 @@ import { SORT_ITEMS } from '../utils/sort';
 import { DEFAULT_SORT_ID, UpdateType, UserAction } from '../constants';
 import { FILTERS_OBJECT } from '../utils/filter';
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 export default class TripEventsPresenter {
   #container = null;
-
+  /** @type {import('../model/waypoints-model').default} */
   #waypointsModel = null;
+  /** @type {import('../model/destinations-model').default} */
   #destinationsModel = null;
+  /** @type {import('../model/offers-model').default} */
   #offersModel = null;
+  /** @type {import('../model/filter-model').default} */
   #filterModel = null;
 
+  /** @type {import('../view/sort').default} */
   #sortComponent = null;
+  /** @type {import('../view/list-empty').default} */
   #emptyListComponent = null;
   #tripEventsListComponent = new TripEventsListView();
-  #newWaypointPresenter = null;
 
+  /** @type {NewWaypointPresenter} */
+  #newWaypointPresenter = null;
+  /** @type {Map<string, WaypointPresenter>} */
   #waypointsPresenters = new Map();
 
   #handleNewWaypointClose = null;
 
   #selectedSorting = null;
+  #isLoading = true;
+
+  #uiBlocker = new UiBlocker({lowerLimit: TimeLimit.LOWER_LIMIT, upperLimit: TimeLimit.UPPER_LIMIT});
 
   constructor({eventsContainer, waypointsModel, destinationsModel, offersModel, filterModel, onNewWaypointClose}) {
     this.#container = eventsContainer;
@@ -100,6 +116,12 @@ export default class TripEventsPresenter {
   }
 
   #renderAll() {
+    if (this.#isLoading) {
+      this.#emptyListComponent = new ListEmptyView('loading');
+      this.#renderEmptyListComponent();
+      return;
+    }
+
     const sortedWaypoints = this.waypoints;
 
     if (sortedWaypoints.length === 0) {
@@ -115,17 +137,10 @@ export default class TripEventsPresenter {
   }
 
   #renderWaypointsList() {
-    //const createWaypointComponent = this.#createWaypointEditComponent(DUMMY_WAYPOINT);
     const sortedWaypoints = this.waypoints;
 
     render(this.#tripEventsListComponent, this.#container);
-    //const mockEditWaypointId = 'check-in-hotel-pyatigorsk';
     for (const waypoint of sortedWaypoints) {
-      //if (waypoint.id === mockEditWaypointId) {
-      //  this.#createWaypointComponent(waypoint);
-      //} else {
-      //  this.#renderWaypoint(waypoint);
-      //}
       this.#renderWaypoint(waypoint);
     }
   }
@@ -138,23 +153,50 @@ export default class TripEventsPresenter {
     render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  /**
+   * @param {string} actionType
+   * @param {string} updateType
+   * @param {import('../constants').Waypoint} update
+   */
+  #handleViewAction = async (actionType, updateType, update) => {
     //console.log('[TripEventsPresenter::handleViewAction]', actionType, updateType);
+    //console.log(update);
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.ADD_WAYPOINT:
-        this.#waypointsModel.addWaypoint(updateType, update);
+        this.#newWaypointPresenter.setSaving(); // ???
+        try {
+          await this.#waypointsModel.addWaypoint(updateType, update);
+        } catch (err) {
+          this.#newWaypointPresenter.setAborting(); // ???
+        }
         break;
       case UserAction.DELETE_WAYPOINT:
-        this.#waypointsModel.deleteWaypoint(updateType, update);
+        this.#waypointsPresenters.get(update.id).setDeleting(); // ???
+        try {
+          await this.#waypointsModel.deleteWaypoint(updateType, update);
+        } catch (err) {
+          this.#waypointsPresenters.get(update.id).setAborting(); // ???
+        }
         break;
       case UserAction.UPDATE_WAYPOINT:
-        this.#waypointsModel.updateWaypoint(updateType, update);
+        this.#waypointsPresenters.get(update.id).setSaving(); // ???
+        try {
+          await this.#waypointsModel.updateWaypoint(updateType, update);
+        } catch (err) {
+          this.#waypointsPresenters.get(update.id).setAborting(); // ???
+        }
         break;
       default:
         throw new Error('[TripEventsPresenter::handleViewAction] unknown action type');
     }
+    this.#uiBlocker.unblock();
   };
 
+  /**
+   * @param {string} updateType
+   * @param {import('../constants').Waypoint} data
+   */
   #handleModelEvent = (updateType, data) => {
     //console.log('[TripEventsPresenter::handleModelEvent]', updateType);
     switch (updateType) {
@@ -165,6 +207,10 @@ export default class TripEventsPresenter {
         this.init();
         break;
       case UpdateType.MAJOR:
+        this.init();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
         this.init();
         break;
       default:
