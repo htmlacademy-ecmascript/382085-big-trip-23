@@ -2,7 +2,6 @@ import { UpdateType } from '../constants';
 import Observable from '../framework/observable';
 
 export default class WaypointsModel extends Observable {
-  #newWaypointCounter = 0;
   #waypoints = [];
 
   #apiService = null;
@@ -12,29 +11,45 @@ export default class WaypointsModel extends Observable {
     this.#apiService = apiService;
   }
 
-  updateWaypoint(updateType, update) {
+  async updateWaypoint(updateType, update) {
     const index = this.#waypoints.findIndex(({id}) => id === update.id);
     if (index === -1) {
       throw new Error('[waypoints model::update] Task is not found');
     }
-    this.#waypoints.splice(index, 1, update);
-    this._notify(updateType, update);
+
+    try {
+      const response = await this.#apiService.updateWaypoint(this.#adaptToServer(update));
+      const updatedWaypoint = this.#adaptToClient(response);
+      this.#waypoints.splice(index, 1, updatedWaypoint);
+      this._notify(updateType, updatedWaypoint);
+    } catch (err) {
+      throw new Error('Can not update task!');
+    }
   }
 
-  addWaypoint(updateType, update) {
-    update.id = `fake_id-${this.#newWaypointCounter}`;
-    this.#newWaypointCounter += 1;
-    this.#waypoints.push(update);
-    this._notify(updateType, update);
+  async addWaypoint(updateType, update) {
+    try {
+      const response = await this.#apiService.addWaypoint(this.#adaptToServer(update));
+      const newWaypoint = this.#adaptToClient(response);
+      this.#waypoints.push(update);
+      this._notify(updateType, newWaypoint);
+    } catch (err) {
+      throw new Error('Can not add task!');
+    }
   }
 
-  deleteWaypoint(updateType, update) {
+  async deleteWaypoint(updateType, update) {
     const index = this.#waypoints.findIndex(({id}) => id === update.id);
     if (index === -1) {
       throw new Error('[waypoints model::delete] Task is not found');
     }
-    this.#waypoints.splice(index, 1);
-    this._notify(updateType);
+    try {
+      await this.#apiService.deleteWaypoint(this.#adaptToServer(update));
+      this.#waypoints.splice(index, 1);
+      this._notify(updateType);
+    } catch (err) {
+      throw new Error('Can not delete task!');
+    }
   }
 
   get waypoints() {
