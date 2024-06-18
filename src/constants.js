@@ -40,3 +40,5 @@ export const UserAction = {
   UPDATE_WAYPOINT: 'update-waypoint',
 };
 
+
+export const BIG_TRIP_URI = 'https://23.objects.htmlacademy.pro/big-trip';
