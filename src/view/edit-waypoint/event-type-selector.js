@@ -1,9 +1,9 @@
-import { EVENT_TYPES } from '../../mock/destinations';
+import { EVENT_TYPES } from '../../constants';
 import { EVENT_TYPE_ICONS } from '../../constants';
 import { capitalize } from '../../utils/common';
 
 /**
-  * @param {import('../mock/trip').WaypointType} type
+  * @param {import('../../constants').WaypointType} type
   * @param {string} waypointId
   * @returns {string} разметка
 */
@@ -21,7 +21,7 @@ function createEventOptionMarkup(waypointId, type) {
 
 /**
   * @param {string} waypointId
-  * @param {import('../mock/trip').WaypointType} selectedEventType
+  * @param {import('../../constants').WaypointType} selectedEventType
   * @returns {string} разметка
 */
 export function createEventTypeSelectorMarkup(waypointId, selectedEventType) {

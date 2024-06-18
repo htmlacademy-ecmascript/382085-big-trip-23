@@ -9,8 +9,8 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 
 /**
-  * @param {import('../mock/trip').Waypoint} waypoint
-  * @param {import('../mock/destinations').Destination[]} destinations
+  * @param {import('../../constants').Waypoint} waypoint
+  * @param {import('../../constants').Destination[]} destinations
   * @returns {string} разметка
   */
 function createEditWaypointMarkup(waypoint, destinations, offers) {
@@ -85,7 +85,7 @@ function createEditWaypointMarkup(waypoint, destinations, offers) {
 export default class EditWaypointView extends AbstractStatefulView {
 
   /**
-   * @param {import('../../mock/trip').Waypoint} waypoint
+   * @param {import('../../constants').Waypoint} waypoint
    * @returns {Object} внутреннее состояние компонента
    */
   static convertDataToState(waypoint) {
@@ -99,7 +99,7 @@ export default class EditWaypointView extends AbstractStatefulView {
 
   /**
    * @param {Object} state
-   * @returns {import('../../mock/trip').Waypoint} данные
+   * @returns {import('../../constants').Waypoint} данные
    */
   static convertStateToData(state) {
     const waypoint = {...state};
@@ -122,9 +122,9 @@ export default class EditWaypointView extends AbstractStatefulView {
 
   /**
    * @param {Object} param0
-   * @param {import('../../mock/trip').Waypoint} param0.waypoint
-   * @param {import('../../mock/destinations').Destination[]} param0.destinations
-   * @param {import('../../mock/offers').OffersList} param0.offers
+   * @param {import('../../constants').Waypoint} param0.waypoint
+   * @param {import('../../constants').Destination[]} param0.destinations
+   * @param {import('../../constants').OffersList} param0.offers
    * @param {Function} param0.onFormSubmit
    * @param {Function} param0.onFormCancel
    */

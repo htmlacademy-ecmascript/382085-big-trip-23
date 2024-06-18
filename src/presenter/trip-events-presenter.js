@@ -115,17 +115,10 @@ export default class TripEventsPresenter {
   }
 
   #renderWaypointsList() {
-    //const createWaypointComponent = this.#createWaypointEditComponent(DUMMY_WAYPOINT);
     const sortedWaypoints = this.waypoints;
 
     render(this.#tripEventsListComponent, this.#container);
-    //const mockEditWaypointId = 'check-in-hotel-pyatigorsk';
     for (const waypoint of sortedWaypoints) {
-      //if (waypoint.id === mockEditWaypointId) {
-      //  this.#createWaypointComponent(waypoint);
-      //} else {
-      //  this.#renderWaypoint(waypoint);
-      //}
       this.#renderWaypoint(waypoint);
     }
   }

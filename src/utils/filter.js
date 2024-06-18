@@ -16,7 +16,7 @@ export const FILTER_TO_MESSAGE_MAP = new Map([
 
 
 /**
- * @param {import('../mock/trip').Waypoint} waypoint
+ * @param {import('../constants').Waypoint} waypoint
  * @returns {boolean}
  */
 function filterFuture(waypoint) {
@@ -24,7 +24,7 @@ function filterFuture(waypoint) {
 }
 
 /**
- * @param {import('../mock/trip').Waypoint} waypoint
+ * @param {import('../constants').Waypoint} waypoint
  * @returns {boolean}
  */
 function filterPast(waypoint) {
@@ -32,7 +32,7 @@ function filterPast(waypoint) {
 }
 
 /**
- * @param {import('../mock/trip').Waypoint} waypoint
+ * @param {import('../constants').Waypoint} waypoint
  * @returns {boolean}
  */
 function filterPresent(waypoint) {

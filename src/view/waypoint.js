@@ -4,7 +4,7 @@ import { EVENT_TYPE_ICONS } from '../constants';
 import { getDurationString } from '../utils/common.js';
 
 /**
-* @param {import('../mock/offers').Offer} offer
+* @param {import('../constants').Offer} offer
 * @returns {string} вёрстка одной дополнительной опции
 */
 function createOfferMarkup(offer) {
@@ -18,9 +18,9 @@ function createOfferMarkup(offer) {
 
 
 /**
-* @param {import('../mock/trip').Waypoint} waypoint
-* @param {import('../mock/destinations').Destination} destination объект Destination соответствующий назначению пункта путешествия
-* @param {import('../mock/offers').Offer[]} offers опции для текущего типа точки путешествия
+* @param {import('../constants').Waypoint} waypoint
+* @param {import('../constants').Destination} destination объект Destination соответствующий назначению пункта путешествия
+* @param {import('../constants').Offer[]} offers опции для текущего типа точки путешествия
 * @returns {string} вёрстка для одного пункта в путешествии
 */
 function createWaypointTemplate(waypoint, destination, offers) {

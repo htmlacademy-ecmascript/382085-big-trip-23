@@ -1,6 +1,6 @@
 /**
   * @param {Object} waypoint
-  * @param {import('../mock/offers').Offer} offer
+  * @param {import('../../constants').Offer} offer
   * @returns {string} разметка
 */
 function createOfferMarkup(waypoint, offer) {
@@ -18,7 +18,7 @@ function createOfferMarkup(waypoint, offer) {
 
 /**
   * @param {Object} waypoint
-  * @param {import('../mock/offers').Offer[]} availableOffers
+  * @param {import('../../constants').Offer[]} availableOffers
   * @returns {string} разметка
 */
 export function createOffersMarkup(waypoint, availableOffers) {

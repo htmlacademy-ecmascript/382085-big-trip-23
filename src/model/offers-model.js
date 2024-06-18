@@ -12,8 +12,8 @@ export default class OffersModel {
   }
 
   /**
-  * @param {import('../mock/trip').WaypointType} eventType тип точки путешествия
-  * @returns {import('../mock/offers').Offer[]} массив предложений
+  * @param {import('../constants').WaypointType} eventType тип точки путешествия
+  * @returns {import('../constants').Offer[]} массив предложений
   */
   getOffersForEventType(eventType) {
     const offerListItem = this.#offers.find((item) => item.type === eventType);

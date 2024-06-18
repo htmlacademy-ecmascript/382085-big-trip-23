@@ -2,9 +2,9 @@ import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view';
 
 /**
-  * @param {import('../mock/trip').Waypoint[]} waypoints
-  * @param {import('../mock/destinations').Destination[]} destinations
-  * @param {import('../mock/offers').Offer[]} offers
+  * @param {import('../constants').Waypoint[]} waypoints
+  * @param {import('../constants').Destination[]} destinations
+  * @param {import('../constants').Offer[]} offers
   * @returns {string} разметка
   */
 function createTripInfoMarkup(waypoints, destinations, offers) {
