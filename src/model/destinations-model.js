@@ -1,9 +1,12 @@
-import { DESTINATIONS } from '../mock/destinations';
-
 export default class DestinationsModel {
-  #destinations = DESTINATIONS;
+  #destinations = [];
 
-  // во имя инкапсуляции!
+  #apiService = null;
+
+  constructor({apiService}) {
+    this.#apiService = apiService;
+  }
+
   get destinations() {
     return this.#destinations;
   }
@@ -11,5 +14,13 @@ export default class DestinationsModel {
   getDestination(id) {
     const result = this.#destinations.find((item) => item.id === id);
     return result;
+  }
+
+  async init() {
+    try {
+      this.#destinations = await this.#apiService.destinations;
+    } catch (err) {
+      this.#destinations = [];
+    }
   }
 }
