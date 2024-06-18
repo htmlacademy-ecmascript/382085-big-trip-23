@@ -3,14 +3,19 @@ import { RenderPosition, remove, render } from '../framework/render';
 import EditWaypointView from '../view/edit-waypoint/edit-waypoint';
 
 export default class NewWaypointPresenter {
+  /** @type {import('../constants').Destination[]} */
   #destinations = null;
+  /** @type {import('../constants').OffersList} */
   #offers = null;
+
+  /** @type {EditWaypointView} */
+  #waypointEditComponent = null;
 
   #onNewWaypointClose = null;
   #handleFormSubmit = null;
 
   #container = null;
-  #waypointEditComponent = null;
+
   constructor({container, destinations, offers, onFormSubmit, onNewWaypointClose}) {
     this.#container = container;
     this.#destinations = destinations;
@@ -55,8 +60,6 @@ export default class NewWaypointPresenter {
 
   #onFormSubmit = (newWaypoint) => {
     this.#handleFormSubmit(UserAction.ADD_WAYPOINT, UpdateType.MINOR, newWaypoint);
-    // todo
-    //this.destroy();
   };
 
   #handleFormCancel = () => {

@@ -93,7 +93,6 @@ export default class TripEventsPresenter {
       remove(this.#emptyListComponent);
       this.#emptyListComponent = null;
     }
-    // ????
     if (this.#newWaypointPresenter) {
       this.#newWaypointPresenter.destroy();
       this.#newWaypointPresenter = null;

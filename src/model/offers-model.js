@@ -1,4 +1,5 @@
 export default class OffersModel {
+  /** @type {import('../constants').OffersList} */
   #offers = [];
 
   #apiService = null;

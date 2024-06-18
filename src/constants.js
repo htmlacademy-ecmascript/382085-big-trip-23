@@ -23,7 +23,7 @@
 
 /**
 * @typedef {Object} OffersListItem
-* @prop {import("./trip").WaypointType} type
+* @prop {WaypointType} type
 * @prop {Offer[]} offers
 */
 
