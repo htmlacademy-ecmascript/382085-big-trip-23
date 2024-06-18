@@ -11,6 +11,10 @@ export default class WaypointsModel extends Observable {
     this.#apiService = apiService;
   }
 
+  /**
+   * @param {UpdateType} updateType
+   * @param {import('../constants').Waypoint} update
+   */
   async updateWaypoint(updateType, update) {
     const index = this.#waypoints.findIndex(({id}) => id === update.id);
     if (index === -1) {
@@ -27,6 +31,10 @@ export default class WaypointsModel extends Observable {
     }
   }
 
+  /**
+   * @param {UpdateType} updateType
+   * @param {import('../constants').Waypoint} update
+   */
   async addWaypoint(updateType, update) {
     try {
       const response = await this.#apiService.addWaypoint(this.#adaptToServer(update));
@@ -38,6 +46,10 @@ export default class WaypointsModel extends Observable {
     }
   }
 
+  /**
+   * @param {UpdateType} updateType
+   * @param {import('../constants').Waypoint} update
+   */
   async deleteWaypoint(updateType, update) {
     const index = this.#waypoints.findIndex(({id}) => id === update.id);
     if (index === -1) {
