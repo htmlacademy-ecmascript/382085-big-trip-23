@@ -107,10 +107,8 @@ function main() {
   tripEventsPresenter.init();
 }
 
-Promise.allSettled([destinationsModel.init(), offersModel.init(), waypointsModel.init()])
+Promise.allSettled([destinationsModel.init(), offersModel.init()]) // эти просто скачивают данные
   .then(() => {
+    waypointsModel.init(); // эта модель уведомляет подписчиков
     main();
-  })
-  .catch((error) => {
-    console.error(error);
   });

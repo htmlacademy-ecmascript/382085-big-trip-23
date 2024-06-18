@@ -29,9 +29,6 @@
 
 /** @typedef {OffersListItem[]} OffersList */
 
-/** @type WaypointType[] */
-export const EVENT_TYPES = ['check-in', 'sightseeing', 'restaurant', 'taxi', 'bus', 'train', 'ship', 'drive', 'flight'];
-
 /**
 * @typedef {Object} PictureData
 * @prop {string} src
@@ -45,6 +42,9 @@ export const EVENT_TYPES = ['check-in', 'sightseeing', 'restaurant', 'taxi', 'bu
 * @prop {string} name
 * @prop {PictureData[]} pictures
 */
+
+/** @type WaypointType[] */
+export const EVENT_TYPES = ['check-in', 'sightseeing', 'restaurant', 'taxi', 'bus', 'train', 'ship', 'drive', 'flight'];
 
 /** */
 export const EVENT_TYPE_ICONS = {
@@ -78,7 +78,8 @@ export const DEFAULT_SORT_ID = 'day';
 export const UpdateType = {
   PATCH: 'patch',
   MINOR: 'minor',
-  MAJOR: 'major'
+  MAJOR: 'major',
+  INIT: 'init',
 };
 
 export const UserAction = {

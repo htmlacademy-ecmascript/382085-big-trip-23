@@ -77,6 +77,6 @@ export default class WaypointsModel extends Observable {
     } catch (err) {
       this.#waypoints = [];
     }
-    this._notify(UpdateType.MAJOR, this.#waypoints);
+    this._notify(UpdateType.INIT, this.#waypoints);
   }
 }

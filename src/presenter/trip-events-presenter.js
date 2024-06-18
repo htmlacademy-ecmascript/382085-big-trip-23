@@ -26,6 +26,7 @@ export default class TripEventsPresenter {
   #handleNewWaypointClose = null;
 
   #selectedSorting = null;
+  #isLoading = true;
 
   constructor({eventsContainer, waypointsModel, destinationsModel, offersModel, filterModel, onNewWaypointClose}) {
     this.#container = eventsContainer;
@@ -100,6 +101,12 @@ export default class TripEventsPresenter {
   }
 
   #renderAll() {
+    if (this.#isLoading) {
+      this.#emptyListComponent = new ListEmptyView('loading');
+      this.#renderEmptyListComponent();
+      return;
+    }
+
     const sortedWaypoints = this.waypoints;
 
     if (sortedWaypoints.length === 0) {
@@ -158,6 +165,10 @@ export default class TripEventsPresenter {
         this.init();
         break;
       case UpdateType.MAJOR:
+        this.init();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
         this.init();
         break;
       default:

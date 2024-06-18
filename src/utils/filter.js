@@ -8,6 +8,7 @@ export const FilterType = {
 };
 
 export const FILTER_TO_MESSAGE_MAP = new Map([
+  ['loading', 'Loading...'],
   [FilterType.ALL, 'Click New Event to create your first point'],
   [FilterType.PAST, 'There are no past events now'],
   [FilterType.PRESENT, 'There are no present events now'],
