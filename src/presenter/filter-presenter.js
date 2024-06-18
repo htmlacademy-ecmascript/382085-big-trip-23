@@ -1,6 +1,4 @@
 import FilterView from '../view/filter';
-import FilterModel from '../model/filter-model';
-import WaypointsModel from '../model/waypoints-model';
 import { remove, render, replace } from '../framework/render';
 import { UpdateType } from '../constants';
 import { FILTERS_OBJECT } from '../utils/filter';
