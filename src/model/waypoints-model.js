@@ -39,7 +39,7 @@ export default class WaypointsModel extends Observable {
     try {
       const response = await this.#apiService.addWaypoint(this.#adaptToServer(update));
       const newWaypoint = this.#adaptToClient(response);
-      this.#waypoints.push(update);
+      this.#waypoints.push(newWaypoint);
       this._notify(updateType, newWaypoint);
     } catch (err) {
       throw new Error('Can not add task!');
