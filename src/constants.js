@@ -63,9 +63,9 @@ export const EVENT_TYPE_ICONS = {
 /** @type {Waypoint} */
 export const DUMMY_WAYPOINT = {
   type: 'flight',
-  dateTo: (new Date()).toISOString(),
-  dateFrom: (new Date()).toISOString(),
-  basePrice: 10,
+  dateTo: '',
+  dateFrom: '',
+  basePrice: 0,
   offers: [],
   destination: '',
   isFavorite: false,
@@ -79,6 +79,7 @@ export const UpdateType = {
   MINOR: 'minor',
   MAJOR: 'major',
   INIT: 'init',
+  INIT_FAILED: 'init-failed',
 };
 
 export const UserAction = {

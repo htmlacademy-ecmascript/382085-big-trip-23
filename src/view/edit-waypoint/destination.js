@@ -5,7 +5,7 @@
   */
 function createPicturesMarkup({pictures}) {
 
-  if (pictures?.length === 0) {
+  if (!pictures || pictures.length === 0) {
     return '';
   }
 
@@ -28,6 +28,10 @@ function createPicturesMarkup({pictures}) {
 export function createDestinationMarkup(destination) {
 
   if (!destination) {
+    return '';
+  }
+
+  if (destination.description === '' && destination.pictures.length === 0) {
     return '';
   }
 
