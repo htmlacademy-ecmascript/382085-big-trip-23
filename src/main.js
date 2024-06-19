@@ -1,5 +1,5 @@
 import { BIG_TRIP_URI, DEFAULT_FILTER_ID, UpdateType } from './constants';
-import { myForkJoin } from './utils/common';
+import { forkJoinObservables } from './utils/common';
 
 import WaypointsModel from './model/waypoints-model';
 import DestinationsModel from './model/destinations-model';
@@ -75,7 +75,7 @@ function main() {
   const filterModel = new FilterModel();
   //================================================================================
 
-  myForkJoin([waypointsModel, destinationsModel, offersModel], initTripInfoView);
+  forkJoinObservables([waypointsModel, destinationsModel, offersModel], initTripInfoView);
 
   const eventsContainer = document.querySelector('.trip-events');
 
@@ -111,7 +111,7 @@ function main() {
   };
   const filterPresenter = new FilterPresenter(filterPresenterData);
 
-  myForkJoin([waypointsModel, destinationsModel, offersModel], (status) => filterPresenter.init(status));
+  forkJoinObservables([waypointsModel, destinationsModel, offersModel], (status) => filterPresenter.init(status));
   tripEventsPresenter.init();
 }
 

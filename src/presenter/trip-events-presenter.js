@@ -8,7 +8,7 @@ import NewWaypointPresenter from './new-waypoint-presenter';
 import { DEFAULT_SORT_ID, UpdateType, UserAction } from '../constants';
 import { SORT_ITEMS } from '../utils/sort';
 import { FILTERS_OBJECT } from '../utils/filter';
-import { myForkJoin } from '../utils/common';
+import { forkJoinObservables } from '../utils/common';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -53,7 +53,7 @@ export default class TripEventsPresenter {
     this.#selectedSorting = DEFAULT_SORT_ID;
     this.#handleNewWaypointClose = onNewWaypointClose;
 
-    myForkJoin([this.#waypointsModel, this.#destinationsModel, this.#offersModel], this.#handleModelEvent);
+    forkJoinObservables([this.#waypointsModel, this.#destinationsModel, this.#offersModel], this.#handleModelEvent);
 
     this.#filterModel.addObserver(this.#handleModelEvent);
   }

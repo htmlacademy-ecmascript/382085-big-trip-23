@@ -25,20 +25,25 @@ export function capitalize(str) {
  * @param {import('../framework/observable').default[]} observables
  * @param {Function} cb
  */
-export function myForkJoin(observables, cb) {
+export function forkJoinObservables(observables, cb) {
   const state = Array.from(observables, () => 0);
   observables.forEach((observable, idx) => {
-    observable.addObserver(makeWaitAndCall(idx, cb, state));
+    observable.addObserver(makeWaitAllAndCall(idx, state, cb));
   });
 }
 
-function makeWaitAndCall(id, cb, state) {
-  return function (ev) {
-    state[id] = ev;
+/**
+ * @param {number} idx индекс в массиве state
+ * @param {any[]} state массив с результатами
+ * @param {Function} cb
+ */
+function makeWaitAllAndCall(idx, state, cb) {
+  return function (evt) {
+    state[idx] = evt;
 
-    if (state.every((v) => v !== 0)) {
+    if (state.every((value) => value !== 0)) {
       try {
-        if (state.some((v) => v === UpdateType.INIT_FAILED)) {
+        if (state.some((value) => value === UpdateType.INIT_FAILED)) {
           cb(UpdateType.INIT_FAILED);
           return;
         }
