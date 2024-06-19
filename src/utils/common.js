@@ -37,11 +37,15 @@ function makeWaitAndCall(id, cb, state) {
     state[id] = ev;
 
     if (state.every((v) => v !== 0)) {
-      if (state.some((v) => v === UpdateType.INIT_FAILED)) {
-        cb(UpdateType.INIT_FAILED);
-        return;
+      try {
+        if (state.some((v) => v === UpdateType.INIT_FAILED)) {
+          cb(UpdateType.INIT_FAILED);
+          return;
+        }
+        cb(UpdateType.INIT);
+      } catch (err) {
+        console.error(err);
       }
-      cb(UpdateType.INIT);
     }
   };
 }
