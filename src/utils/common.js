@@ -44,7 +44,7 @@ function makeWaitAndCall(id, cb, state) {
         }
         cb(UpdateType.INIT);
       } catch (err) {
-        console.error(err);
+        //console.error(err);
       }
     }
   };
