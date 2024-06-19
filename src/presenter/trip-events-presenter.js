@@ -53,9 +53,6 @@ export default class TripEventsPresenter {
     this.#selectedSorting = DEFAULT_SORT_ID;
     this.#handleNewWaypointClose = onNewWaypointClose;
 
-    //this.#waypointsModel.addObserver(makeWaitAndCall(0, this.#handleModelEvent));
-    //this.#destinationsModel.addObserver(makeWaitAndCall(1, this.#handleModelEvent));
-    //this.#offersModel.addObserver(makeWaitAndCall(2, this.#handleModelEvent));
     myForkJoin([this.#waypointsModel, this.#destinationsModel, this.#offersModel], this.#handleModelEvent);
 
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -178,14 +175,17 @@ export default class TripEventsPresenter {
         try {
           await this.#waypointsModel.addWaypoint(updateType, update);
         } catch (err) {
+          //console.error(err);
           this.#newWaypointPresenter.setAborting(); // ???
         }
+        this.#handleNewWaypointClose();
         break;
       case UserAction.DELETE_WAYPOINT:
         this.#waypointsPresenters.get(update.id).setDeleting(); // ???
         try {
           await this.#waypointsModel.deleteWaypoint(updateType, update);
         } catch (err) {
+          //console.error(err);
           this.#waypointsPresenters.get(update.id).setAborting(); // ???
         }
         break;
@@ -194,6 +194,7 @@ export default class TripEventsPresenter {
         try {
           await this.#waypointsModel.updateWaypoint(updateType, update);
         } catch (err) {
+          //console.error(err);
           this.#waypointsPresenters.get(update.id).setAborting(); // ???
         }
         break;
