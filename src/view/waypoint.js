@@ -54,9 +54,9 @@ function createWaypointTemplate(waypoint, destination, offers) {
         <h3 class="event__title">${waypoint.type} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${waypoint.dateFrom}">${dayjsFrom.format('HH:MM')}</time>
+            <time class="event__start-time" datetime="${waypoint.dateFrom}">${dayjsFrom.format('HH:mm')}</time>
             &mdash;
-            <time class="event__end-time" datetime="${waypoint.dateTo}">${dayjsTo.format('HH:MM')}</time>
+            <time class="event__end-time" datetime="${waypoint.dateTo}">${dayjsTo.format('HH:mm')}</time>
           </p>
           <p class="event__duration">${humanizedInterval}</p>
         </div>

@@ -77,8 +77,7 @@ function createEditWaypointMarkup(state, destinations, offers) {
               id="event-start-time-${formId}"
               type="text"
               name="event-start-time"
-              ${disabled ? 'disabled' : ''}
-              value="${state.dateFrom}" />
+              ${disabled ? 'disabled' : ''}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-${formId}">To</label>
             <input
@@ -86,8 +85,7 @@ function createEditWaypointMarkup(state, destinations, offers) {
               id="event-end-time-${formId}"
               type="text"
               name="event-end-time"
-              ${disabled ? 'disabled' : ''}
-              value="${state.dateTo}" />
+              ${disabled ? 'disabled' : ''}>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -104,8 +102,8 @@ function createEditWaypointMarkup(state, destinations, offers) {
               value="${state.basePrice}" />
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${disabled ? 'disabled' : ''}>${saveButtonText}</button>
-          <button class="event__reset-btn" type="reset" ${disabled ? 'disabled' : ''}>${cancelButtonText}</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
+          <button class="event__reset-btn" type="reset">${cancelButtonText}</button>
           ${rollupMarkup}
         </header>
         <section class="event__details">

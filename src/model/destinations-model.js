@@ -1,10 +1,14 @@
-export default class DestinationsModel {
+import { UpdateType } from '../constants';
+import Observable from '../framework/observable';
+
+export default class DestinationsModel extends Observable {
   /** @type {import("../constants").Destination[]} */
   #destinations = [];
 
   #apiService = null;
 
   constructor({apiService}) {
+    super();
     this.#apiService = apiService;
   }
 
@@ -21,7 +25,11 @@ export default class DestinationsModel {
     try {
       this.#destinations = await this.#apiService.destinations;
     } catch (err) {
+      //console.error(err);
       this.#destinations = [];
+      this._notify(UpdateType.INIT_FAILED, this.#destinations);
+      return;
     }
+    this._notify(UpdateType.INIT, this.#destinations);
   }
 }

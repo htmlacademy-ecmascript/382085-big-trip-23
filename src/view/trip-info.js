@@ -2,6 +2,30 @@ import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view';
 
 /**
+* @param {import('../constants').Waypoint[]} waypoints
+* @returns {import('../constants').Waypoint[]}
+*/
+function getFirstAndLastWaypoints(waypoints) {
+  if (waypoints.length === 0) {
+    return [];
+  }
+
+  let earliestPoint = waypoints[0];
+  let latestPoint = waypoints[waypoints.length - 1];
+
+  waypoints.forEach((waypoint) => {
+    if (earliestPoint.dateFrom > waypoint.dateFrom) {
+      earliestPoint = waypoint;
+    }
+    if (latestPoint.dateTo < waypoint.dateTo) {
+      latestPoint = waypoint;
+    }
+  });
+
+  return [earliestPoint, latestPoint];
+}
+
+/**
   * Краткое содержание путешествия
   * @param {import('../constants').Waypoint[]} waypoints
   * @param {import('../constants').Destination[]} destinations
@@ -13,8 +37,7 @@ function getTripBrief(waypoints, destinations) {
     textElements = waypoints.map(({destination}) => destinations.find(({id}) => id === destination).name);
   } else {
 
-    const lastWaypoint = waypoints.at(-1);
-    const firstWaypoint = waypoints.at(0);
+    const [firstWaypoint, lastWaypoint] = getFirstAndLastWaypoints(waypoints);
     textElements = [
       destinations.find(({id}) => id === firstWaypoint.destination).name,
       '...',
@@ -48,25 +71,21 @@ function getTripTotalPrice(waypoints, offers) {
   * @returns {string} строка с временным интервалом поездки
   */
 function getTripTimeSpan(waypoints) {
-  let earliest = dayjs(waypoints[0].dateFrom);
-  let latest = dayjs(waypoints[waypoints.length - 1].dateTo);
-  waypoints.forEach(({dateFrom, dateTo}) => {
-    earliest = earliest > dateFrom ? dateFrom : earliest;
-    latest = latest < dateTo ? dateTo : latest;
-  });
 
-  let timePeriod = '18&nbsp;&mdash;&nbsp;20 Mar';
+  const [earliestPoint, latestPoint] = getFirstAndLastWaypoints(waypoints);
+  const earliest = dayjs(earliestPoint.dateFrom);
+  const latest = dayjs(latestPoint.dateTo);
+
   if (earliest.year() !== latest.year()) {
-    timePeriod = `${earliest.format('DD MMM YYYY')}&nbsp;&mdash;&nbsp;${latest.format('DD MMM YYYY')}`;
-  } else if (earliest.month() !== latest.month()) {
-    timePeriod = `${earliest.format('DD MMM')}&nbsp;&mdash;&nbsp;${latest.format('DD MMM')}`;
-  } else if (earliest.date() !== latest.date()) {
-    timePeriod = `${earliest.date()}&nbsp;&mdash;&nbsp;${latest.date()} ${latest.format('MMM')}`;
-  } else {
-    timePeriod = `${earliest.format('HH:mm')}&nbsp;&mdash;&nbsp;${latest.format('HH:mm')} ${latest.format('DD MMM')}`;
+    return `${earliest.format('DD MMM YYYY')}&nbsp;&mdash;&nbsp;${latest.format('DD MMM YYYY')}`;
   }
-
-  return timePeriod;
+  if (earliest.month() !== latest.month()) {
+    return `${earliest.format('DD MMM')}&nbsp;&mdash;&nbsp;${latest.format('DD MMM')}`;
+  }
+  if (earliest.date() !== latest.date()) {
+    return `${earliest.format('DD MMM')}&nbsp;&mdash;&nbsp;${latest.format('DD MMM')}`;
+  }
+  return `${earliest.format('HH:mm')}&nbsp;&mdash;&nbsp;${latest.format('HH:mm')} ${latest.format('DD MMM')}`;
 }
 
 /**

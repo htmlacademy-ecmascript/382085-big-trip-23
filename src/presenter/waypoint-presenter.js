@@ -72,6 +72,7 @@ export default class WaypointPresenter {
   #setEditMode() {
     this.#renderEditWaypoint();
     replace(this.#waypointEditComponent, this.#waypointViewComponent);
+    this.#waypointEditComponent.reset(this.#waypoint);
     document.addEventListener('keydown', this.#handleEscapeKeyPress);
     this.#handleModeChange(); // важно чтобы это было до смены режима!
 
