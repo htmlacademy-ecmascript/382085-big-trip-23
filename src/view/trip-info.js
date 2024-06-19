@@ -48,13 +48,15 @@ function getTripTotalPrice(waypoints, offers) {
   * @returns {string} строка с временным интервалом поездки
   */
 function getTripTimeSpan(waypoints) {
-  let earliest = dayjs(waypoints[0].dateFrom);
-  let latest = dayjs(waypoints[waypoints.length - 1].dateTo);
+  let earliest = waypoints[0].dateFrom;
+  let latest = waypoints[waypoints.length - 1].dateTo;
   waypoints.forEach(({dateFrom, dateTo}) => {
     earliest = earliest > dateFrom ? dateFrom : earliest;
     latest = latest < dateTo ? dateTo : latest;
   });
 
+  earliest = dayjs(earliest);
+  latest = dayjs(latest);
   let timePeriod = '18&nbsp;&mdash;&nbsp;20 Mar';
   if (earliest.year() !== latest.year()) {
     timePeriod = `${earliest.format('DD MMM YYYY')}&nbsp;&mdash;&nbsp;${latest.format('DD MMM YYYY')}`;
