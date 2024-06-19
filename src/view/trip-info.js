@@ -72,11 +72,6 @@ function getTripTotalPrice(waypoints, offers) {
   */
 function getTripTimeSpan(waypoints) {
 
-  if (waypoints.length === 1) {
-    const date = dayjs(waypoints[0].dateFrom);
-    return `${date.format('DD MMM')}`;
-  }
-
   const [earliestPoint, latestPoint] = getFirstAndLastWaypoints(waypoints);
   const earliest = dayjs(earliestPoint.dateFrom);
   const latest = dayjs(latestPoint.dateTo);
@@ -88,7 +83,7 @@ function getTripTimeSpan(waypoints) {
     return `${earliest.format('DD MMM')}&nbsp;&mdash;&nbsp;${latest.format('DD MMM')}`;
   }
   if (earliest.date() !== latest.date()) {
-    return `${earliest.date()}&nbsp;&mdash;&nbsp;${latest.date()} ${latest.format('MMM')}`;
+    return `${earliest.format('DD MMM')}&nbsp;&mdash;&nbsp;${latest.format('DD MMM')}`;
   }
   return `${earliest.format('HH:mm')}&nbsp;&mdash;&nbsp;${latest.format('HH:mm')} ${latest.format('DD MMM')}`;
 }

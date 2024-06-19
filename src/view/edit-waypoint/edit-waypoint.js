@@ -102,8 +102,8 @@ function createEditWaypointMarkup(state, destinations, offers) {
               value="${state.basePrice}" />
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${disabled ? 'disabled' : ''}>${saveButtonText}</button>
-          <button class="event__reset-btn" type="reset" ${disabled ? 'disabled' : ''}>${cancelButtonText}</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
+          <button class="event__reset-btn" type="reset">${cancelButtonText}</button>
           ${rollupMarkup}
         </header>
         <section class="event__details">
