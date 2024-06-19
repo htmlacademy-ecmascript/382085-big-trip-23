@@ -8,6 +8,7 @@ export const FilterType = {
 };
 
 export const STATE_TO_MESSAGE_MAP = new Map([
+  ['failed', 'Failed to load latest route information'],
   ['loading', 'Loading...'],
   [FilterType.ALL, 'Click New Event to create your first point'],
   [FilterType.PAST, 'There are no past events now'],

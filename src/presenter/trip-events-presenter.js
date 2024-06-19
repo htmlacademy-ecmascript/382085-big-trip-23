@@ -5,9 +5,10 @@ import TripEventsListView from '../view/trip-events-list';
 import ListEmptyView from '../view/list-empty';
 import WaypointPresenter from './waypoint-presenter';
 import NewWaypointPresenter from './new-waypoint-presenter';
-import { SORT_ITEMS } from '../utils/sort';
 import { DEFAULT_SORT_ID, UpdateType, UserAction } from '../constants';
+import { SORT_ITEMS } from '../utils/sort';
 import { FILTERS_OBJECT } from '../utils/filter';
+import { myForkJoin } from '../utils/common';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -52,7 +53,11 @@ export default class TripEventsPresenter {
     this.#selectedSorting = DEFAULT_SORT_ID;
     this.#handleNewWaypointClose = onNewWaypointClose;
 
-    this.#waypointsModel.addObserver(this.#handleModelEvent);
+    //this.#waypointsModel.addObserver(makeWaitAndCall(0, this.#handleModelEvent));
+    //this.#destinationsModel.addObserver(makeWaitAndCall(1, this.#handleModelEvent));
+    //this.#offersModel.addObserver(makeWaitAndCall(2, this.#handleModelEvent));
+    myForkJoin([this.#waypointsModel, this.#destinationsModel, this.#offersModel], this.#handleModelEvent);
+
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
@@ -67,7 +72,13 @@ export default class TripEventsPresenter {
   }
 
   createNewWaypoint() {
-    this.#handleSortTypeChange(DEFAULT_SORT_ID);
+    this.#selectedSorting = DEFAULT_SORT_ID;
+    this.#handleSortTypeChange(this.#selectedSorting);
+    if (this.#emptyListComponent) {
+      remove(this.#emptyListComponent);
+      this.#emptyListComponent = null;
+      render(this.#tripEventsListComponent, this.#container);
+    }
     this.#waypointsPresenters.forEach((presenter) => presenter.resetView());
     const newWaypointPresenterData = {
       container: this.#tripEventsListComponent.element,
@@ -206,11 +217,18 @@ export default class TripEventsPresenter {
         this.init();
         break;
       case UpdateType.MAJOR:
+        this.#selectedSorting = DEFAULT_SORT_ID;
         this.init();
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
         this.init();
+        break;
+      case UpdateType.INIT_FAILED:
+        this.#isLoading = false;
+        remove(this.#emptyListComponent);
+        this.#emptyListComponent = new ListEmptyView('failed');
+        this.#renderEmptyListComponent();
         break;
       default:
         throw new Error('[TripEventsPresenter::handleModelEvent] Unknown update type');
@@ -232,6 +250,21 @@ export default class TripEventsPresenter {
 
   #onNewWaypointClose = () => {
     this.#handleNewWaypointClose();
+    if (this.waypoints.length === 0) {
+      if (this.#sortComponent) {
+        remove(this.#sortComponent);
+        this.#sortComponent = null;
+      }
+      if (this.#tripEventsListComponent) {
+        remove(this.#tripEventsListComponent);
+      }
+      if (this.#emptyListComponent) {
+        remove(this.#emptyListComponent);
+      }
+
+      this.#emptyListComponent = new ListEmptyView(this.#filterModel.filter);
+      this.#renderEmptyListComponent();
+    }
   };
 
   init() {

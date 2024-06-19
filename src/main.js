@@ -1,4 +1,5 @@
 import { BIG_TRIP_URI, DEFAULT_FILTER_ID, UpdateType } from './constants';
+import { myForkJoin } from './utils/common';
 
 import WaypointsModel from './model/waypoints-model';
 import DestinationsModel from './model/destinations-model';
@@ -30,7 +31,6 @@ const offersService = new OffersApiService(BIG_TRIP_URI, AUTHORIZATION);
 const offersModel = new OffersModel({apiService: offersService});
 
 function main() {
-  const filterModel = new FilterModel();
 
   // trip info presenter ================================================================
   let tripInfoView = null;
@@ -45,7 +45,10 @@ function main() {
     tripInfoView = new TripInfoView(tripInfoData);
   }
 
-  const initTripInfoView = () => {
+  const initTripInfoView = (updateType) => {
+    if (updateType === UpdateType.INIT_FAILED) {
+      return;
+    }
     const prevTripInfoView = tripInfoView;
     if (waypointsModel.waypoints.length === 0) {
       if (prevTripInfoView) {
@@ -64,11 +67,10 @@ function main() {
     render(tripInfoView, tripMainContainer, RenderPosition.AFTERBEGIN);
   };
 
-
+  const filterModel = new FilterModel();
   //================================================================================
-  waypointsModel.addObserver(initTripInfoView);
 
-  initTripInfoView();
+  myForkJoin([waypointsModel, destinationsModel, offersModel], initTripInfoView);
 
   const eventsContainer = document.querySelector('.trip-events');
 
@@ -104,15 +106,21 @@ function main() {
   };
   const filterPresenter = new FilterPresenter(filterPresenterData);
 
-  filterPresenter.init();
+  myForkJoin([destinationsModel, offersModel, waypointsModel], (status) => filterPresenter.init(status));
+  //filterPresenter.init();
   tripEventsPresenter.init();
 }
 
-Promise.allSettled([destinationsModel.init(), offersModel.init()]) // эти просто скачивают данные
-  .then(() => {
-    waypointsModel.init(); // эта модель уведомляет подписчиков
-    main();
-  })
-  .finally(() => {
-    document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
-  });
+//Promise.allSettled([destinationsModel.init(), offersModel.init()]) // эти просто скачивают данные
+//  .then(() => {
+//    waypointsModel.init(); // эта модель уведомляет подписчиков
+//    main();
+//  })
+//  .finally(() => {
+//    document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
+//  });
+
+destinationsModel.init();
+offersModel.init();
+waypointsModel.init();
+main();

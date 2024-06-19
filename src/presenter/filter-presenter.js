@@ -15,6 +15,8 @@ export default class FilterPresenter {
   /** @type {FilterView} */
   #filterComponent = null;
 
+  #disabled = false;
+
   constructor({container, waypointsModel, filterModel}) {
     this.#container = container;
     this.#waypointsModel = waypointsModel;
@@ -29,6 +31,9 @@ export default class FilterPresenter {
    */
   get filters() {
     const filtersMap = new Map();
+    if (this.#disabled) {
+      return filtersMap;
+    }
     for (const [filterName, filterFunc] of Object.entries(FILTERS_OBJECT)) {
       const filtered = filterFunc(this.#waypointsModel.waypoints);
       filtersMap.set(filterName, filtered);
@@ -37,7 +42,12 @@ export default class FilterPresenter {
     return filtersMap;
   }
 
-  init() {
+  init(status) {
+    if (status === UpdateType.INIT_FAILED) {
+      this.#disabled = true;
+    } else {
+      this.#disabled = false;
+    }
     const prevFilterComponent = this.#filterComponent;
 
     const filterViewData = {
@@ -58,7 +68,7 @@ export default class FilterPresenter {
   }
 
   #handleViewAction = (newFilter) => {
-    if (this.#filterModel.filter !== newFilter) {
+    if (this.#filterModel.filter !== newFilter && !this.#disabled) {
       this.#filterModel.setFilter(UpdateType.MAJOR, newFilter);
     }
   };
