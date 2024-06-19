@@ -26,7 +26,7 @@ export default class NewWaypointPresenter {
 
   init() {
     const editWaypointData = {
-      waypoint: {...DUMMY_WAYPOINT}, //this.#newWaypoint,
+      waypoint: {...DUMMY_WAYPOINT},
       destinations: this.#destinations,
       offers: this.#offers,
       onFormSubmit: this.#onFormSubmit,
@@ -63,18 +63,19 @@ export default class NewWaypointPresenter {
   };
 
   #handleFormCancel = () => {
+    this.#onNewWaypointClose();
     this.destroy();
   };
 
   #handleEscapeKeyPress = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#onNewWaypointClose();
       this.destroy();
     }
   };
 
   destroy() {
-    this.#onNewWaypointClose();
     remove(this.#waypointEditComponent);
     document.removeEventListener('keydown', this.#handleEscapeKeyPress);
   }
