@@ -102,8 +102,16 @@ export default class WaypointsModel extends Observable {
     try {
       const waypoints = await this.#apiService.waypoints;
       this.#waypoints = waypoints.map(this.#adaptToClient);
+      // DEBUG
+//      const data = [ { "id": "point-1", "base_price": 1000, "date_from": "2023-07-15T13:30:00.000Z", "date_to": "2023-07-15T14:00:00.000Z", "destination": "empty-destination", "is_favorite": false, "offers": [ "drive-1" ], "type": "drive"
+//  }, { "id": "point-2", "base_price": 2000, "date_from": "2023-07-16T16:00:00.000Z", "date_to": "2023-07-16T23:00:00.000Z", "destination": "no-pictures-destination", "is_favorite": true, "offers": [ "taxi-1", "taxi-3" ], "type": "taxi" }, { "id": "point-3", "base_price": 3000, "date_from": "2020-02-17T12:30:00.000Z",
+//    "date_to": "2030-02-18T13:30:00.000Z", "destination": "empty-destination", "is_favorite": false, "offers": [], "type": "sightseeing" }, { "id": "point-4", "base_price": 4000, "date_from": "2020-11-17T13:25:00.000Z", "date_to": "2020-11-19T13:55:00.000Z", "destination": "full-destination", "is_favorite": false, "offers": [], "type": "check-in" }, { "id": "point-5", "base_price": 5000, "date_from": "2030-04-19T11:29:00.000Z", "date_to": "2030-04-21T00:29:00.000Z", "destination": "no-pictures-destination", "is_favorite": false, "offers": [ "train-1" ], "type": "train" } ];
+//      this.#waypoints = data.map(this.#adaptToClient);
     } catch (err) {
       this.#waypoints = [];
+      this._notify(UpdateType.INIT_FAILED, []);
+      console.log('waypoints model init failed');
+      return;
     }
     this._notify(UpdateType.INIT, this.#waypoints);
   }
