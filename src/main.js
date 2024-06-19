@@ -30,6 +30,11 @@ const destinationsModel = new DestinationsModel({apiService: destinationsService
 const offersService = new OffersApiService(BIG_TRIP_URI, AUTHORIZATION);
 const offersModel = new OffersModel({apiService: offersService});
 
+Promise.allSettled([waypointsModel.init(), destinationsModel.init(), offersModel.init()])
+  .finally(() => {
+    document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
+  });
+
 function main() {
 
   // trip info presenter ================================================================
@@ -106,21 +111,8 @@ function main() {
   };
   const filterPresenter = new FilterPresenter(filterPresenterData);
 
-  myForkJoin([destinationsModel, offersModel, waypointsModel], (status) => filterPresenter.init(status));
-  //filterPresenter.init();
+  myForkJoin([waypointsModel, destinationsModel, offersModel], (status) => filterPresenter.init(status));
   tripEventsPresenter.init();
 }
 
-//Promise.allSettled([destinationsModel.init(), offersModel.init()]) // эти просто скачивают данные
-//  .then(() => {
-//    waypointsModel.init(); // эта модель уведомляет подписчиков
-//    main();
-//  })
-//  .finally(() => {
-//    document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
-//  });
-
-destinationsModel.init();
-offersModel.init();
-waypointsModel.init();
 main();
