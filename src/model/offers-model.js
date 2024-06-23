@@ -29,7 +29,6 @@ export default class OffersModel extends Observable {
     try {
       this.#offers = await this.#apiService.offers;
     } catch (err) {
-      //console.error(err);
       this.#offers = [];
       this._notify(UpdateType.INIT_FAILED, this.#offers);
       return;
