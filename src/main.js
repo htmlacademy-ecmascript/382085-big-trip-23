@@ -6,8 +6,6 @@ import DestinationsModel from './model/destinations-model';
 import OffersModel from './model/offers-model';
 import FilterModel from './model/filter-model';
 
-import { RenderPosition, remove, render, replace } from './framework/render';
-import TripInfoView from './view/trip-info';
 import NewWaypointButtonView from './view/new-waypoint-button';
 
 import TripEventsPresenter from './presenter/trip-events-presenter';
@@ -16,10 +14,12 @@ import FilterPresenter from './presenter/filter-presenter';
 import WaypointsApiService from './api-services/waypoints-api-service';
 import DestinationsApiService from './api-services/destinations-api-service';
 import OffersApiService from './api-services/offers-api-service';
+import TripInfoPresenter from './presenter/trip-info-presenter';
 
 const AUTHORIZATION = 'Basic 2point718281828459045';
 
-document.querySelector('.trip-main__event-add-btn').setAttribute('disabled', '');
+const newButtonElement = document.querySelector('.trip-main__event-add-btn');
+newButtonElement.setAttribute('disabled', '');
 
 const waypointService = new WaypointsApiService(BIG_TRIP_URI, AUTHORIZATION);
 const waypointsModel = new WaypointsModel({apiService: waypointService});
@@ -32,53 +32,17 @@ const offersModel = new OffersModel({apiService: offersService});
 
 Promise.allSettled([waypointsModel.init(), destinationsModel.init(), offersModel.init()])
   .finally(() => {
-    document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
+    newButtonElement.removeAttribute('disabled', '');
   });
 
 function main() {
 
-  // trip info presenter ================================================================
-  let tripInfoView = null;
-  const tripMainContainer = document.querySelector('.trip-main');
-
-  function createTripInfoView() {
-    const tripInfoData = {
-      waypoints: waypointsModel.waypoints,
-      destinations: destinationsModel.destinations,
-      offers: offersModel.offers
-    };
-    tripInfoView = new TripInfoView(tripInfoData);
-  }
-
-  const initTripInfoView = (updateType) => {
-    if (updateType === UpdateType.INIT_FAILED) {
-      return;
-    }
-    const prevTripInfoView = tripInfoView;
-    if (waypointsModel.waypoints.length === 0) {
-      if (prevTripInfoView) {
-        remove(prevTripInfoView);
-      }
-      tripInfoView = null;
-      return;
-    }
-    createTripInfoView();
-    if (prevTripInfoView) {
-      replace(tripInfoView, prevTripInfoView);
-      remove(prevTripInfoView);
-      return;
-    }
-
-    render(tripInfoView, tripMainContainer, RenderPosition.AFTERBEGIN);
-  };
+  const tripInfoElement = document.querySelector('.trip-main');
+  new TripInfoPresenter({container: tripInfoElement, waypointsModel, destinationsModel, offersModel});
 
   const filterModel = new FilterModel();
-  //================================================================================
-
-  forkJoinObservables([waypointsModel, destinationsModel, offersModel], initTripInfoView);
 
   const eventsContainer = document.querySelector('.trip-events');
-
   const tripEventsPresenter = new TripEventsPresenter({
     eventsContainer,
     waypointsModel,
@@ -88,8 +52,7 @@ function main() {
     onNewWaypointClose: onNewWaypointClose
   });
 
-  // new task button ======================================================
-  const newButtonElement = document.querySelector('.trip-main__event-add-btn');
+  // new waypoint button ======================================================
   const newWaypointButton = new NewWaypointButtonView({buttonElement: newButtonElement, onNewButtonClicked});
 
   function onNewButtonClicked() {
