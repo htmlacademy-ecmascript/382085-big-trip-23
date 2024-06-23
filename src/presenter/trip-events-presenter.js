@@ -166,36 +166,31 @@ export default class TripEventsPresenter {
    * @param {import('../constants').Waypoint} update
    */
   #handleViewAction = async (actionType, updateType, update) => {
-    //console.log('[TripEventsPresenter::handleViewAction]', actionType, updateType);
-    //console.log(update);
     this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.ADD_WAYPOINT:
-        this.#newWaypointPresenter.setSaving(); // ???
+        this.#newWaypointPresenter.setSaving();
         try {
           await this.#waypointsModel.addWaypoint(updateType, update);
         } catch (err) {
-          //console.error(err);
-          this.#newWaypointPresenter.setAborting(); // ???
+          this.#newWaypointPresenter.setAborting();
         }
         this.#handleNewWaypointClose();
         break;
       case UserAction.DELETE_WAYPOINT:
-        this.#waypointsPresenters.get(update.id).setDeleting(); // ???
+        this.#waypointsPresenters.get(update.id).setDeleting();
         try {
           await this.#waypointsModel.deleteWaypoint(updateType, update);
         } catch (err) {
-          //console.error(err);
-          this.#waypointsPresenters.get(update.id).setAborting(); // ???
+          this.#waypointsPresenters.get(update.id).setAborting();
         }
         break;
       case UserAction.UPDATE_WAYPOINT:
-        this.#waypointsPresenters.get(update.id).setSaving(); // ???
+        this.#waypointsPresenters.get(update.id).setSaving();
         try {
           await this.#waypointsModel.updateWaypoint(updateType, update);
         } catch (err) {
-          //console.error(err);
-          this.#waypointsPresenters.get(update.id).setAborting(); // ???
+          this.#waypointsPresenters.get(update.id).setAborting();
         }
         break;
       default:
@@ -209,7 +204,6 @@ export default class TripEventsPresenter {
    * @param {import('../constants').Waypoint} data
    */
   #handleModelEvent = (updateType, data) => {
-    //console.log('[TripEventsPresenter::handleModelEvent]', updateType);
     switch (updateType) {
       case UpdateType.PATCH:
         this.#waypointsPresenters.get(data.id).init(data);

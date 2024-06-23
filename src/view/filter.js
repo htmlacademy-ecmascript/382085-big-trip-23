@@ -31,17 +31,15 @@ function createFilterItemMarkup(filterName, selected, enabled) {
 */
 function createFilterMarkup(filteredMap, selectedFilter) {
 
-  const itemsMarkupArray = Object.values(FilterType).map((filterName) => {
+  const filterItems = Object.values(FilterType).map((filterName) => {
     const enabled = filteredMap.has(filterName) && (filteredMap.get(filterName).length > 0);
     const selected = filterName === selectedFilter;
     return createFilterItemMarkup(filterName, selected, enabled);
   });
 
-  const filterItemsMarkup = itemsMarkupArray.join(' ');
-
   return (
     `<form class="trip-filters" action="#" method="get">
-      ${filterItemsMarkup}
+      ${filterItems.join(' ')}
       <button class="visually-hidden" type="submit">Accept filter</button>
     </form>`
   );

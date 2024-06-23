@@ -25,9 +25,9 @@ function createSortItemMarkup({title, canSort}, id, checked) {
 }
 
 function createSortMarkup(selectedSorting) {
-  const innerMarkup = [];
-  SORT_ITEMS.forEach((sortItem, sortId) => innerMarkup.push(createSortItemMarkup(sortItem, sortId, sortId === selectedSorting)));
-  return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">${innerMarkup.join(' ')}</form>`;
+  const sortItems = [];
+  SORT_ITEMS.forEach((sortItem, sortId) => sortItems.push(createSortItemMarkup(sortItem, sortId, sortId === selectedSorting)));
+  return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">${sortItems.join(' ')}</form>`;
 }
 
 export default class SortView extends AbstractView {
@@ -41,7 +41,7 @@ export default class SortView extends AbstractView {
     this.#selectedSorting = selectedSorting;
 
     const enabledSortItems = this.element.querySelectorAll('.trip-sort__input:not([disabled])');
-    enabledSortItems.forEach((item) => item.addEventListener('change', (evt) => this.#onSortTypeChange(evt)));
+    enabledSortItems.forEach((item) => item.addEventListener('change', this.#onSortTypeChange));
   }
 
   get template() {

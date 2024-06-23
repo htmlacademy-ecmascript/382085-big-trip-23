@@ -1,13 +1,13 @@
 
 export default class NewWaypointButtonView {
-  #handleButtonClicked = null;
+  #handleButtonClick = null;
   #buttonElement = null;
 
-  constructor({onNewButtonClicked, buttonElement}) {
-    this.#handleButtonClicked = onNewButtonClicked;
+  constructor({onNewButtonClick, buttonElement}) {
+    this.#handleButtonClick = onNewButtonClick;
     this.#buttonElement = buttonElement;
 
-    this.#buttonElement.addEventListener('click', this.#onNewButtonClicked);
+    this.#buttonElement.addEventListener('click', this.#onNewButtonClick);
   }
 
   enableButton() {
@@ -18,7 +18,7 @@ export default class NewWaypointButtonView {
     this.#buttonElement.disabled = true;
   }
 
-  #onNewButtonClicked = () => {
-    this.#handleButtonClicked();
+  #onNewButtonClick = () => {
+    this.#handleButtonClick();
   };
 }

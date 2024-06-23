@@ -17,8 +17,8 @@ export function getDurationString(dateFrom, dateTo) {
     .join(' ');
 }
 
-export function capitalize(str) {
-  return `${str[0].toUpperCase()}${str.slice(1)}`;
+export function capitalize(text) {
+  return `${text[0].toUpperCase()}${text.slice(1)}`;
 }
 
 /**
@@ -38,8 +38,8 @@ export function forkJoinObservables(observables, cb) {
  * @param {Function} cb
  */
 function makeWaitAllAndCall(idx, state, cb) {
-  return function (evt) {
-    state[idx] = evt;
+  return function (updateType) {
+    state[idx] = updateType;
 
     if (state.every((value) => value !== 0)) {
       try {
@@ -49,7 +49,7 @@ function makeWaitAllAndCall(idx, state, cb) {
         }
         cb(UpdateType.INIT);
       } catch (err) {
-        //console.error(err);
+        throw new Error('In observer callback', err);
       }
     }
   };

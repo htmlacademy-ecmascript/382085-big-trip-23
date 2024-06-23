@@ -32,7 +32,6 @@ function createWaypointTemplate(waypoint, destination, offers) {
   for (const offer of waypoint.offers) {
     const offerObject = offers.find((item) => item.id === offer);
     offersMarkup.push(createOfferMarkup(offerObject));
-    //totalPrice += offerObject.price; // не понял, надо ли включать в цену и предложения тоже
   }
 
   const eventDate = dayjs(waypoint.dateFrom).format('MMM DD');
