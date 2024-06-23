@@ -22,18 +22,18 @@ const AUTHORIZATION = 'Basic 2point718281828459045';
 document.querySelector('.trip-main__event-add-btn').setAttribute('disabled', '');
 
 const waypointService = new WaypointsApiService(BIG_TRIP_URI, AUTHORIZATION);
-const waypointsModel = new WaypointsModel({apiService: waypointService});
+const waypointsModel = new WaypointsModel({ apiService: waypointService });
 
 const destinationsService = new DestinationsApiService(BIG_TRIP_URI, AUTHORIZATION);
-const destinationsModel = new DestinationsModel({apiService: destinationsService});
+const destinationsModel = new DestinationsModel({ apiService: destinationsService });
 
 const offersService = new OffersApiService(BIG_TRIP_URI, AUTHORIZATION);
-const offersModel = new OffersModel({apiService: offersService});
+const offersModel = new OffersModel({ apiService: offersService });
 
-Promise.allSettled([waypointsModel.init(), destinationsModel.init(), offersModel.init()])
-  .finally(() => {
-    document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
-  });
+// inits are async
+waypointsModel.init();
+destinationsModel.init();
+offersModel.init();
 
 function main() {
 
@@ -90,7 +90,7 @@ function main() {
 
   // new task button ======================================================
   const newButtonElement = document.querySelector('.trip-main__event-add-btn');
-  const newWaypointButton = new NewWaypointButtonView({buttonElement: newButtonElement, onNewButtonClicked});
+  const newWaypointButton = new NewWaypointButtonView({ buttonElement: newButtonElement, onNewButtonClicked });
 
   function onNewButtonClicked() {
     filterModel.setFilter(UpdateType.MINOR, DEFAULT_FILTER_ID);
@@ -101,7 +101,18 @@ function main() {
   function onNewWaypointClose() {
     newWaypointButton.enableButton();
   }
+
   // ================================================================================
+  forkJoinObservables([waypointsModel, destinationsModel, offersModel], (status) => {
+    switch (status) {
+      case UpdateType.INIT_FAILED:
+        newWaypointButton.disableButton();
+        break;
+      default:
+        newWaypointButton.enableButton();
+    }
+  });
+
 
   const filterContainer = document.querySelector('.trip-controls__filters');
   const filterPresenterData = {
