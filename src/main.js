@@ -72,11 +72,23 @@ function main() {
     render(tripInfoView, tripMainContainer, RenderPosition.AFTERBEGIN);
   };
 
-  const filterModel = new FilterModel();
+  forkJoinObservables([waypointsModel, destinationsModel, offersModel], initTripInfoView);
   //================================================================================
 
-  forkJoinObservables([waypointsModel, destinationsModel, offersModel], initTripInfoView);
+  // filter ================================================================================
+  const filterModel = new FilterModel();
+  const filterContainer = document.querySelector('.trip-controls__filters');
+  const filterPresenterData = {
+    container: filterContainer,
+    filterModel,
+    waypointsModel,
+  };
+  const filterPresenter = new FilterPresenter(filterPresenterData);
 
+  forkJoinObservables([waypointsModel, destinationsModel, offersModel], (status) => filterPresenter.init(status));
+  //================================================================================
+
+  // trip events ================================================================================
   const eventsContainer = document.querySelector('.trip-events');
 
   const tripEventsPresenter = new TripEventsPresenter({
@@ -87,6 +99,8 @@ function main() {
     filterModel,
     onNewWaypointClose: onNewWaypointClose
   });
+  tripEventsPresenter.init();
+  //================================================================================
 
   // new task button ======================================================
   const newButtonElement = document.querySelector('.trip-main__event-add-btn');
@@ -102,7 +116,6 @@ function main() {
     newWaypointButton.enableButton();
   }
 
-  // ================================================================================
   forkJoinObservables([waypointsModel, destinationsModel, offersModel], (status) => {
     switch (status) {
       case UpdateType.INIT_FAILED:
@@ -112,18 +125,7 @@ function main() {
         newWaypointButton.enableButton();
     }
   });
-
-
-  const filterContainer = document.querySelector('.trip-controls__filters');
-  const filterPresenterData = {
-    container: filterContainer,
-    filterModel,
-    waypointsModel,
-  };
-  const filterPresenter = new FilterPresenter(filterPresenterData);
-
-  forkJoinObservables([waypointsModel, destinationsModel, offersModel], (status) => filterPresenter.init(status));
-  tripEventsPresenter.init();
+  // ================================================================================
 }
 
 main();
