@@ -16,8 +16,8 @@ export default class DestinationsModel extends Observable {
     return this.#destinations;
   }
 
-  getDestination(id) {
-    const result = this.#destinations.find((item) => item.id === id);
+  getDestination(destinationId) {
+    const result = this.#destinations.find(({id}) => id === destinationId);
     return result;
   }
 

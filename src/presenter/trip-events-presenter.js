@@ -7,7 +7,7 @@ import WaypointPresenter from './waypoint-presenter';
 import NewWaypointPresenter from './new-waypoint-presenter';
 import { DEFAULT_SORT_ID, UpdateType, UserAction } from '../constants';
 import { SORT_ITEMS } from '../utils/sort';
-import { FILTERS_OBJECT } from '../utils/filter';
+import { FILTERS } from '../utils/filter';
 import { forkJoinObservables } from '../utils/common';
 
 const TimeLimit = {
@@ -59,11 +59,11 @@ export default class TripEventsPresenter {
   }
 
   get waypoints() {
-    const filter = this.#filterModel.filter;
-    const filteredTasks = FILTERS_OBJECT[filter]([...this.#waypointsModel.waypoints]);
+    const filterId = this.#filterModel.filter;
+    const filteredWaypoints = FILTERS[filterId]([...this.#waypointsModel.waypoints]);
 
     const sortItem = SORT_ITEMS.get(this.#selectedSorting);
-    const sortedWaypoints = filteredTasks.sort(sortItem.sortFunction);
+    const sortedWaypoints = filteredWaypoints.sort(sortItem.sortFunction);
 
     return sortedWaypoints;
   }

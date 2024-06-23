@@ -10,8 +10,8 @@ import { SORT_ITEMS } from '../utils/sort';
   * @returns {string} разметка
   */
 function createSortItemMarkup({title, canSort}, id, checked) {
-  return `
-    <div class="trip-sort__item  trip-sort__item--${id}">
+  return (
+    `<div class="trip-sort__item  trip-sort__item--${id}">
       <input
         id="sort-${id}"
         class="trip-sort__input  visually-hidden"
@@ -21,7 +21,8 @@ function createSortItemMarkup({title, canSort}, id, checked) {
         ${canSort ? '' : 'disabled'}
         ${checked ? 'checked' : ''}>
       <label class="trip-sort__btn" for="sort-${id}">${title}</label>
-    </div>`;
+    </div>`
+  );
 }
 
 function createSortMarkup(selectedSorting) {

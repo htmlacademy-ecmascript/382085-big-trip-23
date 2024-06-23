@@ -21,7 +21,7 @@ export default class OffersModel extends Observable {
   * @returns {import('../constants').Offer[]} массив предложений
   */
   getOffersForEventType(eventType) {
-    const offerListItem = this.#offers.find((item) => item.type === eventType);
+    const offerListItem = this.#offers.find(({type}) => type === eventType);
     return offerListItem.offers;
   }
 

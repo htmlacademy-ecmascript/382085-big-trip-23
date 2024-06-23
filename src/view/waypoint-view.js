@@ -8,12 +8,13 @@ import { getDurationString } from '../utils/common.js';
 * @returns {string} вёрстка одной дополнительной опции
 */
 function createOfferMarkup(offer) {
-  return `
-    <li class="event__offer">
+  return (
+    `<li class="event__offer">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
-    </li>`;
+    </li>`
+  );
 }
 
 
@@ -26,36 +27,34 @@ function createOfferMarkup(offer) {
 function createWaypointTemplate(waypoint, destination, offers) {
 
   const totalPrice = waypoint.basePrice;
-  const offersMarkup = [];
+  const offersItems = [];
 
   // тут надо отобразить только подключённые в данной точке путешествия офферы
-  for (const offer of waypoint.offers) {
-    const offerObject = offers.find((item) => item.id === offer);
-    offersMarkup.push(createOfferMarkup(offerObject));
+  for (const offerId of waypoint.offers) {
+    const offer = offers.find(({id}) => id === offerId);
+    offersItems.push(createOfferMarkup(offer));
   }
 
-  const eventDate = dayjs(waypoint.dateFrom).format('MMM DD');
-  const eventDateAttrib = waypoint.dateFrom;
   const eventIcon = EVENT_TYPE_ICONS[waypoint.type];
 
-  const dayjsFrom = dayjs(waypoint.dateFrom);
-  const dayjsTo = dayjs(waypoint.dateTo);
+  const dateTimeFrom = dayjs(waypoint.dateFrom);
+  const dateTimeTo = dayjs(waypoint.dateTo);
 
-  const humanizedInterval = getDurationString(dayjsFrom, dayjsTo);
+  const humanizedInterval = getDurationString(dateTimeFrom, dateTimeTo);
 
-  return `
-    <li class="trip-events__item">
+  return (
+    `<li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="${eventDateAttrib}">${eventDate}</time>
+        <time class="event__date" datetime="${waypoint.dateFrom}">${dateTimeFrom.format('MMM DD')}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="${eventIcon}" alt="Event type icon">
         </div>
         <h3 class="event__title">${waypoint.type} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${waypoint.dateFrom}">${dayjsFrom.format('HH:mm')}</time>
+            <time class="event__start-time" datetime="${waypoint.dateFrom}">${dateTimeFrom.format('HH:mm')}</time>
             &mdash;
-            <time class="event__end-time" datetime="${waypoint.dateTo}">${dayjsTo.format('HH:mm')}</time>
+            <time class="event__end-time" datetime="${waypoint.dateTo}">${dateTimeTo.format('HH:mm')}</time>
           </p>
           <p class="event__duration">${humanizedInterval}</p>
         </div>
@@ -64,7 +63,7 @@ function createWaypointTemplate(waypoint, destination, offers) {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${offersMarkup.join(' ')}
+          ${offersItems.join(' ')}
         </ul>
         <button class="event__favorite-btn ${waypoint.isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -76,7 +75,8 @@ function createWaypointTemplate(waypoint, destination, offers) {
           <span class="visually-hidden">Open event</span>
         </button>
       </div>
-    </li>`;
+    </li>`
+  );
 }
 
 export default class WaypointView extends AbstractView {

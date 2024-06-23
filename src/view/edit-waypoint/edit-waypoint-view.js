@@ -21,7 +21,7 @@ function createEditWaypointMarkup(state, destinations, offers) {
 
   const destination = destinations.find(({id}) => state.destination === id);
 
-  const offerListItem = offers.find((item) => item.type === state.type);
+  const offerListItem = offers.find(({type}) => type === state.type);
   const offersForSelectedType = offerListItem.offers;
 
   const formId = state.id || 0;

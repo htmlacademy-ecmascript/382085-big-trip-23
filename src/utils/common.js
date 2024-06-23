@@ -12,10 +12,10 @@ const TIME_DURATION_INTERVALS = [
  * @returns {string} строка с длительностью для точки маршрута в режиме просмотра
  */
 export function getDurationString(dateFrom, dateTo) {
-  let dayjsTo = dateTo;
+  let localDateTo = dateTo;
   return Array.from(TIME_DURATION_INTERVALS, ({dayjsName, abbreviation}) => {
-    const quantity = dayjsTo.diff(dateFrom, dayjsName);
-    dayjsTo = dayjsTo.subtract(quantity, dayjsName);
+    const quantity = localDateTo.diff(dateFrom, dayjsName);
+    localDateTo = localDateTo.subtract(quantity, dayjsName);
     const formattedQuantity = String(quantity).padStart(2, '0');
     return `${formattedQuantity}${abbreviation}`;
   })
