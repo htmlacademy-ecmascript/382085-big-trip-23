@@ -1,14 +1,14 @@
 import { render, remove, RenderPosition } from '../framework/render';
 import UiBlocker from '../framework/ui-blocker/ui-blocker';
-import SortView from '../view/sort';
-import TripEventsListView from '../view/trip-events-list';
-import ListEmptyView from '../view/list-empty';
+import SortView from '../view/sort-view';
+import TripEventsListView from '../view/trip-events-list-view';
+import ListEmptyView from '../view/empty-list-view';
 import WaypointPresenter from './waypoint-presenter';
 import NewWaypointPresenter from './new-waypoint-presenter';
 import { DEFAULT_SORT_ID, UpdateType, UserAction } from '../constants';
 import { SORT_ITEMS } from '../utils/sort';
-import { FILTERS_OBJECT } from '../utils/filter';
-import { myForkJoin } from '../utils/common';
+import { FILTERS } from '../utils/filter';
+import { forkJoinObservables } from '../utils/common';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -26,9 +26,9 @@ export default class TripEventsPresenter {
   /** @type {import('../model/filter-model').default} */
   #filterModel = null;
 
-  /** @type {import('../view/sort').default} */
+  /** @type {import('../view/sort-view').default} */
   #sortComponent = null;
-  /** @type {import('../view/list-empty').default} */
+  /** @type {import('../view/empty-list-view').default} */
   #emptyListComponent = null;
   #tripEventsListComponent = new TripEventsListView();
 
@@ -53,17 +53,17 @@ export default class TripEventsPresenter {
     this.#selectedSorting = DEFAULT_SORT_ID;
     this.#handleNewWaypointClose = onNewWaypointClose;
 
-    myForkJoin([this.#waypointsModel, this.#destinationsModel, this.#offersModel], this.#handleModelEvent);
+    forkJoinObservables([this.#waypointsModel, this.#destinationsModel, this.#offersModel], this.#handleModelEvent);
 
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get waypoints() {
-    const filter = this.#filterModel.filter;
-    const filteredTasks = FILTERS_OBJECT[filter]([...this.#waypointsModel.waypoints]);
+    const filterId = this.#filterModel.filter;
+    const filteredWaypoints = FILTERS[filterId]([...this.#waypointsModel.waypoints]);
 
     const sortItem = SORT_ITEMS.get(this.#selectedSorting);
-    const sortedWaypoints = filteredTasks.sort(sortItem.sortFunction);
+    const sortedWaypoints = filteredWaypoints.sort(sortItem.sortFunction);
 
     return sortedWaypoints;
   }
@@ -166,36 +166,31 @@ export default class TripEventsPresenter {
    * @param {import('../constants').Waypoint} update
    */
   #handleViewAction = async (actionType, updateType, update) => {
-    //console.log('[TripEventsPresenter::handleViewAction]', actionType, updateType);
-    //console.log(update);
     this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.ADD_WAYPOINT:
-        this.#newWaypointPresenter.setSaving(); // ???
+        this.#newWaypointPresenter.setSaving();
         try {
           await this.#waypointsModel.addWaypoint(updateType, update);
         } catch (err) {
-          //console.error(err);
-          this.#newWaypointPresenter.setAborting(); // ???
+          this.#newWaypointPresenter.setAborting();
         }
         this.#handleNewWaypointClose();
         break;
       case UserAction.DELETE_WAYPOINT:
-        this.#waypointsPresenters.get(update.id).setDeleting(); // ???
+        this.#waypointsPresenters.get(update.id).setDeleting();
         try {
           await this.#waypointsModel.deleteWaypoint(updateType, update);
         } catch (err) {
-          //console.error(err);
-          this.#waypointsPresenters.get(update.id).setAborting(); // ???
+          this.#waypointsPresenters.get(update.id).setAborting();
         }
         break;
       case UserAction.UPDATE_WAYPOINT:
-        this.#waypointsPresenters.get(update.id).setSaving(); // ???
+        this.#waypointsPresenters.get(update.id).setSaving();
         try {
           await this.#waypointsModel.updateWaypoint(updateType, update);
         } catch (err) {
-          //console.error(err);
-          this.#waypointsPresenters.get(update.id).setAborting(); // ???
+          this.#waypointsPresenters.get(update.id).setAborting();
         }
         break;
       default:
@@ -209,7 +204,6 @@ export default class TripEventsPresenter {
    * @param {import('../constants').Waypoint} data
    */
   #handleModelEvent = (updateType, data) => {
-    //console.log('[TripEventsPresenter::handleModelEvent]', updateType);
     switch (updateType) {
       case UpdateType.PATCH:
         this.#waypointsPresenters.get(data.id).init(data);

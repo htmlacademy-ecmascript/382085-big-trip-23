@@ -21,7 +21,7 @@ function createEditWaypointMarkup(state, destinations, offers) {
 
   const destination = destinations.find(({id}) => state.destination === id);
 
-  const offerListItem = offers.find((item) => item.type === state.type);
+  const offerListItem = offers.find(({type}) => type === state.type);
   const offersForSelectedType = offerListItem.offers;
 
   const formId = state.id || 0;
@@ -158,7 +158,7 @@ export default class EditWaypointView extends AbstractStatefulView {
 
   #handleFormSubmit = null;
   #handleFormCancel = null;
-  #handleDeleteClicked = null;
+  #handleDeleteClick = null;
 
   #startTimePicker = null;
   #endTimePicker = null;
@@ -178,7 +178,7 @@ export default class EditWaypointView extends AbstractStatefulView {
     this._state = EditWaypointView.convertDataToState(waypoint);
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormCancel = onFormCancel;
-    this.#handleDeleteClicked = onWaypointDelete;
+    this.#handleDeleteClick = onWaypointDelete;
 
     this._restoreHandlers();
   }
@@ -186,9 +186,8 @@ export default class EditWaypointView extends AbstractStatefulView {
   _restoreHandlers() {
 
     this.element.querySelector('.event__input--price').addEventListener('input', this.#onPriceInput);
-    // on input + debounce???
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#onDestinationChange);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onDeleteClicked);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onResetClick);
 
     this.element.querySelectorAll('.event__offer-checkbox').forEach((item) => item.addEventListener('change', this.#onOffersChange));
 
@@ -199,7 +198,7 @@ export default class EditWaypointView extends AbstractStatefulView {
 
     this.element.querySelector('.event--edit').addEventListener('submit', this.#onFormSubmit);
     if (this._state.id) {
-      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onFormCancel);
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onRollupClick);
     }
 
     this.#setTimePicker();
@@ -283,7 +282,6 @@ export default class EditWaypointView extends AbstractStatefulView {
 
   #onDestinationChange = (evt) => {
     const destinationFound = this.#destinations.find(({name}) => name === evt.target.value);
-    // обновить блок с инфой про destination
 
     if (destinationFound) {
       this.updateElement({destination: destinationFound.id});
@@ -310,17 +308,17 @@ export default class EditWaypointView extends AbstractStatefulView {
     this.#handleFormSubmit(EditWaypointView.convertStateToData(this._state));
   };
 
-  #onFormCancel = (evt) => {
+  #onRollupClick = (evt) => {
     evt.preventDefault();
     this.#handleFormCancel();
   };
 
-  #onDeleteClicked = (evt) => {
+  #onResetClick = (evt) => {
     evt.preventDefault();
     // По большому счёту, передача состояния тут не нужна, т.к. связей, по которым при удалении задачи
     // нужно удалять другие сущности, нет, и крмое waypoint.id нам ничего в модели не нужно. Здесь так
     // для того, чтобы понимать, что связи могут быть сложнее и удаляемый объект целиком может
     // потребоваться в модели.
-    this.#handleDeleteClicked(EditWaypointView.convertStateToData(this._state));
+    this.#handleDeleteClick(EditWaypointView.convertStateToData(this._state));
   };
 }

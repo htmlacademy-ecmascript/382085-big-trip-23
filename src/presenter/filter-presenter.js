@@ -1,7 +1,7 @@
-import FilterView from '../view/filter';
+import FilterView from '../view/filter-view';
 import { remove, render, replace } from '../framework/render';
 import { UpdateType } from '../constants';
-import { FILTERS_OBJECT } from '../utils/filter';
+import { FILTERS } from '../utils/filter';
 
 
 export default class FilterPresenter {
@@ -17,8 +17,8 @@ export default class FilterPresenter {
 
   #disabled = false;
 
-  constructor({container, waypointsModel, filterModel}) {
-    this.#container = container;
+  constructor({filterContainer, waypointsModel, filterModel}) {
+    this.#container = filterContainer;
     this.#waypointsModel = waypointsModel;
     this.#filterModel = filterModel;
 
@@ -34,9 +34,9 @@ export default class FilterPresenter {
     if (this.#disabled) {
       return filtersMap;
     }
-    for (const [filterName, filterFunc] of Object.entries(FILTERS_OBJECT)) {
-      const filtered = filterFunc(this.#waypointsModel.waypoints);
-      filtersMap.set(filterName, filtered);
+    for (const [filterName, filterFunction] of Object.entries(FILTERS)) {
+      const filteredWaypoints = filterFunction(this.#waypointsModel.waypoints);
+      filtersMap.set(filterName, filteredWaypoints);
     }
 
     return filtersMap;
@@ -73,7 +73,7 @@ export default class FilterPresenter {
     }
   };
 
-  #handleModelEvent = () => {
-    this.init();
+  #handleModelEvent = (status) => {
+    this.init(status);
   };
 }

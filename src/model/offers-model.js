@@ -21,7 +21,7 @@ export default class OffersModel extends Observable {
   * @returns {import('../constants').Offer[]} массив предложений
   */
   getOffersForEventType(eventType) {
-    const offerListItem = this.#offers.find((item) => item.type === eventType);
+    const offerListItem = this.#offers.find(({type}) => type === eventType);
     return offerListItem.offers;
   }
 
@@ -29,7 +29,6 @@ export default class OffersModel extends Observable {
     try {
       this.#offers = await this.#apiService.offers;
     } catch (err) {
-      //console.error(err);
       this.#offers = [];
       this._notify(UpdateType.INIT_FAILED, this.#offers);
       return;

@@ -1,6 +1,6 @@
 import { remove, render, replace } from '../framework/render';
-import WaypointView from '../view/waypoint';
-import EditWaypointView from '../view/edit-waypoint/edit-waypoint';
+import WaypointView from '../view/waypoint-view';
+import EditWaypointView from '../view/edit-waypoint/edit-waypoint-view';
 import { UpdateType, UserAction } from '../constants';
 
 const Mode = {
@@ -28,7 +28,7 @@ export default class WaypointPresenter {
   #waypoint = null;
   #mode = Mode.VIEW;
 
-  constructor({waypointsListContainer, destinationsModel, offersModel, onDataChange, onModeChange}) {
+  constructor({ waypointsListContainer, destinationsModel, offersModel, onDataChange, onModeChange }) {
     this.#waypointsListContainer = waypointsListContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
@@ -73,7 +73,7 @@ export default class WaypointPresenter {
     this.#renderEditWaypoint();
     replace(this.#waypointEditComponent, this.#waypointViewComponent);
     this.#waypointEditComponent.reset(this.#waypoint);
-    document.addEventListener('keydown', this.#handleEscapeKeyPress);
+    document.addEventListener('keydown', this.#onDocumentKeydown);
     this.#handleModeChange(); // важно чтобы это было до смены режима!
 
     this.#mode = Mode.EDIT;
@@ -81,7 +81,7 @@ export default class WaypointPresenter {
 
   #setViewMode() {
     replace(this.#waypointViewComponent, this.#waypointEditComponent);
-    document.removeEventListener('keydown', this.#handleEscapeKeyPress);
+    document.removeEventListener('keydown', this.#onDocumentKeydown);
     this.#mode = Mode.VIEW;
   }
 
@@ -89,7 +89,7 @@ export default class WaypointPresenter {
     this.#setViewMode();
   };
 
-  #handleEscapeKeyPress = (evt) => {
+  #onDocumentKeydown = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       this.#setViewMode();
@@ -97,13 +97,12 @@ export default class WaypointPresenter {
   };
 
   #handleFavoritesClick = () => {
-    //console.log('[WaypointPresenter::handleFavoritesClick]', this.#waypoint.isFavorite);
-    this.#handleDataChange(UserAction.UPDATE_WAYPOINT, UpdateType.MINOR, {...this.#waypoint, isFavorite: !this.#waypoint.isFavorite});
+    this.#handleDataChange(UserAction.UPDATE_WAYPOINT, UpdateType.MINOR, { ...this.#waypoint, isFavorite: !this.#waypoint.isFavorite });
   };
 
   #handleWaypointDelete = (waypoint) => {
     // см. комментарий в EditWaypointView
-    this.#handleDataChange(UserAction.DELETE_WAYPOINT, UpdateType.MINOR, {...waypoint});
+    this.#handleDataChange(UserAction.DELETE_WAYPOINT, UpdateType.MINOR, { ...waypoint });
   };
 
   #handleFormSubmit = (waypoint) => {
@@ -183,7 +182,7 @@ export default class WaypointPresenter {
 
   destroy() {
     if (this.#mode === Mode.EDIT) {
-      document.removeEventListener('keydown', this.#handleEscapeKeyPress);
+      document.removeEventListener('keydown', this.#onDocumentKeydown);
     }
     remove(this.#waypointViewComponent);
     remove(this.#waypointEditComponent);

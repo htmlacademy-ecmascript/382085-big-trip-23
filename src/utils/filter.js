@@ -42,7 +42,7 @@ function filterPresent(waypoint) {
     && dayjs().isBefore(dayjs(waypoint.dateTo));
 }
 
-export const FILTERS_OBJECT = {
+export const FILTERS = {
   [FilterType.ALL]:     (waypoints) => waypoints,
   [FilterType.FUTURE]:  (waypoints) => waypoints.filter(filterFuture),
   [FilterType.PRESENT]: (waypoints) => waypoints.filter(filterPresent),

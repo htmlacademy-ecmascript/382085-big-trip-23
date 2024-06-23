@@ -19,7 +19,7 @@ export default class WaypointsModel extends Observable {
   async updateWaypoint(updateType, update) {
     const index = this.#waypoints.findIndex(({id}) => id === update.id);
     if (index === -1) {
-      throw new Error('[waypoints model::update] Task is not found');
+      throw new Error('[waypoints model::update] Waypoint is not found');
     }
 
     try {
@@ -28,7 +28,7 @@ export default class WaypointsModel extends Observable {
       this.#waypoints.splice(index, 1, updatedWaypoint);
       this._notify(updateType, updatedWaypoint);
     } catch (err) {
-      throw new Error('Can not update task!');
+      throw new Error('Can not update waypoint!');
     }
   }
 
@@ -43,7 +43,7 @@ export default class WaypointsModel extends Observable {
       this.#waypoints.push(newWaypoint);
       this._notify(updateType, newWaypoint);
     } catch (err) {
-      throw new Error('Can not add task!');
+      throw new Error('Can not add waypoint!');
     }
   }
 
@@ -54,14 +54,14 @@ export default class WaypointsModel extends Observable {
   async deleteWaypoint(updateType, update) {
     const index = this.#waypoints.findIndex(({id}) => id === update.id);
     if (index === -1) {
-      throw new Error('[waypoints model::delete] Task is not found');
+      throw new Error('[waypoints model::delete] Waypoint is not found');
     }
     try {
       await this.#apiService.deleteWaypoint(this.#adaptToServer(update));
       this.#waypoints.splice(index, 1);
       this._notify(updateType);
     } catch (err) {
-      throw new Error('Can not delete task!');
+      throw new Error('Can not delete waypoint!');
     }
   }
 
@@ -103,7 +103,6 @@ export default class WaypointsModel extends Observable {
       const waypoints = await this.#apiService.waypoints;
       this.#waypoints = waypoints.map(this.#adaptToClient);
     } catch (err) {
-      //console.error(err);
       this.#waypoints = [];
       this._notify(UpdateType.INIT_FAILED, []);
       return;

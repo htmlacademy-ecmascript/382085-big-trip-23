@@ -5,8 +5,8 @@
 */
 function createOfferMarkup(waypoint, offer, disabled) {
   const isSelected = waypoint.offers.has(offer.id);
-  return `
-    <div class="event__offer-selector">
+  return (
+    `<div class="event__offer-selector">
       <input
         class="event__offer-checkbox  visually-hidden"
         data-offer="${offer.id}"
@@ -20,7 +20,8 @@ function createOfferMarkup(waypoint, offer, disabled) {
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
       </label>
-    </div>`;
+    </div>`
+  );
 }
 
 /**
@@ -36,14 +37,12 @@ export function createOffersMarkup(waypoint, availableOffers, disabled) {
 
   const offersMarkup = availableOffers.map((offer) => createOfferMarkup(waypoint, offer, disabled)).join(' ');
 
-  return `
-    <section class="event__section  event__section--offers">
+  return (
+    `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
       <div class="event__available-offers">
-
         ${offersMarkup}
-
       </div>
-    </section>`;
+    </section>`
+  );
 }

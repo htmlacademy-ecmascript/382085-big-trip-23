@@ -13,12 +13,13 @@ function createPicturesMarkup({pictures}) {
     `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`)
     .join(' ');
 
-  return `
-    <div class="event__photos-container">
+  return (
+    `<div class="event__photos-container">
       <div class="event__photos-tape">
         ${picturesMarkup}
       </div>
-    </div>`;
+    </div>`
+  );
 }
 
 /**
@@ -45,11 +46,12 @@ export function createDestinationMarkup(destination) {
 
   const picturesMarkup = createPicturesMarkup(destination);
 
-  return `
-    <section class="event__section  event__section--destination">
+  return (
+    `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       ${descriptionMarkup}
       ${picturesMarkup}
-    </section>`;
+    </section>`
+  );
 }
 

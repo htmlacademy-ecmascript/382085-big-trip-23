@@ -1,6 +1,6 @@
 import { DUMMY_WAYPOINT, UpdateType, UserAction } from '../constants';
 import { RenderPosition, remove, render } from '../framework/render';
-import EditWaypointView from '../view/edit-waypoint/edit-waypoint';
+import EditWaypointView from '../view/edit-waypoint/edit-waypoint-view';
 
 export default class NewWaypointPresenter {
   /** @type {import('../constants').Destination[]} */
@@ -36,7 +36,7 @@ export default class NewWaypointPresenter {
     this.#waypointEditComponent = new EditWaypointView(editWaypointData);
 
     render(this.#waypointEditComponent, this.#container, RenderPosition.AFTERBEGIN);
-    document.addEventListener('keydown', this.#handleEscapeKeyPress);
+    document.addEventListener('keydown', this.#onDocumentKeydown);
   }
 
   setSaving() {
@@ -67,7 +67,7 @@ export default class NewWaypointPresenter {
     this.destroy();
   };
 
-  #handleEscapeKeyPress = (evt) => {
+  #onDocumentKeydown = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       this.#onNewWaypointClose();
@@ -77,6 +77,6 @@ export default class NewWaypointPresenter {
 
   destroy() {
     remove(this.#waypointEditComponent);
-    document.removeEventListener('keydown', this.#handleEscapeKeyPress);
+    document.removeEventListener('keydown', this.#onDocumentKeydown);
   }
 }

@@ -16,8 +16,8 @@ export default class DestinationsModel extends Observable {
     return this.#destinations;
   }
 
-  getDestination(id) {
-    const result = this.#destinations.find((item) => item.id === id);
+  getDestination(destinationId) {
+    const result = this.#destinations.find(({id}) => id === destinationId);
     return result;
   }
 
@@ -25,7 +25,6 @@ export default class DestinationsModel extends Observable {
     try {
       this.#destinations = await this.#apiService.destinations;
     } catch (err) {
-      //console.error(err);
       this.#destinations = [];
       this._notify(UpdateType.INIT_FAILED, this.#destinations);
       return;
