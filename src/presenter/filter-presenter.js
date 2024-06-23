@@ -17,8 +17,8 @@ export default class FilterPresenter {
 
   #disabled = false;
 
-  constructor({container, waypointsModel, filterModel}) {
-    this.#container = container;
+  constructor({filterContainer, waypointsModel, filterModel}) {
+    this.#container = filterContainer;
     this.#waypointsModel = waypointsModel;
     this.#filterModel = filterModel;
 

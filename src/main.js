@@ -18,8 +18,8 @@ import TripInfoPresenter from './presenter/trip-info-presenter';
 
 const AUTHORIZATION = 'Basic 2point718281828459045';
 
-const newButtonElement = document.querySelector('.trip-main__event-add-btn');
-newButtonElement.setAttribute('disabled', '');
+const newWaypointButton = document.querySelector('.trip-main__event-add-btn');
+newWaypointButton.setAttribute('disabled', '');
 
 const waypointService = new WaypointsApiService(BIG_TRIP_URI, AUTHORIZATION);
 const waypointsModel = new WaypointsModel({ apiService: waypointService });
@@ -37,19 +37,15 @@ offersModel.init();
 
 function main() {
 
-  const tripInfoElement = document.querySelector('.trip-main');
-  new TripInfoPresenter({container: tripInfoElement, waypointsModel, destinationsModel, offersModel});
+  // trip info ======================================================================
+  const tripInfoContainer = document.querySelector('.trip-main');
+  new TripInfoPresenter({tripInfoContainer, waypointsModel, destinationsModel, offersModel});
   //================================================================================
 
   // filter ================================================================================
   const filterModel = new FilterModel();
   const filterContainer = document.querySelector('.trip-controls__filters');
-  const filterPresenterData = {
-    container: filterContainer,
-    filterModel,
-    waypointsModel,
-  };
-  const filterPresenter = new FilterPresenter(filterPresenterData);
+  const filterPresenter = new FilterPresenter({filterContainer, filterModel, waypointsModel});
 
   forkJoinObservables([waypointsModel, destinationsModel, offersModel], (status) => filterPresenter.init(status));
   //================================================================================
@@ -62,31 +58,31 @@ function main() {
     destinationsModel,
     offersModel,
     filterModel,
-    onNewWaypointClose: onNewWaypointClose
+    onNewWaypointClose
   });
   tripEventsPresenter.init();
   //================================================================================
 
   // new waypoint button ======================================================
-  const newWaypointButton = new NewWaypointButtonView({buttonElement: newButtonElement, onNewButtonClick});
+  const newWaypointButtonComponent = new NewWaypointButtonView({newWaypointButton, onNewButtonClick});
 
   function onNewButtonClick() {
     filterModel.setFilter(UpdateType.MINOR, DEFAULT_FILTER_ID);
-    newWaypointButton.disableButton();
+    newWaypointButtonComponent.disableButton();
     tripEventsPresenter.createNewWaypoint();
   }
 
   function onNewWaypointClose() {
-    newWaypointButton.enableButton();
+    newWaypointButtonComponent.enableButton();
   }
 
   forkJoinObservables([waypointsModel, destinationsModel, offersModel], (status) => {
     switch (status) {
       case UpdateType.INIT_FAILED:
-        newWaypointButton.disableButton();
+        newWaypointButtonComponent.disableButton();
         break;
       default:
-        newWaypointButton.enableButton();
+        newWaypointButtonComponent.enableButton();
     }
   });
   // ================================================================================

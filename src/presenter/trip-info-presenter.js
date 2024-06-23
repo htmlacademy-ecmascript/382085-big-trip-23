@@ -5,13 +5,13 @@ import { forkJoinObservables } from '../utils/common';
 
 export default class TripInfoPresenter {
   #tripInfoView = null;
-  #tripMainContainer = document.querySelector('.trip-main');
+  #container = document.querySelector('.trip-main');
   #waypointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
 
-  constructor({container, waypointsModel, destinationsModel, offersModel}) {
-    this.#tripMainContainer = container;
+  constructor({tripInfoContainer, waypointsModel, destinationsModel, offersModel}) {
+    this.#container = tripInfoContainer;
     this.#waypointsModel = waypointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
@@ -48,6 +48,6 @@ export default class TripInfoPresenter {
       remove(prevTripInfoView);
       return;
     }
-    render(this.#tripInfoView, this.#tripMainContainer, RenderPosition.AFTERBEGIN);
+    render(this.#tripInfoView, this.#container, RenderPosition.AFTERBEGIN);
   }
 }

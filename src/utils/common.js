@@ -6,24 +6,33 @@ const TIME_DURATION_INTERVALS = [
   {dayjsName: 'minute', abbreviation:'M'}
 ];
 
+/**
+ * @param {import('dayjs').Dayjs} dateFrom
+ * @param {import('dayjs').Dayjs} dateTo
+ * @returns {string} строка с длительностью для точки маршрута в режиме просмотра
+ */
 export function getDurationString(dateFrom, dateTo) {
-  let dayjsTo2 = dateTo;
+  let dayjsTo = dateTo;
   return Array.from(TIME_DURATION_INTERVALS, ({dayjsName, abbreviation}) => {
-    const quantity = dayjsTo2.diff(dateFrom, dayjsName);
-    dayjsTo2 = dayjsTo2.subtract(quantity, dayjsName);
+    const quantity = dayjsTo.diff(dateFrom, dayjsName);
+    dayjsTo = dayjsTo.subtract(quantity, dayjsName);
     const formattedQuantity = String(quantity).padStart(2, '0');
     return `${formattedQuantity}${abbreviation}`;
   })
     .join(' ');
 }
 
+/**
+ * @param {string} text
+ * @returns {string} та же строка, но первая буква в верхнем регистре
+ */
 export function capitalize(text) {
   return `${text[0].toUpperCase()}${text.slice(1)}`;
 }
 
 /**
  * @param {import('../framework/observable').default[]} observables
- * @param {Function} cb
+ * @param {Function} cb коллбэк, который будет вызван, когда все observable вызовут notify
  */
 export function forkJoinObservables(observables, cb) {
   const state = Array.from(observables, () => 0);
@@ -35,7 +44,7 @@ export function forkJoinObservables(observables, cb) {
 /**
  * @param {number} idx индекс в массиве state
  * @param {any[]} state массив с результатами
- * @param {Function} cb
+ * @param {Function} cb коллбэк, который будет вызван, когда все observable вызовут notify
  */
 function makeWaitAllAndCall(idx, state, cb) {
   return function (updateType) {

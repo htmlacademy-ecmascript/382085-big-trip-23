@@ -89,10 +89,10 @@ export default class WaypointView extends AbstractView {
 
   constructor({waypoint, destination, offers, onOpenClick, onFavoriteClick}) {
     super();
-    this.#handleEditClick = onOpenClick;
     this.#waypoint = waypoint;
     this.#destination = destination;
     this.#offers = offers;
+    this.#handleEditClick = onOpenClick;
     this.#handleFavoriteClick = onFavoriteClick;
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onOpenClick);
