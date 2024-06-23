@@ -73,7 +73,7 @@ export default class FilterPresenter {
     }
   };
 
-  #handleModelEvent = () => {
-    this.init();
+  #handleModelEvent = (status) => {
+    this.init(status);
   };
 }

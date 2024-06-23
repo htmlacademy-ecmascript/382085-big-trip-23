@@ -29,7 +29,6 @@ export default class TripInfoPresenter {
   }
 
   init(updateType) {
-    //console.log('init trip info presenter', updateType);
     if (updateType === UpdateType.INIT_FAILED) {
       return;
     }
