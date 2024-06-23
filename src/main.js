@@ -68,9 +68,9 @@ function main() {
   //================================================================================
 
   // new waypoint button ======================================================
-  const newWaypointButton = new NewWaypointButtonView({buttonElement: newButtonElement, onNewButtonClicked});
+  const newWaypointButton = new NewWaypointButtonView({buttonElement: newButtonElement, onNewButtonClick});
 
-  function onNewButtonClicked() {
+  function onNewButtonClick() {
     filterModel.setFilter(UpdateType.MINOR, DEFAULT_FILTER_ID);
     newWaypointButton.disableButton();
     tripEventsPresenter.createNewWaypoint();

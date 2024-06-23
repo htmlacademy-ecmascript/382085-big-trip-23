@@ -3,7 +3,7 @@ export default class NewWaypointButtonView {
   #handleButtonClick = null;
   #buttonElement = null;
 
-  constructor({onNewButtonClick, buttonElement}) {
+  constructor({buttonElement, onNewButtonClick}) {
     this.#handleButtonClick = onNewButtonClick;
     this.#buttonElement = buttonElement;
 
