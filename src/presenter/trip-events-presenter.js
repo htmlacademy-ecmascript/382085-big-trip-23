@@ -1,8 +1,8 @@
 import { render, remove, RenderPosition } from '../framework/render';
 import UiBlocker from '../framework/ui-blocker/ui-blocker';
-import SortView from '../view/sort';
-import TripEventsListView from '../view/trip-events-list';
-import ListEmptyView from '../view/list-empty';
+import SortView from '../view/sort-view';
+import TripEventsListView from '../view/trip-events-list-view';
+import ListEmptyView from '../view/empty-list-view';
 import WaypointPresenter from './waypoint-presenter';
 import NewWaypointPresenter from './new-waypoint-presenter';
 import { DEFAULT_SORT_ID, UpdateType, UserAction } from '../constants';
@@ -26,9 +26,9 @@ export default class TripEventsPresenter {
   /** @type {import('../model/filter-model').default} */
   #filterModel = null;
 
-  /** @type {import('../view/sort').default} */
+  /** @type {import('../view/sort-view').default} */
   #sortComponent = null;
-  /** @type {import('../view/list-empty').default} */
+  /** @type {import('../view/empty-list-view').default} */
   #emptyListComponent = null;
   #tripEventsListComponent = new TripEventsListView();
 

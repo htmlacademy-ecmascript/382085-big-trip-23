@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
-import AbstractView from '../framework/view/abstract-view';
-import { EVENT_TYPE_ICONS } from '../constants';
+import AbstractView from '../framework/view/abstract-view.js';
+import { EVENT_TYPE_ICONS } from '../constants.js';
 import { getDurationString } from '../utils/common.js';
 
 /**
-* @param {import('../constants').Offer} offer
+* @param {import('../constants.js').Offer} offer
 * @returns {string} вёрстка одной дополнительной опции
 */
 function createOfferMarkup(offer) {
@@ -18,9 +18,9 @@ function createOfferMarkup(offer) {
 
 
 /**
-* @param {import('../constants').Waypoint} waypoint
-* @param {import('../constants').Destination} destination объект Destination соответствующий назначению пункта путешествия
-* @param {import('../constants').Offer[]} offers опции для текущего типа точки путешествия
+* @param {import('../constants.js').Waypoint} waypoint
+* @param {import('../constants.js').Destination} destination объект Destination соответствующий назначению пункта путешествия
+* @param {import('../constants.js').Offer[]} offers опции для текущего типа точки путешествия
 * @returns {string} вёрстка для одного пункта в путешествии
 */
 function createWaypointTemplate(waypoint, destination, offers) {

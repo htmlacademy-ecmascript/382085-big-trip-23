@@ -1,4 +1,4 @@
-import TripInfoView from '../view/trip-info';
+import TripInfoView from '../view/trip-info-view';
 import { UpdateType } from '../constants';
 import { RenderPosition, remove, render, replace } from '../framework/render';
 import { forkJoinObservables } from '../utils/common';

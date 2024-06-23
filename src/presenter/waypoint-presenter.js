@@ -1,6 +1,6 @@
 import { remove, render, replace } from '../framework/render';
-import WaypointView from '../view/waypoint';
-import EditWaypointView from '../view/edit-waypoint/edit-waypoint';
+import WaypointView from '../view/waypoint-view';
+import EditWaypointView from '../view/edit-waypoint/edit-waypoint-view';
 import { UpdateType, UserAction } from '../constants';
 
 const Mode = {

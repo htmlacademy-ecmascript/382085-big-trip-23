@@ -1,4 +1,4 @@
-import FilterView from '../view/filter';
+import FilterView from '../view/filter-view';
 import { remove, render, replace } from '../framework/render';
 import { UpdateType } from '../constants';
 import { FILTERS_OBJECT } from '../utils/filter';

@@ -1,6 +1,6 @@
 import { DUMMY_WAYPOINT, UpdateType, UserAction } from '../constants';
 import { RenderPosition, remove, render } from '../framework/render';
-import EditWaypointView from '../view/edit-waypoint/edit-waypoint';
+import EditWaypointView from '../view/edit-waypoint/edit-waypoint-view';
 
 export default class NewWaypointPresenter {
   /** @type {import('../constants').Destination[]} */

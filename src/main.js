@@ -6,7 +6,7 @@ import DestinationsModel from './model/destinations-model';
 import OffersModel from './model/offers-model';
 import FilterModel from './model/filter-model';
 
-import NewWaypointButtonView from './view/new-waypoint-button';
+import NewWaypointButtonView from './view/new-waypoint-button-view';
 
 import TripEventsPresenter from './presenter/trip-events-presenter';
 import FilterPresenter from './presenter/filter-presenter';
